@@ -51,14 +51,19 @@ body {
 .search_wrapper {
   margin-bottom: 2em;
 }
-.copy-button {
+.action-button {
   background: #eee;
   font-size: 15px;
   padding: .3em .5em;
   display: inline-block;
   cursor: pointer;
+  margin-right: .5em;
 }
-.copy-button img {
+.action-button a {
+  text-decoration: none;
+  color: black;
+}
+.action-button img {
   width: 1em;
   vertical-align: middle;
   margin-right: .3em;
