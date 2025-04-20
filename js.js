@@ -54,9 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       try {
         document.execCommand('copy');
+        const oldContent = copyButton.innerHTML;
         copyButton.innerHTML = "Copié !";
         setTimeout(() => {
-          copyButton.innerHTML = "Copier";
+          copyButton.innerHTML = oldContent;
         }, 1000);
       } catch (err) {
         console.error('Impossible de copier le texte : ', err);
