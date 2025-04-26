@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (searchInput) {
     const hash = window.location.hash;
     if (hash && hash.startsWith('#')) {
-      const searchTerm = hash.substring(1);
+      const searchTerm = decodeURI(hash.substring(1));
       search.value = searchTerm;
       filterPoemes(searchTerm);
     }
@@ -90,3 +90,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.addEventListener('hashchange', handleAnchorChange);
 document.addEventListener('DOMContentLoaded', handleAnchorChange);
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.js-notes-auteur').forEach(function (div) {
+    div.addEventListener('click', function (event) {
+      const target = document.querySelector(".poeme-notes");
+      if (target.classList.contains("visible")) {
+        target.classList.remove("visible");
+        target.classList.add("hidden");
+      } else {
+        target.classList.remove("hidden");
+        target.classList.add("visible");
+      }
+    })
+  });
+});
