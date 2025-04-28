@@ -36,6 +36,20 @@ function handleAnchorChange() {
   }
 }
 
+function copyContent(container, source, target) {
+  const src = container.querySelector(source);
+  src.addEventListener('click', function() {
+    const content = container.querySelector(target).textContent.trim();
+    navigator.clipboard.writeText(content);
+
+    const oldContent = src.innerHTML;
+    src.innerHTML = "Copié !";
+    setTimeout(() => {
+      src.innerHTML = oldContent;
+    }, 1_500);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('search');
   if (searchInput) {
@@ -64,27 +78,8 @@ document.addEventListener('keydown', event => {
 
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.poeme-container').forEach(container => {
-    const copyButton = container.querySelector('.js-copy-button');
-
-    copyButton.addEventListener('click', function() {
-      const range = document.createRange();
-      range.selectNode(container.querySelector('.poeme-content'));
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-
-      try {
-        document.execCommand('copy');
-        const oldContent = copyButton.innerHTML;
-        copyButton.innerHTML = "Copié !";
-        setTimeout(() => {
-          copyButton.innerHTML = oldContent;
-        }, 1_000);
-      } catch (err) {
-        console.error('Impossible de copier le texte : ', err);
-      }
-
-      window.getSelection().removeAllRanges();
-    });
+    copyContent(container, '.js-copy-button', '.poeme-content');
+    copyContent(container, '.js-share-button', '.js-share-url');
   });
 });
 
