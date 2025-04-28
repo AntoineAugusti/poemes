@@ -27,7 +27,7 @@ $signature = $_GET['signature'];
       <?
       $poeme_signature = md5($poeme);
       $poeme_content = trim($poeme);
-      $re = '~(?:---(?<notes>(?:.|\n)*)?---)?(?:(?:.|\n)*## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
+      $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
       preg_match($re, $poeme_content, $matches);
       ?>
       <div class="poeme-container">
@@ -38,11 +38,13 @@ $signature = $_GET['signature'];
           <div class="poeme-content">
             <?
             if (empty($signature) or $signature == $poeme_signature) {
-              if (! empty($matches["titre"])) {
-                ?>
-                <span class="poeme-title"><?= $matches["titre"]; ?></span>
+              if (! empty($matches["titre"])) { ?>
+                <div class="poeme-title"><?= $matches["titre"]; ?></div>
               <? }
-              echo nl2br($matches["poeme"]);
+              if (! empty($matches["date"])) { ?>
+                <div class="poeme-date"><?= $matches["date"]; ?></div>
+              <? }
+              echo nl2br(trim($matches["poeme"]));
             } ?>
           </div>
           <? if (! empty($matches["notes"])) { ?>
@@ -56,7 +58,7 @@ $signature = $_GET['signature'];
             Copier
           </div>
           <div class="action-button js-share-button">
-            <span class="hidden js-share-url">https://poeme.antoine-augusti.fr/share?signature=<?= $poeme_signature; ?>#<?= $i; ?></span>
+            <span class="hidden js-share-url">https://poemes.antoine-augusti.fr/share?signature=<?= $poeme_signature; ?>#<?= $i; ?></span>
             <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNiAxN2MyLjI2OS05Ljg4MSAxMS0xMS42NjcgMTEtMTEuNjY3di0zLjMzM2w3IDYuNjM3LTcgNi42OTZ2LTMuMzMzcy02LjE3LS4xNzEtMTEgNXptMTIgLjE0NXYyLjg1NWgtMTZ2LTEyaDYuNTk4Yy43NjgtLjc4NyAxLjU2MS0xLjQ0OSAyLjMzOS0yaC0xMC45Mzd2MTZoMjB2LTYuNzY5bC0yIDEuOTE0eiIvPjwvc3ZnPg==">
             Partager
           </div>

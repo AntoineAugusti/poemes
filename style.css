@@ -1,3 +1,13 @@
+@keyframes fadeIn {
+    0% {
+        opacity: 0
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
 body, html {
   width: 100%;
   height: 100%;
@@ -28,6 +38,14 @@ body {
   font-weight: bold;
   margin-bottom: .5em;
 }
+.poeme-date {
+  color: #bbb;
+  margin: -1em 0 .5em 0;
+  font-size: .7em;
+}
+.poeme-content {
+  margin-bottom: .8em;
+}
 .poeme-notes {
   background: #eee;
   padding: .5em 1em;
@@ -35,6 +53,7 @@ body {
   border: 3px solid #ccc;
   font-size: .8em;
   max-width: 500px;
+  animation: fadeIn 2s;
 }
 .id {
   font-size: 20px;
@@ -65,7 +84,7 @@ body {
 }
 .action-button {
   background: #eee;
-  font-size: 15px;
+  font-size: .5em;
   padding: .3em .5em;
   display: inline-block;
   cursor: pointer;
@@ -82,11 +101,9 @@ body {
 }
 
 @media only screen and (max-width: 768px) {
-  body {
-    font-size: 20px;
-  }
+  body,
   #search {
-    font-size: 20px;
+    font-size: 18px;
   }
   .poeme {
     padding: 1em;
@@ -96,5 +113,9 @@ body {
     left: 1em;
     font-size: 15px;
     margin-bottom: -1em;
+  }
+  .action-button {
+    margin-bottom: .5em;
+    font-size: .8em;
   }
 }

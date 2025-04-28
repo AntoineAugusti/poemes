@@ -5,6 +5,12 @@ Foo
 
 ===
 
+---
+Poem notes.
+---
+2025-04-28
+## Poem title
+
 Foo,
 Bar,
 Baz,
