@@ -100,3 +100,34 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  let poemeDivs = document.querySelectorAll('.poeme.visible');
+  let currentPoemeIndex = 0;
+
+  function focusPoemeDiv(index) {
+    currentPoemeIndex = index;
+    if (poemeDivs[currentPoemeIndex]) {
+      poemeDivs[currentPoemeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  window.addEventListener('hashchange', function(event) {
+    poemeDivs = document.querySelectorAll('.poeme.visible');
+    currentPoemeIndex = 0;
+  });
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'j') {
+      focusPoemeDiv((currentPoemeIndex + 1) % poemeDivs.length);
+    }
+    if (event.key === 'k') {
+      const nextIndex = currentPoemeIndex - 1;
+      if (nextIndex < 0) {
+        focusPoemeDiv(poemeDivs.length - 1);
+      } else {
+        focusPoemeDiv(nextIndex);
+      }
+    }
+  });
+});
