@@ -19,6 +19,7 @@ $signature = $_GET['signature'];
     <? if (empty($signature)) { ?>
       <div class="search_wrapper">
         <input type="search" id="search">
+        <div id="nb-results"></div>
       </div>
     <? } ?>
     <?

@@ -14,6 +14,15 @@ function filterPoemes(searchTerm) {
       poemeDiv.classList.add('hidden');
     }
   });
+
+  const nbResults = document.querySelector("#nb-results");
+  if (searchTerm != "") {
+    const nbPoemes = document.querySelectorAll('.poeme.visible').length
+    const text = nbPoemes == 1 ? "poème" : "poèmes";
+    nbResults.textContent = `${nbPoemes} ${text}`
+  } else {
+    nbResults.textContent = '';
+  }
 }
 
 function handleAnchorChange() {
