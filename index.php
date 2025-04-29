@@ -43,15 +43,17 @@ $signature = $_GET['signature'];
               <? }
               if (! empty($matches["date"])) { ?>
                 <div class="poeme-date"><?= $matches["date"]; ?></div>
-              <? }
-              echo nl2br(trim($matches["poeme"]));
-            } ?>
+              <? } ?>
+              <div class="poeme-text">
+                <?= nl2br(trim($matches["poeme"])); ?>
+              </div>
+            <? } ?>
           </div>
           <? if (! empty($matches["notes"])) { ?>
-          <div class="action-button js-notes-auteur">
-            <img src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTEuMjUgNmMuMzk4IDAgLjc1LjM1Mi43NS43NSAwIC40MTQtLjMzNi43NS0uNzUuNzUtMS41MDUgMC03Ljc1IDAtNy43NSAwdjEyaDE3di04Ljc1YzAtLjQxNC4zMzYtLjc1Ljc1LS43NXMuNzUuMzM2Ljc1Ljc1djkuMjVjMCAuNjIxLS41MjIgMS0xIDFoLTE4Yy0uNDggMC0xLS4zNzktMS0xdi0xM2MwLS40ODEuMzgtMSAxLTF6bS0yLjAxMSA2LjUyNmMtMS4wNDUgMy4wMDMtMS4yMzggMy40NS0xLjIzOCAzLjg0IDAgLjQ0MS4zODUuNjI2LjYyNy42MjYuMjcyIDAgMS4xMDgtLjMwMSAzLjgyOS0xLjI0OXptLjg4OC0uODg5IDMuMjIgMy4yMiA4LjQwOC04LjRjLjE2My0uMTYzLjI0NS0uMzc3LjI0NS0uNTkyIDAtLjIxMy0uMDgyLS40MjctLjI0NS0uNTkxLS41OC0uNTc4LTEuNDU4LTEuNDU3LTIuMDM5LTIuMDM2LS4xNjMtLjE2My0uMzc3LS4yNDUtLjU5MS0uMjQ1LS4yMTMgMC0uNDI4LjA4Mi0uNTkyLjI0NXoiIGZpbGwtcnVsZT0ibm9uemVybyIvPjwvc3ZnPg==">
-            Notes de l'auteur
-          </div>
+            <div class="action-button js-notes-auteur">
+              <img src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTEuMjUgNmMuMzk4IDAgLjc1LjM1Mi43NS43NSAwIC40MTQtLjMzNi43NS0uNzUuNzUtMS41MDUgMC03Ljc1IDAtNy43NSAwdjEyaDE3di04Ljc1YzAtLjQxNC4zMzYtLjc1Ljc1LS43NXMuNzUuMzM2Ljc1Ljc1djkuMjVjMCAuNjIxLS41MjIgMS0xIDFoLTE4Yy0uNDggMC0xLS4zNzktMS0xdi0xM2MwLS40ODEuMzgtMSAxLTF6bS0yLjAxMSA2LjUyNmMtMS4wNDUgMy4wMDMtMS4yMzggMy40NS0xLjIzOCAzLjg0IDAgLjQ0MS4zODUuNjI2LjYyNy42MjYuMjcyIDAgMS4xMDgtLjMwMSAzLjgyOS0xLjI0OXptLjg4OC0uODg5IDMuMjIgMy4yMiA4LjQwOC04LjRjLjE2My0uMTYzLjI0NS0uMzc3LjI0NS0uNTkyIDAtLjIxMy0uMDgyLS40MjctLjI0NS0uNTkxLS41OC0uNTc4LTEuNDU4LTEuNDU3LTIuMDM5LTIuMDM2LS4xNjMtLjE2My0uMzc3LS4yNDUtLjU5MS0uMjQ1LS4yMTMgMC0uNDI4LjA4Mi0uNTkyLjI0NXoiIGZpbGwtcnVsZT0ibm9uemVybyIvPjwvc3ZnPg==">
+              Notes de l'auteur
+            </div>
           <? } ?>
           <div class="action-button js-copy-button">
             <img src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtNiAxOGgtM2MtLjQ4IDAtMS0uMzc5LTEtMXYtMTRjMC0uNDgxLjM4LTEgMS0xaDE0Yy42MjEgMCAxIC41MjIgMSAxdjNoM2MuNjIxIDAgMSAuNTIyIDEgMXYxNGMwIC42MjEtLjUyMiAxLTEgMWgtMTRjLS40OCAwLTEtLjM3OS0xLTF6bTEuNS0xMC41djEzaDEzdi0xM3ptOS0xLjV2LTIuNWgtMTN2MTNoMi41di05LjVjMC0uNDgxLjM4LTEgMS0xeiIgZmlsbC1ydWxlPSJub256ZXJvIi8+PC9zdmc+">
@@ -63,9 +65,9 @@ $signature = $_GET['signature'];
             Partager
           </div>
           <? if (! empty($matches["notes"])) { ?>
-          <div class="poeme-notes hidden">
-            <?= $matches["notes"]; ?>
-          </div>
+            <div class="poeme-notes hidden">
+              <?= $matches["notes"]; ?>
+            </div>
           <? } ?>
         </div>
       </div>

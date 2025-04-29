@@ -78,7 +78,7 @@ document.addEventListener('keydown', event => {
 
 document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.poeme-container').forEach(container => {
-    copyContent(container, '.js-copy-button', '.poeme-content');
+    copyContent(container, '.js-copy-button', '.poeme-text');
     copyContent(container, '.js-share-button', '.js-share-url');
   });
 });
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', handleAnchorChange);
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.js-notes-auteur').forEach(function (div) {
-    div.addEventListener('click', function (event) {
+    div.addEventListener('click', event => {
       const target = document.querySelector(".poeme-notes");
       if (target.classList.contains("visible")) {
         target.classList.remove("visible");
