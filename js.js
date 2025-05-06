@@ -111,7 +111,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  let poemeDivs = document.querySelectorAll('.poeme.visible');
+  document.querySelector('.up-down').addEventListener('click', event => {
+    const container = document.querySelector('.poemes-container');
+    if (container.classList.contains("reverse")) {
+        container.classList.remove("reverse");
+      } else {
+        container.classList.add("reverse");
+      }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  let poemeDivs = [...document.querySelectorAll('.poeme.visible')];
   let currentPoemeIndex = 0;
 
   function focusPoemeDiv(index) {
@@ -122,8 +133,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   window.addEventListener('hashchange', function(event) {
-    poemeDivs = document.querySelectorAll('.poeme.visible');
+    poemeDivs = [...document.querySelectorAll('.poeme.visible')];
     currentPoemeIndex = 0;
+  });
+
+  document.querySelector('.up-down').addEventListener('click', event => {
+    poemeDivs = poemeDivs.reverse();
   });
 
   document.addEventListener('keydown', function(event) {

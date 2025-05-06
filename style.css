@@ -20,6 +20,14 @@ body, html {
 body {
   border-top: 4px solid #ccc;
 }
+.up-down {
+  display: inline;
+  margin-right: .5em;
+  cursor: pointer;
+}
+.up-down img {
+  width: 15px;
+}
 .container {
   display: flex;
   align-items: center;
@@ -27,6 +35,14 @@ body {
   line-height: 2;
   flex-direction: column;
   margin: 2em auto 2em auto;
+}
+.poemes-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.reverse {
+  flex-direction: column-reverse;
 }
 .poeme {
   margin: 0 .5em 2em .5em;
@@ -82,6 +98,7 @@ body {
 }
 #nb-results {
   color: #555;
+  margin-left: calc(30px + 1.5em);
   margin-top: 0.2em;
   font-size: .8em;
 }
