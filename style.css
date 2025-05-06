@@ -83,7 +83,8 @@ body {
   text-decoration: none;
   margin-bottom: -1.5em;
 }
-.hidden {
+.hidden,
+.to_show {
   display: none;
 }
 .visible {

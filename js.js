@@ -48,8 +48,13 @@ function handleAnchorChange() {
 function copyContent(container, source, target) {
   const src = container.querySelector(source);
   src.addEventListener('click', function() {
-    const content = container.querySelector(target).textContent.trim();
+    const toShow = container.querySelectorAll('.to_show');
+    toShow.forEach(div => div.classList.add("visible"));
+
+    const content = container.querySelector(target).textContent.trim().replace(/( ){10,}/, '\n');
     navigator.clipboard.writeText(content);
+
+    toShow.forEach(div => div.classList.remove("visible"));
 
     const oldContent = src.innerHTML;
     src.innerHTML = "Copié !";
@@ -111,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelector('.up-down').addEventListener('click', event => {
+  document.querySelector('.up-down').addEventListener('click', function (event) {
     const container = document.querySelector('.poemes-container');
     if (container.classList.contains("reverse")) {
         container.classList.remove("reverse");

@@ -51,6 +51,9 @@ $signature = $_GET['signature'];
                   <div class="poeme-date"><?= $matches["date"]; ?></div>
                 <? } ?>
                 <div class="poeme-text">
+                  <? if (! empty($matches["titre"])) { ?>
+                  <div class="to_show">## <?= $matches["titre"]; ?></div>
+                  <? } ?>
                   <?= nl2br(trim($matches["poeme"])); ?>
                 </div>
               <? } ?>
