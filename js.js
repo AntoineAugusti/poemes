@@ -122,10 +122,10 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('.up-down').addEventListener('click', function (event) {
     const container = document.querySelector('.poemes-container');
     if (container.classList.contains("reverse")) {
-        container.classList.remove("reverse");
-      } else {
-        container.classList.add("reverse");
-      }
+      container.classList.remove("reverse");
+    } else {
+      container.classList.add("reverse");
+    }
   });
 });
 
