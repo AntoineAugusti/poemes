@@ -1,5 +1,14 @@
 <?
+function flatten(array $array) {
+  $return = array();
+  array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+  sort($return);
+  return $return;
+}
+
 $signature = $_GET['signature'];
+$themes = explode("\n", file_get_contents("themes.txt"));
+$themes = array_map(function ($x) { return explode(';', $x);}, $themes);
 ?>
 <html lang="fr">
 <head>
@@ -22,14 +31,20 @@ $signature = $_GET['signature'];
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCA3LjMzbDIuODI5LTIuODMgOS4xNzUgOS4zMzkgOS4xNjctOS4zMzkgMi44MjkgMi44My0xMS45OTYgMTIuMTd6Ii8+PC9zdmc+">
         </div>
-        <input type="search" id="search">
+        <input type="search" id="search" list="themes-list">
         <div id="nb-results"></div>
+        <datalist id="themes-list">
+          <? $allThemes = array_unique(flatten($themes));
+          foreach($allThemes as $theme) { ?>
+            <option value="<?= $theme ?>"></option>
+          <? } ?>
+        </datalist>
       </div>
     <? } ?>
     <div class="poemes-container">
       <?
       $i = 1;
-      $themes = explode("\n", file_get_contents("themes.txt"));
+      
       foreach (explode("===", file_get_contents("poemes.txt")) as $poeme) { ?>
         <?
         $poeme_signature = md5($poeme);
@@ -53,14 +68,14 @@ $signature = $_GET['signature'];
                 <? } ?>
                 <div class="poeme-text">
                   <? if (! empty($matches["titre"])) { ?>
-                  <div class="to_show">## <?= $matches["titre"]; ?></div>
+                    <div class="to_show">## <?= $matches["titre"]; ?></div>
                   <? } ?>
                   <?= nl2br(trim($matches["poeme"])); ?>
                 </div>
               <? } ?>
             </div>
             <div class="themes">
-              <? foreach (explode(';', $themes[$i-1]) as $theme) { ?>
+              <? foreach ($themes[$i-1] as $theme) { ?>
                 <a class="theme" href="#<?= $theme ?>">
                   #<?= $theme ?>
                 </a>
