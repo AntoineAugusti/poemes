@@ -163,3 +163,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      let reg;
+      reg = await navigator.serviceWorker.register('/service-worker.js');
+    } catch (err) {
+      console.log(err);
+    }
+  });
+}
