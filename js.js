@@ -40,6 +40,11 @@ function handleAnchorChange() {
 
       targetDiv.classList.add('visible');
     }
+    else {
+      const searchTerm = decodeURI(currentHash.substring(1));
+      document.getElementById('search').value = searchTerm;
+      filterPoemes(normalize(searchTerm));
+    }
   } else {
     filterPoemes('');
   }
@@ -71,13 +76,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (hash && hash.startsWith('#')) {
       const searchTerm = decodeURI(hash.substring(1));
       search.value = searchTerm;
-      filterPoemes(searchTerm);
     }
 
     searchInput.addEventListener('input', function() {
-      const searchTerm = normalize(this.value);
-      window.location.hash = searchTerm;
-      filterPoemes(searchTerm);
+      window.location.hash = this.value;
+      filterPoemes(normalize(this.value));
     });
   }
 

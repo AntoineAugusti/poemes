@@ -123,6 +123,15 @@ body {
   vertical-align: middle;
   margin-right: .3em;
 }
+.themes {
+  margin: .25em;
+}
+a.theme {
+  font-size: .75em;
+  color: #888;
+  margin-right: .5em;
+  text-decoration: none;
+}
 
 @media only screen and (max-width: 768px) {
   body,

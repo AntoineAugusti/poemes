@@ -29,6 +29,7 @@ $signature = $_GET['signature'];
     <div class="poemes-container">
       <?
       $i = 1;
+      $themes = explode("\n", file_get_contents("themes.txt"));
       foreach (explode("===", file_get_contents("poemes.txt")) as $poeme) { ?>
         <?
         $poeme_signature = md5($poeme);
@@ -56,6 +57,13 @@ $signature = $_GET['signature'];
                   <? } ?>
                   <?= nl2br(trim($matches["poeme"])); ?>
                 </div>
+              <? } ?>
+            </div>
+            <div class="themes">
+              <? foreach (explode(';', $themes[$i-1]) as $theme) { ?>
+                <a class="theme" href="#<?= $theme ?>">
+                  #<?= $theme ?>
+                </a>
               <? } ?>
             </div>
             <? if (! empty($matches["notes"])) { ?>
