@@ -125,7 +125,7 @@ body {
   margin-right: .3em;
 }
 .themes {
-  margin: .25em;
+  margin: .25em 0;
 }
 a.theme {
   font-size: .75em;

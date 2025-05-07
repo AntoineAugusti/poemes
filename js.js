@@ -126,6 +126,12 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
       container.classList.add("reverse");
     }
+    container.querySelectorAll('.poeme-container').forEach(div => {
+      div.classList.add("animate__animated", "animate__fadeInDown");
+      div.addEventListener('animationend', () => {
+        div.classList.remove("animate__animated", "animate__fadeInDown");
+      });
+    })
   });
 });
 
@@ -137,6 +143,10 @@ document.addEventListener('DOMContentLoaded', function () {
     currentPoemeIndex = index;
     if (poemeDivs[currentPoemeIndex]) {
       poemeDivs[currentPoemeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      poemeDivs[currentPoemeIndex].classList.add("animate__animated", "animate__fadeIn")
+      poemeDivs[currentPoemeIndex].addEventListener('animationend', () => {
+        poemeDivs[currentPoemeIndex].classList.remove("animate__animated", "animate__fadeIn");
+      });
     }
   }
 
