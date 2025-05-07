@@ -150,6 +150,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.addEventListener('keydown', function(event) {
+    if (event.key === 't') {
+      document.querySelector('.up-down').click();
+    }
     if (event.key === 'j') {
       focusPoemeDiv((currentPoemeIndex + 1) % poemeDivs.length);
     }
