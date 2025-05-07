@@ -13,7 +13,7 @@ body, html {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #F5F5F5;
+  background: #777;
   font-size: 25px;
   font-family: 'Vollkorn', serif;
 }
@@ -45,6 +45,7 @@ body {
   flex-direction: column-reverse;
 }
 .poeme {
+  background: #F5F5F5;
   margin: 0 .5em 2em .5em;
   border: 3px solid #ccc;
   padding: 1em 2em;
@@ -98,7 +99,7 @@ body {
   font-family: 'Vollkorn', serif;
 }
 #nb-results {
-  color: #555;
+  color: #ccc;
   margin-left: calc(30px + 1.5em);
   margin-top: 0.2em;
   font-size: .8em;
