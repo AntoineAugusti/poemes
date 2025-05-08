@@ -55,11 +55,23 @@ body {
 .poeme-title {
   font-weight: 700;
   margin-bottom: .5em;
+  background-color: #000;
+  color: transparent;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, .1);
+  background-clip: text;
 }
 .poeme-date {
-  color: #bbb;
   margin: -1.5em 0 .5em 0;
   font-size: .7em;
+  color: #bbb;
+}
+.poeme-date a {
+  text-decoration: none;
+  color: #bbb;
+  padding: .25em 0 .25em .25em .25em;
+}
+.poeme-date a:hover {
+  background: #eee;
 }
 .poeme-content {
   margin-bottom: .5em;
@@ -136,7 +148,7 @@ a.theme {
   padding: .25em;
 }
 a.theme:hover {
-  background: #ddd;
+  background: #eee;
 }
 .hashtag {
   color: #333;

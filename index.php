@@ -63,7 +63,12 @@ $themes = array_map(function ($x) { return explode(';', $x);}, $themes);
                   <div class="poeme-title"><?= $matches["titre"]; ?></div>
                 <? }
                 if (! empty($matches["date"])) { ?>
-                  <div class="poeme-date"><?= $matches["date"]; ?></div>
+                  <div class="poeme-date">
+                    <a href="#<?= substr($matches["date"], 0, 7) ?>">
+                      <?= substr($matches["date"], 0, 7) ?>
+                    </a>
+                    <?= substr($matches["date"], 7) ?>
+                  </div>
                 <? } ?>
                 <div class="poeme-text">
                   <? if (! empty($matches["titre"])) { ?>
