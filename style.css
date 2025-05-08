@@ -16,6 +16,7 @@ body, html {
   background: #777;
   font-size: 25px;
   font-family: 'Vollkorn', serif;
+  font-weight: 400;
 }
 body {
   border-top: 4px solid #ccc;
@@ -52,12 +53,12 @@ body {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px
 }
 .poeme-title {
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: .5em;
 }
 .poeme-date {
   color: #bbb;
-  margin: -1em 0 .5em 0;
+  margin: -1.5em 0 .5em 0;
   font-size: .7em;
 }
 .poeme-content {
@@ -132,6 +133,13 @@ a.theme {
   color: #888;
   margin-right: .5em;
   text-decoration: none;
+  padding: .25em;
+}
+a.theme:hover {
+  background: #ddd;
+}
+.hashtag {
+  color: #333;
 }
 
 @media only screen and (max-width: 768px) {

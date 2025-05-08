@@ -19,7 +19,7 @@ $themes = array_map(function ($x) { return explode(';', $x);}, $themes);
   <meta name="robots" content="noindex">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@300,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@400&family=Vollkorn:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="style.css">
@@ -44,10 +44,8 @@ $themes = array_map(function ($x) { return explode(';', $x);}, $themes);
     <? } ?>
     <div class="poemes-container">
       <?
-      $i = 1;
-      
-      foreach (explode("===", file_get_contents("poemes.txt")) as $poeme) { ?>
-        <?
+      foreach (array_reverse(explode("===", file_get_contents("poemes.txt")), true) as  $i => $poeme) {
+        $i = $i + 1;
         $poeme_signature = md5($poeme);
         $poeme_content = trim($poeme);
         $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
@@ -78,7 +76,7 @@ $themes = array_map(function ($x) { return explode(';', $x);}, $themes);
             <div class="themes">
               <? foreach ($themes[$i-1] as $theme) { ?>
                 <a class="theme" href="#<?= $theme ?>">
-                  #<?= $theme ?>
+                  <span class="hashtag">#</span><?= $theme ?>
                 </a>
               <? } ?>
             </div>
@@ -104,7 +102,6 @@ $themes = array_map(function ($x) { return explode(';', $x);}, $themes);
             <? } ?>
           </div>
         </div>
-        <? $i++ ?>
       <? } ?>
     </div>
   </div>
