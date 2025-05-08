@@ -8,7 +8,7 @@ function flatten(array $array) {
 
 $signature = $_GET['signature'];
 $themes = explode("\n", file_get_contents("themes.txt"));
-$themes = array_map(function ($x) { return explode(';', $x);}, $themes);
+$themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 ?>
 <html lang="fr">
 <head>
@@ -64,10 +64,7 @@ $themes = array_map(function ($x) { return explode(';', $x);}, $themes);
                 <? }
                 if (! empty($matches["date"])) { ?>
                   <div class="poeme-date">
-                    <a href="#<?= substr($matches["date"], 0, 7) ?>">
-                      <?= substr($matches["date"], 0, 7) ?>
-                    </a>
-                    <?= substr($matches["date"], 7) ?>
+                    <a href="#<?= substr($matches["date"], 0, 7) ?>"><?= substr($matches["date"], 0, 7) ?></a><?= substr($matches["date"], 7) ?>
                   </div>
                 <? } ?>
                 <div class="poeme-text">
