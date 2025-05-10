@@ -118,7 +118,7 @@ body {
   font-size: .8em;
 }
 .search_wrapper {
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
 }
 .action-button {
   background: #eee;
@@ -152,6 +152,24 @@ a.theme:hover {
 }
 .hashtag {
   color: #333;
+}
+.count {
+  color: #333;
+  font-size: .8em;
+  vertical-align: center;
+}
+
+summary {
+  font-size: .8em;
+}
+details {
+  margin-top: 1em;
+  margin-left: calc(15px + 1.5em);
+}
+
+details .poeme {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 @media only screen and (max-width: 768px) {

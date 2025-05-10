@@ -3,8 +3,8 @@ function normalize(value) {
 }
 
 function filterPoemes(searchTerm) {
-  document.querySelectorAll('.poeme').forEach(poemeDiv => {
-    const textContent = normalize(poemeDiv.textContent);
+  document.querySelectorAll('.poemes-container .poeme').forEach(poemeDiv => {
+    const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
 
     if (textContent.includes(searchTerm)) {
       poemeDiv.classList.remove('hidden');
@@ -17,7 +17,7 @@ function filterPoemes(searchTerm) {
 
   const nbResults = document.querySelector("#nb-results");
   if (searchTerm != "") {
-    const nbPoemes = document.querySelectorAll('.poeme.visible').length
+    const nbPoemes = document.querySelectorAll('.poemes-container .poeme.visible').length
     const text = nbPoemes == 1 ? "poème" : "poèmes";
     nbResults.textContent = `${nbPoemes} ${text}`
   } else {

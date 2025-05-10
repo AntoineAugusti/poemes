@@ -40,6 +40,20 @@ $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); ret
             <option value="<?= $theme ?>"></option>
           <? } ?>
         </datalist>
+        <details>
+          <summary>
+            Thèmes
+          </summary>
+          <div class="poeme">
+            <? $countThemes = array_count_values(flatten($themes));
+            arsort($countThemes);
+            foreach($countThemes as $theme => $count) { ?>
+              <a class="theme" href="#<?= $theme ?>">
+                <span class="hashtag">#</span><?= $theme ?>&nbsp;<span class="count"><?= $count ?></span>
+              </a>
+            <? } ?>
+          </div>
+        </details>
       </div>
     <? } ?>
     <div class="poemes-container">
@@ -56,31 +70,33 @@ $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); ret
             <a class="id" href="#<?= $i ?>">
               <?= $i ?>
             </a>
-            <div class="poeme-content">
-              <?
-              if (empty($signature) or $signature == $poeme_signature) {
-                if (! empty($matches["titre"])) { ?>
-                  <div class="poeme-title"><?= $matches["titre"]; ?></div>
-                <? }
-                if (! empty($matches["date"])) { ?>
-                  <div class="poeme-date">
-                    <a href="#<?= substr($matches["date"], 0, 7) ?>"><?= substr($matches["date"], 0, 7) ?></a><?= substr($matches["date"], 7) ?>
+            <div class="js-poeme-search">
+              <div class="poeme-content">
+                <?
+                if (empty($signature) or $signature == $poeme_signature) {
+                  if (! empty($matches["titre"])) { ?>
+                    <div class="poeme-title"><?= $matches["titre"]; ?></div>
+                  <? }
+                  if (! empty($matches["date"])) { ?>
+                    <div class="poeme-date">
+                      <a href="#<?= substr($matches["date"], 0, 7) ?>"><?= substr($matches["date"], 0, 7) ?></a><?= substr($matches["date"], 7) ?>
+                    </div>
+                  <? } ?>
+                  <div class="poeme-text">
+                    <? if (! empty($matches["titre"])) { ?>
+                      <div class="to_show">## <?= $matches["titre"]; ?></div>
+                    <? } ?>
+                    <?= nl2br(trim($matches["poeme"])); ?>
                   </div>
                 <? } ?>
-                <div class="poeme-text">
-                  <? if (! empty($matches["titre"])) { ?>
-                    <div class="to_show">## <?= $matches["titre"]; ?></div>
-                  <? } ?>
-                  <?= nl2br(trim($matches["poeme"])); ?>
-                </div>
-              <? } ?>
-            </div>
-            <div class="themes">
-              <? foreach ($themes[$i-1] as $theme) { ?>
-                <a class="theme" href="#<?= $theme ?>">
-                  <span class="hashtag">#</span><?= $theme ?>
-                </a>
-              <? } ?>
+              </div>
+              <div class="themes">
+                <? foreach ($themes[$i-1] as $theme) { ?>
+                  <a class="theme" href="#<?= $theme ?>">
+                    <span class="hashtag">#</span><?= $theme ?>
+                  </a>
+                <? } ?>
+              </div>
             </div>
             <? if (! empty($matches["notes"])) { ?>
               <div class="action-button js-notes-auteur">
