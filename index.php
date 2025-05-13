@@ -6,9 +6,17 @@ function flatten(array $array) {
   return $return;
 }
 
+function parsePoeme($poeme) {
+  $poeme_content = trim($poeme);
+  $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
+  preg_match($re, $poeme_content, $matches);
+  return $matches;
+}
+
 $signature = $_GET['signature'];
 $themes = explode("\n", file_get_contents("themes.txt"));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
+$poemes = array_reverse(explode("===", file_get_contents("poemes.txt")), true);
 ?>
 <html lang="fr">
 <head>
@@ -54,18 +62,26 @@ $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); ret
             <? } ?>
           </div>
         </details>
+        <div class="poeme-titles">
+          <?
+          foreach ($poemes as $i => $poeme) {
+            $i = $i + 1;
+            $matches = parsePoeme($poeme);
+            if (! empty($matches["titre"])) { ?>
+              <a href="#<?= $i ?>" class="poeme-title hidden" data-id="<?= $i ?>"><?= $matches["titre"]; ?></a>
+            <? }
+          } ?>
+        </div>
       </div>
     <? } ?>
     <div class="poemes-container">
       <?
-      foreach (array_reverse(explode("===", file_get_contents("poemes.txt")), true) as  $i => $poeme) {
+      foreach ($poemes as $i => $poeme) {
         $i = $i + 1;
         $poeme_signature = md5($poeme);
-        $poeme_content = trim($poeme);
-        $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
-        preg_match($re, $poeme_content, $matches);
+        $matches = parsePoeme($poeme);
         ?>
-        <div class="poeme-container">
+        <div class="poeme-container" id="poeme-<?= $i ?>">
           <div class="poeme visible" data-id="<?= $i ?>">
             <a class="id" href="#<?= $i ?>">
               <?= $i ?>

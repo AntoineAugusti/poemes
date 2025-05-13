@@ -45,6 +45,11 @@ body {
 .reverse {
   flex-direction: column-reverse;
 }
+.poeme-titles.reverse {
+  flex-wrap: wrap-reverse;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
 .poeme {
   background: #F5F5F5;
   margin: 0 .5em 2em .5em;
@@ -52,7 +57,7 @@ body {
   padding: 1em 2em;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px
 }
-.poeme-title {
+.poeme-content .poeme-title {
   font-weight: 700;
   margin-bottom: .5em;
   background-color: #000;
@@ -68,7 +73,8 @@ body {
 .poeme-date a {
   text-decoration: none;
   color: #bbb;
-  padding: .25em 0 .25em .25em .25em;
+  padding: .25em;
+  margin: 0 -0.25em 0 -0.25em;
 }
 .poeme-date a:hover {
   background: #eee;
@@ -118,7 +124,7 @@ body {
   font-size: .8em;
 }
 .search_wrapper {
-  margin-bottom: 1.5em;
+  margin: 0 1em 1.5em 1em;
 }
 .action-button {
   background: #eee;
@@ -166,10 +172,31 @@ details {
   margin-top: 1em;
   margin-left: calc(15px + 1.5em);
 }
-
 details .poeme {
   max-width: 800px;
   margin: 0 auto;
+}
+
+.poeme-titles {
+  max-width: 800px;
+  margin: .5em auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.poeme-titles .poeme-title {
+  color: #111;
+  margin: 0 .5em .5em 0;
+  text-decoration: none;
+  background: #F5F5F5;
+  font-size: .8em;
+  padding: .1em .5em;
+}
+.poeme-titles .poeme-title.visible {
+  display: inline-block;
+}
+.poeme-titles .poeme-title.hidden {
+  display: none;
 }
 
 @media only screen and (max-width: 768px) {

@@ -2,13 +2,32 @@ function normalize(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+function toggleReverse(div) {
+  if (div.classList.contains("reverse")) {
+    div.classList.remove("reverse");
+  } else {
+    div.classList.add("reverse");
+  }
+}
+
 function filterPoemes(searchTerm) {
+  document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => {
+    poemeTitle.classList.remove('visible');
+    poemeTitle.classList.add('hidden');
+  });
+
   document.querySelectorAll('.poemes-container .poeme').forEach(poemeDiv => {
     const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
+    const id = poemeDiv.getAttribute('data-id');
 
     if (textContent.includes(searchTerm)) {
       poemeDiv.classList.remove('hidden');
       poemeDiv.classList.add('visible');
+      const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
+      if (searchTerm != '' && title) {
+        title.classList.remove('hidden');
+        title.classList.add('visible');
+      }
     } else {
       poemeDiv.classList.remove('visible');
       poemeDiv.classList.add('hidden');
@@ -121,11 +140,9 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('.up-down').addEventListener('click', function (event) {
     const container = document.querySelector('.poemes-container');
-    if (container.classList.contains("reverse")) {
-      container.classList.remove("reverse");
-    } else {
-      container.classList.add("reverse");
-    }
+    toggleReverse(container);
+    toggleReverse(document.querySelector('.poeme-titles'));
+
     container.querySelectorAll('.poeme-container').forEach(div => {
       div.classList.add("animate__animated", "animate__fadeInDown");
       div.addEventListener('animationend', () => {
@@ -160,13 +177,14 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.addEventListener('keydown', function(event) {
-    if (event.key === 't') {
+    const searchInput = document.getElementById('search');
+    if (searchInput != document.activeElement && event.key === 't') {
       document.querySelector('.up-down').click();
     }
-    if (event.key === 'j') {
+    if (searchInput != document.activeElement && event.key === 'j') {
       focusPoemeDiv((currentPoemeIndex + 1) % poemeDivs.length);
     }
-    if (event.key === 'k') {
+    if (searchInput != document.activeElement && event.key === 'k') {
       const nextIndex = currentPoemeIndex - 1;
       if (nextIndex < 0) {
         focusPoemeDiv(poemeDivs.length - 1);
