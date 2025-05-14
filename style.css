@@ -169,8 +169,7 @@ summary {
   font-size: .8em;
 }
 details {
-  margin-top: 1em;
-  margin-left: calc(15px + 1.5em);
+  margin: .5em 0 .5em calc(15px + 1.5em);
 }
 details .poeme {
   max-width: 800px;
@@ -191,6 +190,10 @@ details .poeme {
   background: #F5F5F5;
   font-size: .8em;
   padding: .1em .5em;
+  cursor: pointer;
+}
+.poeme-titles .poeme-title.active {
+  background: #CCC;
 }
 .poeme-titles .poeme-title.visible {
   display: inline-block;

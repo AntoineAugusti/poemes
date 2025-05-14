@@ -36,7 +36,7 @@ $poemes = array_reverse(explode("===", file_get_contents("poemes.txt")), true);
   <div class="container">
     <? if (empty($signature)) { ?>
       <div class="search_wrapper">
-        <div class="up-down">
+        <div class="up-down" tabindex="0" role="button">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCA3LjMzbDIuODI5LTIuODMgOS4xNzUgOS4zMzkgOS4xNjctOS4zMzkgMi44MjkgMi44My0xMS45OTYgMTIuMTd6Ii8+PC9zdmc+">
         </div>
@@ -68,7 +68,7 @@ $poemes = array_reverse(explode("===", file_get_contents("poemes.txt")), true);
             $i = $i + 1;
             $matches = parsePoeme($poeme);
             if (! empty($matches["titre"])) { ?>
-              <a href="#<?= $i ?>" class="poeme-title hidden" data-id="<?= $i ?>"><?= $matches["titre"]; ?></a>
+              <span class="poeme-title hidden" tabindex="0" role="switch" data-id="<?= $i ?>"><?= $matches["titre"]; ?></span>
             <? }
           } ?>
         </div>

@@ -10,6 +10,16 @@ function toggleReverse(div) {
   }
 }
 
+function hide(div) {
+  div.classList.remove('visible');
+  div.classList.add('hidden');
+}
+
+function show(div) {
+  div.classList.remove('hidden');
+  div.classList.add('visible');
+}
+
 function filterPoemes(searchTerm) {
   document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => {
     poemeTitle.classList.remove('visible');
@@ -21,16 +31,13 @@ function filterPoemes(searchTerm) {
     const id = poemeDiv.getAttribute('data-id');
 
     if (textContent.includes(searchTerm)) {
-      poemeDiv.classList.remove('hidden');
-      poemeDiv.classList.add('visible');
+      show(poemeDiv);
       const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
       if (searchTerm != '' && title) {
-        title.classList.remove('hidden');
-        title.classList.add('visible');
+        show(title);
       }
     } else {
-      poemeDiv.classList.remove('visible');
-      poemeDiv.classList.add('hidden');
+      hide(poemeDiv);
     }
   });
 
@@ -52,12 +59,8 @@ function handleAnchorChange() {
     const targetDiv = document.querySelector(`div[data-id="${targetId}"]`);
 
     if (targetDiv) {
-      document.querySelectorAll('.visible').forEach(div => {
-        div.classList.remove('visible');
-        div.classList.add('hidden');
-      });
-
-      targetDiv.classList.add('visible');
+      document.querySelectorAll('.visible').forEach(div => hide(div));
+      show(targetDiv);
     }
     else {
       const searchTerm = decodeURI(currentHash.substring(1));
@@ -67,6 +70,8 @@ function handleAnchorChange() {
   } else {
     filterPoemes('');
   }
+
+  document.querySelectorAll('.poeme-title.active').forEach(span => span.classList.remove('active'));
 }
 
 function copyContent(container, source, target) {
@@ -127,11 +132,9 @@ document.addEventListener('DOMContentLoaded', function () {
     div.addEventListener('click', event => {
       const target = document.querySelector(".poeme-notes");
       if (target.classList.contains("visible")) {
-        target.classList.remove("visible");
-        target.classList.add("hidden");
+        hide(target);
       } else {
-        target.classList.remove("hidden");
-        target.classList.add("visible");
+        show(target);
       }
     })
   });
@@ -153,6 +156,20 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll(`[tabindex="0"]`).forEach(div => {
+    div.addEventListener('keydown', event => {
+      if (!document.activeElement === div) {
+        return;
+      }
+      if (['Enter', 'Space'].includes(event.code)) {
+        event.preventDefault();
+        div.click();
+      }
+    });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
   let poemeDivs = [...document.querySelectorAll('.poeme.visible')];
   let currentPoemeIndex = 0;
 
@@ -167,16 +184,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  window.addEventListener('hashchange', function(event) {
+  function refreshPoemes() {
     poemeDivs = [...document.querySelectorAll('.poeme.visible')];
     currentPoemeIndex = 0;
-  });
+  }
+
+  window.addEventListener('hashchange', event => refreshPoemes());
+  window.addEventListener('poemes-changed', event => refreshPoemes());
 
   document.querySelector('.up-down').addEventListener('click', event => {
     poemeDivs = poemeDivs.reverse();
   });
 
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', event => {
     const searchInput = document.getElementById('search');
     if (searchInput != document.activeElement && event.key === 't') {
       document.querySelector('.up-down').click();
@@ -192,6 +212,31 @@ document.addEventListener('DOMContentLoaded', function () {
         focusPoemeDiv(nextIndex);
       }
     }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.poeme-titles .poeme-title').forEach(title => {
+    title.addEventListener('click', event => {
+      if (title.classList.contains("active")) {
+        title.classList.remove("active");
+      } else {
+        title.classList.add("active");
+      }
+      document.querySelectorAll('.poemes-container .poeme').forEach(div => hide(div));
+
+      const activeTitles = document.querySelectorAll('.poeme-titles .poeme-title.active');
+      activeTitles.forEach(function (title) {
+        const targetId = title.getAttribute('data-id');
+        const poeme = document.querySelector(`.poeme[data-id="${targetId}"]`);
+        poeme.classList.add("visible");
+      });
+      if (activeTitles.length === 0) {
+        const searchTerm = decodeURI(window.location.hash.substring(1));
+        filterPoemes(normalize(searchTerm));
+      }
+      document.dispatchEvent(new Event("poemes-changed", { bubbles: true }));
+    });
   });
 });
 
