@@ -46,9 +46,7 @@ body {
   flex-direction: column-reverse;
 }
 .poeme-titles.reverse {
-  flex-wrap: wrap-reverse;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
+  flex-direction: column-reverse;
 }
 .poeme {
   background: #F5F5F5;
@@ -177,11 +175,9 @@ details .poeme {
 }
 
 .poeme-titles {
-  max-width: 800px;
-  margin: .5em auto;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-end;
 }
 .poeme-titles .poeme-title {
   color: #111;
@@ -196,10 +192,17 @@ details .poeme {
   background: #CCC;
 }
 .poeme-titles .poeme-title.visible {
-  display: inline-block;
+  display: block;
 }
 .poeme-titles .poeme-title.hidden {
   display: none;
+}
+.rows {
+  display: flex;
+}
+.left {
+  max-width: 300px;
+  margin-right: 1em;
 }
 
 @media only screen and (max-width: 768px) {
@@ -219,5 +222,22 @@ details .poeme {
   .action-button {
     margin-bottom: .5em;
     font-size: .8em;
+  }
+  .rows {
+    flex-direction: column;
+  }
+  .left {
+    margin: 0 auto;
+    max-width: 90%;
+  }
+  .poeme-titles {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: -1em auto 1em auto;
+  }
+  .poeme-titles.reverse {
+    flex-wrap: wrap-reverse;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
   }
 }

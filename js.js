@@ -57,14 +57,14 @@ function handleAnchorChange() {
   if (currentHash) {
     const targetId = currentHash.substring(1);
     const targetDiv = document.querySelector(`div[data-id="${targetId}"]`);
+    const searchTerm = decodeURI(currentHash.substring(1));
+    document.getElementById('search').value = searchTerm;
 
     if (targetDiv) {
       document.querySelectorAll('.visible').forEach(div => hide(div));
       show(targetDiv);
     }
     else {
-      const searchTerm = decodeURI(currentHash.substring(1));
-      document.getElementById('search').value = searchTerm;
       filterPoemes(normalize(searchTerm));
     }
   } else {
