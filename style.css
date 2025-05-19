@@ -188,6 +188,11 @@ details .poeme {
   padding: .1em .5em;
   cursor: pointer;
 }
+.poeme-titles #reset-poeme-titles {
+  width: 1.5em;
+  cursor: pointer;
+  margin: .25em .25em 0 0;
+}
 .poeme-titles .poeme-title.active {
   background: #CCC;
 }

@@ -69,6 +69,7 @@ function handleAnchorChange() {
   }
 
   document.querySelectorAll('.poeme-title.active').forEach(span => span.classList.remove('active'));
+  hide(document.getElementById('reset-poeme-titles'));
 }
 
 function copyContent(container, source, target) {
@@ -214,12 +215,28 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+  function searchAllPoems() {
+    const searchTerm = decodeURI(window.location.hash.substring(1));
+    filterPoemes(normalize(searchTerm));
+  }
+
+  const poemeTitlesReset = document.getElementById('reset-poeme-titles');
+
+  poemeTitlesReset.addEventListener('click', event => {
+    document.querySelectorAll('.poeme-titles .poeme-title.active').forEach(title => {
+      title.classList.remove("active");
+    });
+    searchAllPoems();
+    hide(poemeTitlesReset);
+  });
+
   document.querySelectorAll('.poeme-titles .poeme-title').forEach(title => {
     title.addEventListener('click', event => {
       if (title.classList.contains("active")) {
         title.classList.remove("active");
       } else {
         title.classList.add("active");
+        show(poemeTitlesReset);
       }
       document.querySelectorAll('.poemes-container .poeme').forEach(div => hide(div));
 
@@ -230,8 +247,8 @@ document.addEventListener('DOMContentLoaded', function () {
         poeme.classList.add("visible");
       });
       if (activeTitles.length === 0) {
-        const searchTerm = decodeURI(window.location.hash.substring(1));
-        filterPoemes(normalize(searchTerm));
+        searchAllPoems();
+        hide(poemeTitlesReset);
       }
       document.dispatchEvent(new Event("poemes-changed", { bubbles: true }));
     });
