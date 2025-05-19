@@ -21,10 +21,7 @@ function show(div) {
 }
 
 function filterPoemes(searchTerm) {
-  document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => {
-    poemeTitle.classList.remove('visible');
-    poemeTitle.classList.add('hidden');
-  });
+  document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => hide(poemeTitle));
 
   document.querySelectorAll('.poemes-container .poeme').forEach(poemeDiv => {
     const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
@@ -192,19 +189,20 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('hashchange', event => refreshPoemes());
   window.addEventListener('poemes-changed', event => refreshPoemes());
 
-  document.querySelector('.up-down').addEventListener('click', event => {
-    poemeDivs = poemeDivs.reverse();
-  });
+  document.querySelector('.up-down').addEventListener('click', event => poemeDivs = poemeDivs.reverse());
 
   document.addEventListener('keydown', event => {
     const searchInput = document.getElementById('search');
-    if (searchInput != document.activeElement && event.key === 't') {
+    if (searchInput == document.activeElement) {
+      return;
+    }
+    if (event.key === 't') {
       document.querySelector('.up-down').click();
     }
-    if (searchInput != document.activeElement && event.key === 'j') {
+    if (event.key === 'j') {
       focusPoemeDiv((currentPoemeIndex + 1) % poemeDivs.length);
     }
-    if (searchInput != document.activeElement && event.key === 'k') {
+    if (event.key === 'k') {
       const nextIndex = currentPoemeIndex - 1;
       if (nextIndex < 0) {
         focusPoemeDiv(poemeDivs.length - 1);
