@@ -15,11 +15,13 @@ body, html {
   padding: 0;
   background: #777;
   font-size: 25px;
-  font-family: 'Vollkorn', serif;
   font-weight: 400;
 }
 body {
   border-top: 4px solid #ccc;
+}
+body * {
+  font-family: 'Vollkorn', serif;
 }
 .up-down {
   display: inline;
