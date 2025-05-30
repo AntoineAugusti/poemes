@@ -1,18 +1,18 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['poeme']) && !empty($_POST['poeme'])) {
-    $nouveauPoeme = "\n===\n" . $_POST['poeme'];
+    $nouveauPoeme = PHP_EOL."===".PHP_EOL.str_replace("\r\n", PHP_EOL, $_POST['poeme']);
     $poemesFile = 'poemes.txt';
 
     $themes = str_replace(",", ";", $_POST['themes']);
     $themesFile = 'themes.txt';
 
-    file_put_contents($themesFile, $themes."\r", FILE_APPEND | LOCK_EX);
+    file_put_contents($themesFile, $themes.PHP_EOL, FILE_APPEND | LOCK_EX);
 
-    if (file_put_contents($poemesFile, $nouveauPoeme . "\n", FILE_APPEND | LOCK_EX) !== false) {
+    if (file_put_contents($poemesFile, $nouveauPoeme.PHP_EOL, FILE_APPEND | LOCK_EX) !== false) {
       $message = "Le poème a été ajouté avec succès !";
     } else {
-      $message = "Erreur : Impossible d'écrire dans le fichier.";
+      $message = "Erreur : impossible d'écrire dans le fichier.";
     }
   }
 }
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php
     if (isset($message)) {
       $class = (strpos($message, 'succès') !== false) ? 'success' : 'error';
-      echo '<div class="message ' . $class . '">' . htmlspecialchars($message) . '</div>';
+      echo '<div class="message '.$class.'">'.htmlspecialchars($message).' <a href="/">Retour</a>.</div>';
     }
     ?>
 
