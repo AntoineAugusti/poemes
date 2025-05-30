@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .container {
       background-color: #fff;
       padding: 20px;
-      border-radius: 8px;
       max-width: 800px;
       margin: 2em auto;
     }
@@ -47,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       width: 100%;
       padding: 10px;
       border: 1px solid #ddd;
-      border-radius: 4px;
       box-sizing: border-box;
       margin-bottom: 2em;
     }
@@ -61,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: white;
       padding: 10px 15px;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
     }
     input[type="submit"]:hover {
@@ -70,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .message {
       margin-top: 15px;
       padding: 10px;
-      border-radius: 4px;
       margin-bottom: 2em;
     }
     .success {
