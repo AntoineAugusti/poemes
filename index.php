@@ -1,17 +1,5 @@
 <?
-function flatten(array $array) {
-  $return = array();
-  array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
-  sort($return);
-  return $return;
-}
-
-function parsePoeme($poeme) {
-  $poeme_content = trim($poeme);
-  $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
-  preg_match($re, $poeme_content, $matches);
-  return $matches;
-}
+require "functions.php";
 
 $signature = $_GET['signature'];
 $themes = explode("\n", file_get_contents("themes.txt"));
@@ -43,8 +31,7 @@ $poemes = array_reverse(explode("===", file_get_contents("poemes.txt")), true);
         <input type="search" id="search" list="themes-list">
         <div id="nb-results"></div>
         <datalist id="themes-list">
-          <? $allThemes = array_unique(flatten($themes));
-          foreach($allThemes as $theme) { ?>
+          <? foreach(allThemes() as $theme) { ?>
             <option value="<?= $theme ?>"></option>
           <? } ?>
         </datalist>
@@ -53,9 +40,7 @@ $poemes = array_reverse(explode("===", file_get_contents("poemes.txt")), true);
             Thèmes
           </summary>
           <div class="poeme">
-            <? $countThemes = array_count_values(flatten($themes));
-            arsort($countThemes);
-            foreach($countThemes as $theme => $count) { ?>
+            <? foreach(countThemes() as $theme => $count) { ?>
               <a class="theme" href="#<?= $theme ?>">
                 <span class="hashtag">#</span><?= $theme ?>&nbsp;<span class="count"><?= $count ?></span>
               </a>
