@@ -4,7 +4,8 @@ require "functions.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['poeme']) && !empty($_POST['poeme'])) {
-    $nouveauPoeme = PHP_EOL."===".PHP_EOL.str_replace("\r\n", PHP_EOL, $_POST['poeme']);
+    $poeme = str_replace("\r\n", PHP_EOL, $_POST['poeme']);
+    $nouveauPoeme = PHP_EOL."===".PHP_EOL.$_POST['date'].PHP_EOL.$poeme;
     $poemesFile = 'poemes.txt';
 
     $themes = str_replace(",", ";", $_POST['themes']);
@@ -60,6 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       padding: 10px;
       margin-bottom: 1em;
     }
+    input[type="date"] {
+      padding: 10px;
+      margin-bottom: 1em;
+
+    }
     input[type="submit"] {
       background-color: #4CAF50;
       color: white;
@@ -96,10 +102,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     #themes-suggestions {
       margin-bottom: 2em;
     }
+    a.back {
+      width: 100%;
+      font-size: .8em;
+      color: #888;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <a class="back" href="/">&laquo; Retour</a>
     <h1>Ajouter un nouveau poème</h1>
 
     <?php
@@ -110,8 +123,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ?>
 
     <form method="post" action="">
+      <label for="themes">Date</label><br>
+      <input required type="date" id="date" name="date" /><br>
+
       <label for="poeme">Poème</label><br>
-      <textarea required id="poeme" name="poeme" rows="10" cols="100"></textarea><br>
+      <textarea required id="poeme" name="poeme" rows="10" cols="100">## </textarea><br>
       
       <label for="themes">Thèmes</label><br>
       <input spellcheck="false" required type="text" id="themes" name="themes" /><br>
@@ -127,6 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       return [...new Set(a)].sort((a, b) => a.localeCompare(b, 'fr'));
     }
     document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('date').valueAsDate = new Date();
+
       const themesInput = document.getElementById('themes');
       const themesSuggestions = document.getElementById('themes-suggestions');
       themesInput.addEventListener('input', function() {
@@ -151,6 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           .map(x => {
             const span = document.createElement('span');
             span.classList.add("theme_suggestion");
+            span.tabIndex = 0;
             span.innerHTML = x;
             span.addEventListener("click", function (event) {
               themesInput.value = previousInput.concat([event.srcElement.innerText]).join(",");
