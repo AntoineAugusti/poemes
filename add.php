@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="post" action="">
       <label for="themes">Date</label><br>
-      <input required type="date" id="date" name="date" /><br>
+      <input required type="date" id="date" name="date" max="<?= date("Y-m-d") ?>" /><br>
 
       <label for="poeme">Poème</label><br>
       <textarea required id="poeme" name="poeme" rows="10" cols="100">## </textarea><br>
