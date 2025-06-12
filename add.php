@@ -99,6 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       display: inline-block;
       cursor: pointer;
     }
+    .theme_suggestion.active {
+      background: #333;
+      cursor: default;
+    }
     #themes-suggestions {
       margin-bottom: 2em;
     }
@@ -142,6 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function uniqueArray(a) {
       return [...new Set(a)].sort((a, b) => a.localeCompare(b, 'fr'));
     }
+    function unaccent(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('date').valueAsDate = new Date();
 
@@ -151,36 +158,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         themesInput.value = themesInput.value.toLowerCase();
         const lastWord = themesInput.value.split(',').slice(-1)[0];
         const previousInput = themesInput.value.split(',').slice(0, -1);
-        let suggestions = themes;
+        let suggestions = uniqueArray(themes);
 
         if (previousInput.length > 0) {
           suggestions = uniqueArray(
             previousInput
+            .filter(x => x in commonThemes)
             .map(x => commonThemes[x])
             .flat()
-            .filter(x => !previousInput.includes(x))
+            .concat(previousInput)
             );
         }
 
         themesSuggestions.innerHTML = "";
         themesSuggestions.append(...
           suggestions
-          .filter(x => x.startsWith(lastWord))
+          .filter(x => unaccent(x).startsWith(unaccent(lastWord)))
           .map(x => {
             const span = document.createElement('span');
             span.classList.add("theme_suggestion");
-            span.tabIndex = 0;
             span.innerHTML = x;
-            span.addEventListener("click", function (event) {
-              themesInput.value = previousInput.concat([event.srcElement.innerText]).join(",");
-              themesInput.focus();
-            });
+            if (!previousInput.includes(x)) {
+              span.tabIndex = 0;
+              span.addEventListener("click", function (event) {
+                themesInput.value = previousInput.concat([event.srcElement.innerText]).join(",");
+                themesInput.focus();
+              });
+              span.addEventListener('keydown', event => {
+                if (!document.activeElement === span) {
+                  return;
+                }
+                if (['Enter', 'Space'].includes(event.code)) {
+                  event.preventDefault();
+                  span.click();
+                }
+              });
+            } else {
+              span.classList.add("active");
+            }
             return span;
           }));
 
       });
     });
-
   </script>
 </body>
 </html>
