@@ -50,12 +50,15 @@ function filterPoemes(searchTerm) {
 
 function handleAnchorChange() {
   const currentHash = window.location.hash;
+  const search = document.getElementById('search');
 
   if (currentHash) {
     const targetId = currentHash.substring(1);
     const targetDiv = document.querySelector(`div[data-id="${targetId}"]`);
     const searchTerm = decodeURI(currentHash.substring(1));
-    document.getElementById('search').value = searchTerm;
+    if (search) {
+      search.value = searchTerm;
+    }
 
     if (targetDiv) {
       document.querySelectorAll('.visible').forEach(div => hide(div));
