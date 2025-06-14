@@ -102,7 +102,7 @@ $poemes = array_reverse(explode("===", file_get_contents("poemes.txt")), true);
                 </div>
                 <div class="themes">
                   <? foreach ($themes[$i-1] as $theme) { ?>
-                    <a class="theme" href="#<?= $theme ?>">
+                    <a class="theme" href="##<?= $theme ?>">
                       <span class="hashtag">#</span><?= $theme ?>
                     </a>
                   <? } ?>
