@@ -20,6 +20,10 @@ function show(div) {
   div.classList.add('visible');
 }
 
+function includesAnyWord(text, words) {
+  return words.some(word => text.includes(word));
+}
+
 function filterPoemes(searchTerm) {
   document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => hide(poemeTitle));
 
@@ -27,7 +31,7 @@ function filterPoemes(searchTerm) {
     const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
     const id = poemeDiv.getAttribute('data-id');
 
-    if (textContent.includes(searchTerm)) {
+    if (includesAnyWord(textContent, searchTerm.split(' '))) {
       show(poemeDiv);
       const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
       if (searchTerm != '' && title) {
