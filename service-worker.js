@@ -9,9 +9,18 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(function() {
-      return caches.match(event.request);
-    })
-  );
+  event.respondWith(update(event.request));
 });
+
+function update(request) {
+  return caches.open(cacheName).then(function (cache) {
+    return fetch(request)
+    .then(function (response) {
+      cache.put(request, response.clone());
+      return response;
+    })
+    .catch(function() {
+      return cache.match(request);
+    });
+  });
+}
