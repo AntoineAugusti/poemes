@@ -31,7 +31,12 @@ function filterPoemes(searchTerm) {
     const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
     const id = poemeDiv.getAttribute('data-id');
 
-    if (includesAnyWord(textContent, searchTerm.split(' '))) {
+    let searchTest = includesAnyWord(textContent, searchTerm.split(' '));
+    if (searchTerm.startsWith('"')) {
+      searchTest = textContent.includes(searchTerm.replaceAll('"', ""));
+    }
+
+    if (searchTest) {
       show(poemeDiv);
       const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
       if (searchTerm != '' && title) {
