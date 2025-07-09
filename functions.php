@@ -14,15 +14,15 @@ function parsePoeme($poeme) {
   return $matches;
 }
 
-function allThemes() {
-	$themes = explode("\n", file_get_contents("themes.txt"));
+function allThemes($themesFilename) {
+	$themes = explode("\n", file_get_contents($themesFilename));
 	$themes = flatten(array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes));
 	$themes = array_filter($themes, function($x) { return $x !== ""; });
 	return array_values(array_unique($themes));
 }
 
-function countThemes() {
-	$themes = explode("\n", file_get_contents("themes.txt"));
+function countThemes($themesFilename) {
+	$themes = explode("\n", file_get_contents($themesFilename));
 	$themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 	$countThemes = array_count_values(flatten($themes));
 	arsort($countThemes);
