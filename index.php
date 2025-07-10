@@ -4,7 +4,7 @@ require "functions.php";
 $themesFilename = "themes.txt";
 $poemesFilename = "poemes.txt";
 
-if ($_ENV["NODE_ENV"] == "test") {
+if (getenv("NODE_ENV") == "test") {
   $themesFilename = "themes.test.txt";
   $poemesFilename = "poemes.test.txt";
 }
