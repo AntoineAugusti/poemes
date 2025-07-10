@@ -14,3 +14,5 @@ jobs:
         ini-values: "short_open_tag=On"
     - name: Run tests
       run: yarn test
+      env:
+        NODE_ENV: test
