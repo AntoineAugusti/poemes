@@ -1,0 +1,16 @@
+name: CI
+on: push
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install modules
+      run: yarn
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        ini-values: "short_open_tag=On"
+    - name: Run tests
+      run: yarn test
