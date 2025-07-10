@@ -46,9 +46,19 @@ test('up-down', async () => {
 test('search', async () => {
   search("bar");
   expect(poemTitles()).toEqual(["Bar"]);
+  expect(document.querySelector("#nb-results").textContent).toEqual("1 poème");
 
   search("foo");
   expect(poemTitles()).toEqual(["Bar", "Foo"]);
+  expect(document.querySelector("#nb-results").textContent).toEqual("2 poèmes");
+
+  search("1");
+  expect(poemTitles()).toEqual(["Foo"]);
+  expect(document.querySelector("#nb-results").textContent).toEqual("1 poème");
+
+  search("baz");
+  expect(poemTitles()).toEqual([]);
+  expect(document.querySelector("#nb-results").textContent).toEqual("0 poèmes");
 })
 
 function search(value) {
@@ -59,6 +69,7 @@ function search(value) {
     cancelable: true
   });
   search.dispatchEvent(inputEvent);
+  dom.window.dispatchEvent(new dom.window.Event("hashchange"));
 }
 
 function poemTitles() {

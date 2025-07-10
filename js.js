@@ -24,6 +24,17 @@ function includesAnyWord(text, words) {
   return words.some(word => text.includes(word));
 }
 
+function refreshNbResults(searchTerm) {
+  const nbResults = document.querySelector("#nb-results");
+  if (searchTerm != "") {
+    const nbPoemes = document.querySelectorAll('.poemes-container .poeme.visible').length
+    const text = nbPoemes == 1 ? "poème" : "poèmes";
+    nbResults.textContent = `${nbPoemes} ${text}`
+  } else {
+    nbResults.textContent = '';
+  }
+}
+
 function filterPoemes(searchTerm) {
   document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => hide(poemeTitle));
 
@@ -47,14 +58,7 @@ function filterPoemes(searchTerm) {
     }
   });
 
-  const nbResults = document.querySelector("#nb-results");
-  if (searchTerm != "") {
-    const nbPoemes = document.querySelectorAll('.poemes-container .poeme.visible').length
-    const text = nbPoemes == 1 ? "poème" : "poèmes";
-    nbResults.textContent = `${nbPoemes} ${text}`
-  } else {
-    nbResults.textContent = '';
-  }
+  refreshNbResults(searchTerm);
 }
 
 function handleAnchorChange() {
@@ -72,6 +76,7 @@ function handleAnchorChange() {
     if (targetDiv) {
       document.querySelectorAll('.visible').forEach(div => hide(div));
       show(targetDiv);
+      refreshNbResults(searchTerm);
     }
     else {
       filterPoemes(normalize(searchTerm));
