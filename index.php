@@ -1,12 +1,12 @@
 <?
 require "functions.php";
 
-$themesFilename = "themes.test.txt";
-$poemesFilename = "poemes.test.txt";
+$themesFilename = "themes.txt";
+$poemesFilename = "poemes.txt";
 
 if ($_ENV["NODE_ENV"] == "test") {
-  $themesFilename = "themes.txt";
-  $poemesFilename = "poemes.txt";
+  $themesFilename = "themes.test.txt";
+  $poemesFilename = "poemes.test.txt";
 }
 
 $signature = $_GET['signature'];
