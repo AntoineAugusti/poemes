@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="style.css">
   <style>
-    body {
+    body, html {
       font-size: 18px;
     }
     h1 {
@@ -54,13 +54,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       padding: 10px;
       border: 1px solid #ddd;
       box-sizing: border-box;
+      font-size: 1em;
     }
-    button#generate-title {
+    button[type="button"] {
       margin-bottom: 1em;
     }
     ul {
       list-style-type: disc;
       margin-left: 1em;
+    }
+    #suggested-titles li {
+      cursor: pointer;
     }
     input[type="text"] {
       width: 80%;
