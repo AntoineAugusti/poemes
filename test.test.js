@@ -52,6 +52,10 @@ test('search', async () => {
   expect(poemTitles()).toEqual(["Bar", "Foo"]);
   expect(document.querySelector("#nb-results").textContent).toEqual("2 poèmes");
 
+  search("Hello");
+  expect(poemTitles()).toEqual(["Bar", "Foo"]);
+  expect(document.querySelector("#nb-results").textContent).toEqual("2 poèmes");
+
   search("1");
   expect(poemTitles()).toEqual(["Foo"]);
   expect(document.querySelector("#nb-results").textContent).toEqual("1 poème");
