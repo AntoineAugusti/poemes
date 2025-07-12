@@ -9,6 +9,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.method === 'POST') {
+    return;
+  }
   event.respondWith(update(event.request));
 });
 
