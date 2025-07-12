@@ -9,7 +9,7 @@ iconv.encodings = encodings;
 
 const { exec } = require('node:child_process');
 
-beforeEach(async () => {
+beforeAll(async () => {
   const response = await fetch('http://localhost:8080');
   expect(response.ok).toBe(true);
   const html = await response.text();
@@ -23,9 +23,9 @@ beforeEach(async () => {
   $ = jQuery(dom.window);
 });
 
-afterAll(() => {
-  exec("pkill php");
-});
+afterEach(() => search(""))
+
+afterAll(() => exec("pkill php"));
 
 test('page title', async () => {
   expect($('title').text()).toBe('Poésie');
@@ -63,6 +63,42 @@ test('search', async () => {
   search("baz");
   expect(poemTitles()).toEqual([]);
   expect(document.querySelector("#nb-results").textContent).toEqual("0 poèmes");
+
+  search("2025-06");
+  expect(poemTitles()).toEqual(["Bar"]);
+
+  search("2025-07");
+  expect(poemTitles()).toEqual(["Foo"]);
+})
+
+test('filter by poem title', async () => {
+  expect(document.querySelector(".poeme-titles .poeme-title.visible")).toBeNull();
+
+  search("Hello");
+  expect(filterByTitleTitles()).toEqual(["Bar", "Foo"]);
+  expect(filterByTitleActiveTitles()).toEqual([]);
+
+  $(`.poeme-titles .poeme-title.visible[data-id="2"]`).click();
+
+  expect(filterByTitleTitles()).toEqual(["Bar", "Foo"]);
+  expect(filterByTitleActiveTitles()).toEqual(["Bar"]);
+  expect(poemTitles()).toEqual(["Bar"]);
+  expect(document.querySelector('#reset-poeme-titles.visible')).not.toBeNull();
+
+  $('#reset-poeme-titles.visible').click();
+
+  expect(filterByTitleTitles()).toEqual(["Bar", "Foo"]);
+  expect(filterByTitleActiveTitles()).toEqual([]);
+  expect(poemTitles()).toEqual(["Bar", "Foo"]);
+  expect(document.querySelector('#reset-poeme-titles.visible')).toBeNull();
+
+  $(`.poeme-titles .poeme-title.visible[data-id="1"]`).click();
+  $(`.poeme-titles .poeme-title.visible[data-id="2"]`).click();
+
+  expect(filterByTitleTitles()).toEqual(["Bar", "Foo"]);
+  expect(filterByTitleActiveTitles()).toEqual(["Bar", "Foo"]);
+  expect(poemTitles()).toEqual(["Bar", "Foo"]);
+  expect(document.querySelector('#reset-poeme-titles.visible')).not.toBeNull();
 })
 
 function search(value) {
@@ -74,6 +110,14 @@ function search(value) {
   });
   search.dispatchEvent(inputEvent);
   dom.window.dispatchEvent(new dom.window.Event("hashchange"));
+}
+
+function filterByTitleTitles() {
+  return [...document.querySelectorAll(".poeme-titles .poeme-title.visible")].map(el => el.textContent);
+}
+
+function filterByTitleActiveTitles() {
+  return [...document.querySelectorAll(".poeme-titles .poeme-title.active")].map(el => el.textContent);
 }
 
 function poemTitles() {
