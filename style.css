@@ -246,6 +246,9 @@ details .poeme {
     margin: 0 auto;
     max-width: 90%;
   }
+  .poeme-container {
+    width: 100%;
+  }
   .poeme-titles {
     flex-direction: row;
     flex-wrap: wrap;
