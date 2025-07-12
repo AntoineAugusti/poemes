@@ -5,7 +5,7 @@ require "functions.php";
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['poeme']) && !empty($_POST['poeme'])) {
     $poeme = str_replace("\r\n", PHP_EOL, $_POST['poeme']);
-    $nouveauPoeme = PHP_EOL."===".PHP_EOL.$_POST['date'].PHP_EOL.$poeme;
+    $nouveauPoeme = PHP_EOL."===".PHP_EOL.$_POST['date'].PHP_EOL."## ".$_POST['titre'].PHP_EOL.$poeme;
     $poemesFile = 'poemes.txt';
 
     $themes = str_replace(",", ";", $_POST['themes']);
@@ -54,7 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       padding: 10px;
       border: 1px solid #ddd;
       box-sizing: border-box;
-      margin-bottom: 2em;
+    }
+    button#generate-title {
+      margin-bottom: 1em;
+    }
+    ul {
+      list-style-type: disc;
+      margin-left: 1em;
     }
     input[type="text"] {
       width: 80%;
@@ -130,27 +136,110 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="themes">Date</label><br>
       <input required type="date" id="date" name="date" max="<?= date("Y-m-d") ?>" /><br>
 
+      <label for="titre">Titre</label><br>
+      <input required type="text" name="titre" id="titre"><br>
+
       <label for="poeme">Poème</label><br>
-      <textarea required id="poeme" name="poeme" rows="10" cols="100">## </textarea><br>
+      <textarea required id="poeme" name="poeme" rows="10" cols="100"></textarea><br>
+
+      <div id="suggested-titles"></div>
+
+      <button id="generate-title" type="button">Générer un titre</button><br>
       
       <label for="themes">Thèmes</label><br>
       <input spellcheck="false" required type="text" id="themes" name="themes" /><br>
+      <button id="generate-themes" type="button">Générer des thèmes</button><br>
       <div id="themes-suggestions"></div>
 
       <input type="submit" value="Ajouter le poème">
     </form>
   </div>
   <script>
-    const themes = <?= json_encode(allThemes()); ?>;
-    const commonThemes = <?= json_encode(commonThemes()); ?>;
+    const themes = <?= json_encode(allThemes("themes.txt")); ?>;
+    const GEMINI_API_KEY = <?= json_encode(getenv("GEMINI_API_KEY")); ?>;
+    const commonThemes = <?= json_encode(commonThemes("themes.txt")); ?>;
+
     function uniqueArray(a) {
       return [...new Set(a)].sort((a, b) => a.localeCompare(b, 'fr'));
     }
+
     function unaccent(str) {
       return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
+
+    function geminiCall(prompt) {
+      const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-goog-api-key': GEMINI_API_KEY
+      };
+
+      const body = JSON.stringify({
+        contents: [
+          {parts: [{text: prompt}]}
+          ]
+      });
+
+      try {
+        return fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: body
+        })
+        .then(response => response.json())
+      } catch (error) {
+        console.error("Error generating content:", error);
+      }
+    }
+
+    function generateTitles(poem) {
+      return geminiCall(`Suggère-moi des titres de poèmes pour le poème suivant. Retourne unique des titres, pas de texte avant ou après, au format HTML en utilisant une liste immédiatement. ${poem}`);
+    }
+
+    function generateTags(poem) {
+      return geminiCall(`Suggère-moi des tags pour un poème parmi une liste de tags possibles. Retourne-moi les tags, pas de texte avant ou après, au format texte et en séparant les tags par une virgule. Le maximum de tags doit être 5. Respecte la casse. Tags : ${themes}. Poème : ${poem}`);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('date').valueAsDate = new Date();
+
+      const generateTitle = document.getElementById('generate-title');
+
+      generateTitle.addEventListener('click', function() {
+        generateTitle.disabled = true;
+        const poem = document.getElementById('poeme').value;
+
+        generateTitles(poem).then(response => {
+          const suggestedTitles = document.getElementById('suggested-titles');
+          const titreInput = document.getElementById('titre');
+
+          const titles = response.candidates[0].content.parts[0].text;
+          suggestedTitles.innerHTML = titles;
+          generateTitle.disabled = false;
+
+          suggestedTitles.addEventListener('click', function(event) {
+            const clickedLi = event.target.closest('li');
+            if (clickedLi) {
+              const liText = clickedLi.textContent.trim();
+              titreInput.value = liText;
+            }
+          });
+        });
+      });
+
+      const generateThemes = document.getElementById('generate-themes');
+      generateThemes.addEventListener('click', function() {
+        generateThemes.disabled = true;
+        const poem = document.getElementById('poeme').value;
+
+        generateTags(poem).then(response => {
+          const themes = response.candidates[0].content.parts[0].text;
+          const themesInput = document.getElementById('themes');
+          themesInput.value = themes;
+          generateThemes.disabled = false;
+        });
+      });
 
       const themesInput = document.getElementById('themes');
       const themesSuggestions = document.getElementById('themes-suggestions');
