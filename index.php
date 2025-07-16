@@ -1,18 +1,10 @@
 <?
 require "functions.php";
 
-$themesFilename = "themes.txt";
-$poemesFilename = "poemes.txt";
-
-if (getenv("NODE_ENV") == "test") {
-  $themesFilename = "themes.test.txt";
-  $poemesFilename = "poemes.test.txt";
-}
-
 $signature = $_GET['signature'];
-$themes = explode("\n", file_get_contents($themesFilename));
+$themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
-$poemes = array_reverse(explode("===", file_get_contents($poemesFilename)), true);
+$poemes = array_reverse(explode("===", file_get_contents($POEME_FILENAME)), true);
 ?>
 <html lang="fr">
 <head>
@@ -44,7 +36,7 @@ $poemes = array_reverse(explode("===", file_get_contents($poemesFilename)), true
         </div>
         <div id="nb-results"></div>
         <datalist id="themes-list">
-          <? foreach(allThemes($themesFilename) as $theme) { ?>
+          <? foreach(allThemes($THEMES_FILENAME) as $theme) { ?>
             <option value="<?= $theme ?>"></option>
           <? } ?>
         </datalist>
@@ -53,7 +45,7 @@ $poemes = array_reverse(explode("===", file_get_contents($poemesFilename)), true
             Thèmes
           </summary>
           <div class="poeme">
-            <? foreach(countThemes($themesFilename) as $theme => $count) { ?>
+            <? foreach(countThemes($THEMES_FILENAME) as $theme => $count) { ?>
               <a class="theme" href="##<?= $theme ?>">
                 <span class="hashtag">#</span><?= $theme ?>&nbsp;<span class="count"><?= $count ?></span>
               </a>

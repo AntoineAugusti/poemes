@@ -1,5 +1,13 @@
 <?php
 
+$THEMES_FILENAME = "themes.txt";
+$POEME_FILENAME = "poemes.txt";
+
+if (getenv("NODE_ENV") == "test") {
+  $THEMES_FILENAME = "themes.test.txt";
+  $POEME_FILENAME = "poemes.test.txt";
+}
+
 function flatten(array $array) {
   $return = array();
   array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
