@@ -54,7 +54,7 @@ $poemes = array_reverse(explode("===", file_get_contents($poemesFilename)), true
           </summary>
           <div class="poeme">
             <? foreach(countThemes($themesFilename) as $theme => $count) { ?>
-              <a class="theme" href="#<?= $theme ?>">
+              <a class="theme" href="##<?= $theme ?>">
                 <span class="hashtag">#</span><?= $theme ?>&nbsp;<span class="count"><?= $count ?></span>
               </a>
             <? } ?>
