@@ -17,7 +17,7 @@ function flatten(array $array) {
 
 function parsePoeme($poeme) {
   $poeme_content = trim($poeme);
-  $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
+  $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:lang: (?<lang>[a-z]{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
   preg_match($re, $poeme_content, $matches);
   return $matches;
 }

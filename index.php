@@ -77,7 +77,13 @@ $poemes = array_reverse(explode("===", file_get_contents($POEME_FILENAME)), true
           $poeme_signature = md5($poeme);
           $matches = parsePoeme($poeme);
           ?>
-          <div class="poeme-container" id="poeme-<?= $i ?>">
+          <div
+            class="poeme-container"
+            id="poeme-<?= $i ?>"
+            <? if (! empty($matches["lang"])) { ?>
+              lang="<?= $matches["lang"] ?>"
+            <? } ?>
+            >
             <div class="poeme visible" data-id="<?= $i ?>">
               <a class="id" href="#<?= $i ?>">
                 <?= $i ?>
