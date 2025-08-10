@@ -64,10 +64,10 @@ test('search', async () => {
   expect(poemTitles()).toEqual([]);
   expect(document.querySelector("#nb-results").textContent).toEqual("0 poèmes");
 
-  search("2025-06");
+  search("2025-07");
   expect(poemTitles()).toEqual(["Bar"]);
 
-  search("2025-07");
+  search("2025-06");
   expect(poemTitles()).toEqual(["Foo"]);
 })
 
