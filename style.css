@@ -220,6 +220,18 @@ details .poeme {
   max-width: 300px;
   margin-right: 1em;
 }
+.days {
+  margin: .5em 0;
+}
+.day {
+  display: inline-block;
+  width: 5px;
+  background: white;
+  height: 1px;
+}
+.day.hidden {
+  height: 1px !important;
+}
 
 @media only screen and (max-width: 768px) {
   body,

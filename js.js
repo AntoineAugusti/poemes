@@ -37,8 +37,15 @@ function refreshNbResults(searchTerm) {
 
 function filterPoemes(searchTerm) {
   document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => hide(poemeTitle));
+  document.querySelectorAll('.day.visible').forEach(link => hide(link));
 
   document.querySelectorAll('.poemes-container .poeme').forEach(poemeDiv => {
+    let date = null;
+    const poemeDate = poemeDiv.querySelector('.poeme-date');
+    if (poemeDate) {
+      date = poemeDate.textContent.trim();
+    }
+
     const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
     const id = poemeDiv.getAttribute('data-id');
 
@@ -52,6 +59,9 @@ function filterPoemes(searchTerm) {
       const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
       if (searchTerm != '' && title) {
         show(title);
+      }
+      if (date != null) {
+        show(document.querySelector(`.day[data-day="${date}"]`));
       }
     } else {
       hide(poemeDiv);

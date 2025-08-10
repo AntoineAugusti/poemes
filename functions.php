@@ -23,32 +23,72 @@ function parsePoeme($poeme) {
 }
 
 function allThemes($themesFilename) {
-	$themes = explode("\n", file_get_contents($themesFilename));
-	$themes = flatten(array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes));
-	$themes = array_filter($themes, function($x) { return $x !== ""; });
-	return array_values(array_unique($themes));
+  $themes = explode("\n", file_get_contents($themesFilename));
+  $themes = flatten(array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes));
+  $themes = array_filter($themes, function($x) { return $x !== ""; });
+  return array_values(array_unique($themes));
 }
 
 function countThemes($themesFilename) {
-	$themes = explode("\n", file_get_contents($themesFilename));
-	$themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
-	$countThemes = array_count_values(flatten($themes));
-	arsort($countThemes);
-	return $countThemes;
+  $themes = explode("\n", file_get_contents($themesFilename));
+  $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
+  $countThemes = array_count_values(flatten($themes));
+  arsort($countThemes);
+  return $countThemes;
 }
 
 function commonThemes() {
-	$result = [];
-	$lines = explode("\n", file_get_contents("themes.txt"));
-	foreach ($lines as $line) {
-		$themes = explode(";", $line);
-		foreach ($themes as $theme1) {
-			foreach ($themes as $theme2) {
-				if ($theme1 != $theme2 and ($result[$theme1] == null or !in_array($theme2, $result[$theme1]))) {
-					$result[$theme1][] = $theme2;
-				}
-			}
-		}
-	}
-	return $result;
+  $result = [];
+  $lines = explode("\n", file_get_contents("themes.txt"));
+  foreach ($lines as $line) {
+    $themes = explode(";", $line);
+    foreach ($themes as $theme1) {
+      foreach ($themes as $theme2) {
+        if ($theme1 != $theme2 and ($result[$theme1] == null or !in_array($theme2, $result[$theme1]))) {
+          $result[$theme1][] = $theme2;
+        }
+      }
+    }
+  }
+  return $result;
+}
+
+function frequencies($poemes) {
+  $startDate = null;
+  $endDate = null;
+  $dates = [];
+
+  foreach ($poemes as $poeme) {
+    $matches = parsePoeme($poeme);
+    if (!empty($matches['date'])) {
+      $date = $matches['date'].' 00:00:00';
+      if (empty($endDate)) {
+        $endDate = new DateTime($date);
+      }
+      $startDate = new DateTime($date);
+
+      if (isset($dates[$date])) {
+        $dates[$date]++;
+      } else {
+        $dates[$date] = 1;
+      }
+    }
+  }
+
+  $period = new DatePeriod(
+    $startDate,
+    new DateInterval('P1D'),
+    $endDate->modify('+1 day')
+  );
+
+  foreach($period as $date) {
+    $dateString = $date->format('Y-m-d H:i:s');
+    $month = $date->format('Y-m');
+    $day = $date->format('Y-m-d');
+    if (isset($dates[$dateString])) {
+      echo "<a class='day visible' data-day='".$day."' title=".$day." href='#".$day."' style='height: ".(15*$dates[$dateString])."px'></a>";
+    } else {
+      echo "<a class='day' data-day='".$day."'></a>";
+    }
+  }
 }

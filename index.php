@@ -42,6 +42,9 @@ $poemes = array_reverse(explode("===", file_get_contents($POEME_FILENAME)), true
             <option value="<?= $theme ?>"></option>
           <? } ?>
         </datalist>
+        <div class="days">
+          <?php frequencies($poemes); ?>
+        </div>
         <details>
           <summary>
             Thèmes
