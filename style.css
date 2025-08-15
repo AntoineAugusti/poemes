@@ -228,6 +228,7 @@ details .poeme {
   width: 5px;
   background: white;
   height: 1px;
+  margin-top: 10px;
 }
 .day.hidden {
   height: 1px !important;
