@@ -3,18 +3,16 @@
 require "functions.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if (isset($_POST['poeme']) && !empty($_POST['poeme'])) {
-    $poeme = str_replace("\r\n", PHP_EOL, $_POST['poeme']);
-    $nouveauPoeme = PHP_EOL."===".PHP_EOL.$_POST['date'].PHP_EOL."## ".$_POST['titre'].PHP_EOL.$poeme;
-    $poemesFile = 'poemes.txt';
+  if (isset($_POST['texte']) && !empty($_POST['texte'])) {
+    $texte = str_replace("\r\n", PHP_EOL, $_POST['texte']);
+    $nouveauTexte = PHP_EOL."===".PHP_EOL.$_POST['date'].PHP_EOL."## ".$_POST['titre'].PHP_EOL.$texte;
 
     $themes = str_replace(",", ";", $_POST['themes']);
-    $themesFile = 'themes.txt';
 
-    file_put_contents($themesFile, $themes.PHP_EOL, FILE_APPEND | LOCK_EX);
+    file_put_contents($THEMES_FILENAME, $themes.PHP_EOL, FILE_APPEND | LOCK_EX);
 
-    if (file_put_contents($poemesFile, $nouveauPoeme.PHP_EOL, FILE_APPEND | LOCK_EX) !== false) {
-      $message = "Le poème a été ajouté avec succès !";
+    if (file_put_contents($TEXTES_FILENAME, $nouveauTexte.PHP_EOL, FILE_APPEND | LOCK_EX) !== false) {
+      $message = "Le texte a été ajouté avec succès !";
     } else {
       $message = "Erreur : impossible d'écrire dans le fichier.";
     }
@@ -26,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ajouter un poème</title>
+  <title>Ajouter un texte</title>
   <link rel="icon" type="image/png" href="favicon.png" />
   <meta name="robots" content="noindex">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -127,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="container">
     <a class="back" href="/">&laquo; Retour</a>
-    <h1>Ajouter un nouveau poème</h1>
+    <h1>Ajouter un nouveau texte</h1>
 
     <?php
     if (isset($message)) {
@@ -143,8 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <label for="titre">Titre</label><br>
       <input required type="text" name="titre" id="titre"><br>
 
-      <label for="poeme">Poème</label><br>
-      <textarea required id="poeme" name="poeme" rows="10" cols="100"></textarea><br>
+      <label for="texte">Texte</label><br>
+      <textarea required id="texte" name="texte" rows="10" cols="100"></textarea><br>
 
       <div id="suggested-titles"></div>
 
@@ -155,13 +153,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button id="generate-themes" type="button">Générer des thèmes</button><br>
       <div id="themes-suggestions"></div>
 
-      <input type="submit" value="Ajouter le poème">
+      <input type="submit" value="Ajouter le texte">
     </form>
   </div>
   <script>
-    const themes = <?= json_encode(allThemes("themes.txt")); ?>;
+    const themes = <?= json_encode(allThemes($THEMES_FILENAME)); ?>;
     const GEMINI_API_KEY = <?= json_encode(getenv("GEMINI_API_KEY")); ?>;
-    const commonThemes = <?= json_encode(commonThemes("themes.txt")); ?>;
+    const commonThemes = <?= json_encode(commonThemes($THEMES_FILENAME)); ?>;
 
     function uniqueArray(a) {
       return [...new Set(a)].sort((a, b) => a.localeCompare(b, 'fr'));
@@ -197,12 +195,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    function generateTitles(poem) {
-      return geminiCall(`Suggère-moi des titres de poèmes pour le poème suivant. Retourne unique des titres, pas de texte avant ou après, au format HTML en utilisant une liste immédiatement. ${poem}`);
+    function generateTitles(text) {
+      return geminiCall(`Suggère-moi des titres de poèmes pour le poème suivant. Retourne unique des titres, pas de texte avant ou après, au format HTML en utilisant une liste immédiatement. ${text}`);
     }
 
-    function generateTags(poem) {
-      return geminiCall(`Suggère-moi des tags pour un poème parmi une liste de tags possibles. Retourne-moi les tags, pas de texte avant ou après, au format texte et en séparant les tags par une virgule. Le maximum de tags doit être 5. Respecte la casse. Tags : ${themes}. Poème : ${poem}`);
+    function generateTags(text) {
+      return geminiCall(`Suggère-moi des tags pour un poème parmi une liste de tags possibles. Retourne-moi les tags, pas de texte avant ou après, au format texte et en séparant les tags par une virgule. Le maximum de tags doit être 5. Respecte la casse. Tags : ${themes}. Poème : ${text}`);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -212,9 +210,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
       generateTitle.addEventListener('click', function() {
         generateTitle.disabled = true;
-        const poem = document.getElementById('poeme').value;
+        const text = document.getElementById('texte').value;
 
-        generateTitles(poem).then(response => {
+        generateTitles(text).then(response => {
           const suggestedTitles = document.getElementById('suggested-titles');
           const titreInput = document.getElementById('titre');
 
@@ -235,9 +233,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const generateThemes = document.getElementById('generate-themes');
       generateThemes.addEventListener('click', function() {
         generateThemes.disabled = true;
-        const poem = document.getElementById('poeme').value;
+        const text = document.getElementById('texte').value;
 
-        generateTags(poem).then(response => {
+        generateTags(text).then(response => {
           const themes = response.candidates[0].content.parts[0].text;
           const themesInput = document.getElementById('themes');
           themesInput.value = themes;

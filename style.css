@@ -36,9 +36,21 @@ body * {
   margin-left: .5em;
   cursor: pointer;
 }
+.add a {
+  text-decoration: none;
+}
 .add img {
   vertical-align: middle;
   width: 24px;
+}
+.toggle {
+  display: inline;
+  font-size: .75em;
+  margin-left: .5em;
+}
+.toggle a {
+  text-decoration: none;
+  color: #111;
 }
 .container {
   display: flex;
@@ -52,6 +64,7 @@ body * {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 800px;
 }
 .reverse {
   flex-direction: column-reverse;

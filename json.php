@@ -2,7 +2,7 @@
 
 require "functions.php";
 
-$poemes = array_reverse(explode("===", file_get_contents($POEME_FILENAME)), true);
+$poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);
 
 $data = [];
 foreach ($poemes as $poeme) {

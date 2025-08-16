@@ -1,5 +1,7 @@
 poemes.txt
-themes.txt
+textes.txt
+themes-poemes.txt
+themes-textes.txt
 Makefile
 
 node_modules

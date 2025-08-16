@@ -1,12 +1,21 @@
 <?php
+session_start();
 
-$THEMES_FILENAME = "themes.txt";
-$POEME_FILENAME = "poemes.txt";
+$_SESSION['mode'] = $_GET['mode'] ?? $_SESSION['mode'] ?? 'poemes';
 
-if (getenv("NODE_ENV") == "test") {
-  $THEMES_FILENAME = "themes.test.txt";
-  $POEME_FILENAME = "poemes.test.txt";
+if ($_SESSION['mode'] == 'poemes') {
+  $THEMES_FILENAME = "themes-poemes.txt";
+  $TEXTES_FILENAME = "poemes.txt";
+
+  if (getenv("NODE_ENV") == "test") {
+    $THEMES_FILENAME = "themes.test.txt";
+    $TEXTES_FILENAME = "poemes.test.txt";
+  }
+} else {
+  $THEMES_FILENAME = "themes-textes.txt";
+  $TEXTES_FILENAME = "textes.txt";
 }
+
 
 function flatten(array $array) {
   $return = array();
@@ -37,9 +46,9 @@ function countThemes($themesFilename) {
   return $countThemes;
 }
 
-function commonThemes() {
+function commonThemes($themesFilename) {
   $result = [];
-  $lines = explode("\n", file_get_contents("themes.txt"));
+  $lines = explode("\n", file_get_contents($themesFilename));
   foreach ($lines as $line) {
     $themes = explode(";", $line);
     foreach ($themes as $theme1) {

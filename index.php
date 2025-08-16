@@ -4,7 +4,7 @@ require "functions.php";
 $signature = $_GET['signature'];
 $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
-$poemes = array_reverse(explode("===", file_get_contents($POEME_FILENAME)), true);
+$poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);
 ?>
 <html lang="fr">
 <head>
@@ -36,6 +36,13 @@ $poemes = array_reverse(explode("===", file_get_contents($POEME_FILENAME)), true
             </a>
           </div>
           <?php } ?>
+        <div class="toggle">
+          <? if ($TEXTES_FILENAME == 'poemes.txt'): ?>
+          <a href="?mode=textes">Textes</a>
+          <? else: ?>
+          <a href="?mode=poemes">Poèmes</a>
+          <? endif ?>
+        </div>
         <div id="nb-results"></div>
         <datalist id="themes-list">
           <? foreach(allThemes($THEMES_FILENAME) as $theme) { ?>
