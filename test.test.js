@@ -101,6 +101,16 @@ test('filter by poem title', async () => {
   expect(document.querySelector('#reset-poeme-titles.visible')).not.toBeNull();
 })
 
+test('mark words', async () => {
+  search("world");
+  expect(poemTitles()).toEqual(["Bar"]);
+  expect(document.querySelector('.poeme.visible .poeme-text').innerHTML).toContain(`Hello <mark data-markjs="true">world</mark>.`);
+
+  search("");
+  expect(poemTitles()).toEqual(["Bar", "Foo"]);
+  expect(document.querySelector('.poeme.visible .poeme-text').innerHTML).toContain(`Hello world.`);
+})
+
 function search(value) {
   const search = document.getElementById("search");
   search.value = value;

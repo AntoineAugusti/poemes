@@ -24,6 +24,26 @@ function includesAnyWord(text, words) {
   return words.some(word => text.includes(word));
 }
 
+function highlightText(searchTerm) {
+  removeHighlight();
+
+  if (!searchTerm.trim()) {
+    return;
+  }
+
+  if (searchTerm != normalize(searchTerm)) {
+    highlightText(normalize(searchTerm));
+  }
+
+  const context = document.querySelectorAll('.poemes-container .poeme.visible');
+  new Mark(context).mark(searchTerm);
+}
+
+function removeHighlight() {
+  const context = document.querySelectorAll('.poemes-container .poeme.visible');
+  new Mark(context).unmark();
+}
+
 function refreshNbResults(searchTerm) {
   const nbResults = document.querySelector("#nb-results");
   if (searchTerm != "") {
@@ -49,9 +69,12 @@ function filterPoemes(searchTerm) {
     const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
     const id = poemeDiv.getAttribute('data-id');
 
-    let searchTest = includesAnyWord(textContent, searchTerm.split(' '));
+    let searchTest = includesAnyWord(textContent, searchTerm.split(' ').filter(word => word != ''));
     if (searchTerm.startsWith('"')) {
       searchTest = textContent.includes(searchTerm.replaceAll('"', ""));
+    }
+    if (searchTerm.trim() == '') {
+      searchTest = true;
     }
 
     if (searchTest) {
@@ -69,6 +92,7 @@ function filterPoemes(searchTerm) {
   });
 
   refreshNbResults(searchTerm);
+  highlightText(searchTerm);
 }
 
 function handleAnchorChange() {
@@ -87,6 +111,7 @@ function handleAnchorChange() {
       document.querySelectorAll('.visible').forEach(div => hide(div));
       show(targetDiv);
       refreshNbResults(searchTerm);
+      highlightText(searchTerm);
     }
     else {
       filterPoemes(normalize(searchTerm));
@@ -103,12 +128,12 @@ function copyContent(container, source, target) {
   const src = container.querySelector(source);
   src.addEventListener('click', function() {
     const toShow = container.querySelectorAll('.to_show');
-    toShow.forEach(div => div.classList.add("visible"));
+    toShow.forEach(div => show(div));
 
     const content = container.querySelector(target).textContent.trim().replace(/( ){10,}/, '\n');
     navigator.clipboard.writeText(content);
 
-    toShow.forEach(div => div.classList.remove("visible"));
+    toShow.forEach(div => hide(div));
 
     const oldContent = src.innerHTML;
     src.innerHTML = "Copié !";
@@ -129,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchInput.addEventListener('input', function() {
       window.location.hash = this.value;
-      filterPoemes(normalize(this.value));
     });
   }
 

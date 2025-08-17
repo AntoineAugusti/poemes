@@ -7,4 +7,4 @@ Hello
 2025-07-01
 ## Bar
 
-Hello
+Hello world.
