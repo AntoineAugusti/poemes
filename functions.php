@@ -41,7 +41,8 @@ function allThemes($themesFilename) {
 function countThemes($themesFilename) {
   $themes = explode("\n", file_get_contents($themesFilename));
   $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
-  $countThemes = array_count_values(flatten($themes));
+  $themes = array_filter(flatten($themes), function($x) { return $x !== ""; });
+  $countThemes = array_count_values($themes);
   arsort($countThemes);
   return $countThemes;
 }
