@@ -36,7 +36,12 @@ function highlightText(searchTerm) {
   }
 
   const context = document.querySelectorAll('.poemes-container .poeme.visible');
-  new Mark(context).mark(searchTerm);
+  let separateWordSearch = true;
+  if (searchTerm.startsWith('"') || searchTerm.startsWith('#')) {
+    separateWordSearch = false;
+  }
+
+  new Mark(context).mark(searchTerm.replaceAll('"', "").replaceAll('#', ""), {"separateWordSearch": separateWordSearch});
 }
 
 function removeHighlight() {
@@ -57,7 +62,7 @@ function refreshNbResults(searchTerm) {
 
 function filterPoemes(searchTerm) {
   document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => hide(poemeTitle));
-  document.querySelectorAll('.day.visible').forEach(link => hide(link));
+  document.querySelectorAll('.day.visible').forEach(day => hide(day));
 
   document.querySelectorAll('.poemes-container .poeme').forEach(poemeDiv => {
     let date = null;
@@ -70,7 +75,7 @@ function filterPoemes(searchTerm) {
     const id = poemeDiv.getAttribute('data-id');
 
     let searchTest = includesAnyWord(textContent, searchTerm.split(' ').filter(word => word != ''));
-    if (searchTerm.startsWith('"')) {
+    if (searchTerm.startsWith('"') || searchTerm.startsWith('#')) {
       searchTest = textContent.includes(searchTerm.replaceAll('"', ""));
     }
     if (searchTerm.trim() == '') {
@@ -153,7 +158,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     searchInput.addEventListener('input', function() {
-      window.location.hash = this.value;
+      let value = this.value;
+      if (this.value.startsWith("#")) {
+        value = "#" + value
+      }
+      window.location.hash = value;
     });
   }
 

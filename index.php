@@ -46,7 +46,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
         <div id="nb-results"></div>
         <datalist id="themes-list">
           <? foreach(allThemes($THEMES_FILENAME) as $theme) { ?>
-            <option value="<?= $theme ?>"></option>
+            <option value="#<?= $theme ?>"></option>
           <? } ?>
         </datalist>
         <div class="days">
