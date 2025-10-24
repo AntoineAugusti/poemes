@@ -3,6 +3,7 @@
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "babel-jest": "^30.0.4",
+    "eslint-config-xo": "^0.49.0",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
     "jquery": "^3.7.1",
@@ -11,5 +12,8 @@
   "scripts": {
     "start": "NODE_ENV=test php -S localhost:8080&",
     "test": "yarn run start && jest"
+  },
+  "dependencies": {
+    "eslint": ">=9.33.0"
   }
 }

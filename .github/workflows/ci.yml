@@ -12,5 +12,7 @@ jobs:
       with:
         php-version: '8.3'
         ini-values: "short_open_tag=On"
+    - name: Run lint
+      run: yarn eslint
     - name: Run tests
       run: yarn test

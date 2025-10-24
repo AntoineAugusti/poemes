@@ -1,3 +1,5 @@
+import Mark from 'mark.js';
+
 function normalize(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
@@ -154,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const hash = window.location.hash;
     if (hash && hash.startsWith('#')) {
       const searchTerm = decodeURI(hash.substring(1));
-      search.value = searchTerm;
+      searchInput.value = searchTerm;
     }
 
     searchInput.addEventListener('input', function() {
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 });
-document.addEventListener('keydown', event => {
+document.addEventListener('keydown', () => {
   if (event.key === '/') {
     const searchDiv = document.getElementById('search');
     searchDiv.focus();
@@ -187,7 +189,7 @@ document.addEventListener('DOMContentLoaded', handleAnchorChange);
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.js-notes-auteur').forEach(function (div) {
-    div.addEventListener('click', event => {
+    div.addEventListener('click', () => {
       const target = document.querySelector(".poeme-notes");
       if (target.classList.contains("visible")) {
         hide(target);
@@ -199,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelector('.up-down').addEventListener('click', function (event) {
+  document.querySelector('.up-down').addEventListener('click', function () {
     const container = document.querySelector('.poemes-container');
     toggleReverse(container);
     toggleReverse(document.querySelector('.poeme-titles'));
@@ -215,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll(`[tabindex="0"]`).forEach(div => {
-    div.addEventListener('keydown', event => {
+    div.addEventListener('keydown', () => {
       if (!document.activeElement === div) {
         return;
       }
@@ -247,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function () {
     currentPoemeIndex = 0;
   }
 
-  window.addEventListener('hashchange', event => refreshPoemes());
-  window.addEventListener('poemes-changed', event => refreshPoemes());
+  window.addEventListener('hashchange', () => refreshPoemes());
+  window.addEventListener('poemes-changed', () => refreshPoemes());
 
-  document.querySelector('.up-down').addEventListener('click', event => poemeDivs = poemeDivs.reverse());
+  document.querySelector('.up-down').addEventListener('click', () => poemeDivs = poemeDivs.reverse());
 
-  document.addEventListener('keydown', event => {
+  document.addEventListener('keydown', () => {
     const searchInput = document.getElementById('search');
     if (searchInput == document.activeElement) {
       return;
@@ -282,7 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const poemeTitlesReset = document.getElementById('reset-poeme-titles');
 
-  poemeTitlesReset.addEventListener('click', event => {
+  poemeTitlesReset.addEventListener('click', () => {
     document.querySelectorAll('.poeme-titles .poeme-title.active').forEach(title => {
       title.classList.remove("active");
     });
@@ -291,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.querySelectorAll('.poeme-titles .poeme-title').forEach(title => {
-    title.addEventListener('click', event => {
+    title.addEventListener('click', () => {
       if (title.classList.contains("active")) {
         title.classList.remove("active");
       } else {
@@ -318,8 +320,7 @@ document.addEventListener('DOMContentLoaded', function () {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      let reg;
-      reg = await navigator.serviceWorker.register('/service-worker.js');
+      await navigator.serviceWorker.register('/service-worker.js');
     } catch (err) {
       console.log(err);
     }
