@@ -69,6 +69,18 @@ test('search', async () => {
 
   search("2025-06");
   expect(poemTitles()).toEqual(["Foo"]);
+
+  search("1-");
+  expect(poemTitles()).toEqual(["Bar", "Foo"]);
+
+  search("2-2");
+  expect(poemTitles()).toEqual(["Bar"]);
+
+  search("2025-06-01-");
+  expect(poemTitles()).toEqual(["Bar", "Foo"]);
+
+  search("2025-07-01-2025-08-01");
+  expect(poemTitles()).toEqual(["Bar"]);
 })
 
 test('filter by poem title', async () => {

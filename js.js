@@ -80,8 +80,37 @@ function filterPoemes(searchTerm) {
     if (searchTerm.startsWith('"') || searchTerm.startsWith('#')) {
       searchTest = textContent.includes(searchTerm.replaceAll('"', ""));
     }
+
     if (searchTerm.trim() == '') {
       searchTest = true;
+    }
+
+    // Matches `123-`
+    if (searchTerm.match(/^(\d+)-$/)) {
+      const matchedId = parseInt(searchTerm.match(/^(\d+)-/)[1]);
+      searchTest = parseInt(id) >= matchedId;
+    }
+
+    // Matches `123-130` but not dates
+    if (searchTerm.match(/^(\d+)-(\d+)$/) && !/^\d{4}-\d{2}$/.test(searchTerm)) {
+      const matches = searchTerm.match(/^(\d+)-(\d+)$/);
+      const start = parseInt(matches[1]);
+      const end = parseInt(matches[2]);
+      searchTest = parseInt(id) >= start && parseInt(id) <= end;
+    }
+
+    // Matches `2025-10-01-`
+    if (date && /^\d{4}-\d{2}-\d{2}-$/.test(searchTerm)) {
+      const start = new Date(searchTerm.match(/^(\d{4}-\d{2}-\d{2})-$/)[1]);
+      searchTest = new Date(date) >= start;
+    }
+
+    // Matches `2025-10-01-2025-10-10`
+    if (date && /^\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}$/.test(searchTerm)) {
+      const matches = searchTerm.match(/^(\d{4}-\d{2}-\d{2})-(\d{4}-\d{2}-\d{2})$/);
+      const start = new Date(matches[1]);
+      const end = new Date(matches[2]);
+      searchTest = new Date(date) >= start && new Date(date) <= end;
     }
 
     if (searchTest) {
