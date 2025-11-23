@@ -1,4 +1,117 @@
 /*global Mark*/
+/*global SimpleWebAuthnBrowser*/
+let AUTH_SERVER_URL = "https://poemes.antoine-augusti.fr/api"
+if (document.location.origin == "http://localhost:8080") {
+  AUTH_SERVER_URL = "http://localhost:3000"
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+}
+
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        let date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+async function signup(email) {
+  const initResponse = await fetch(
+    `${AUTH_SERVER_URL}/init-register?email=${email}`,
+    { credentials: "include" }
+  )
+  const options = await initResponse.json()
+  if (!initResponse.ok) {
+    console.error(options.error)
+  }
+
+  const registrationJSON = await SimpleWebAuthnBrowser.startRegistration(options)
+
+  const verifyResponse = await fetch(`${AUTH_SERVER_URL}/verify-register`, {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(registrationJSON),
+  })
+
+  const verifyData = await verifyResponse.json()
+  if (!verifyResponse.ok) {
+    console.log(verifyData.error)
+  }
+  if (verifyData.verified) {
+    console.log(`Successfully registered ${email}`)
+  } else {
+    console.log(`Failed to register`)
+  }
+}
+
+async function login(email) {
+  const initResponse = await fetch(`${AUTH_SERVER_URL}/init-auth?email=${email}`, {
+    credentials: "include",
+  })
+  const options = await initResponse.json()
+  if (!initResponse.ok) {
+    console.error(options.error)
+  }
+
+  const authJSON = await SimpleWebAuthnBrowser.startAuthentication(options)
+
+  const verifyResponse = await fetch(`${AUTH_SERVER_URL}/verify-auth`, {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(authJSON),
+  })
+
+  const verifyData = await verifyResponse.json()
+  if (!verifyResponse.ok) {
+    console.log(verifyData.error)
+  }
+  if (verifyData.verified) {
+    console.log(`Successfully logged in ${email}`)
+  } else {
+    console.error(`Failed to log in`)
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  async function checkLogin() {
+    if (new URLSearchParams(window.location.search).get("action") == "login") {
+      document.body.classList.add('blur');
+      let email = getCookie("email");
+      if (email == undefined) {
+        email = prompt("Quelle est votre adresse e-mail ?");
+        setCookie("email", email, 90);
+      }
+      await login(email);
+      document.body.classList.remove('blur');
+      window.history.replaceState({}, '', window.location.origin);
+    }
+  }
+
+  async function checkSignup() {
+    if (new URLSearchParams(window.location.search).get("action") == "signup") {
+      document.body.classList.add('blur');
+      const email = prompt("Quelle est votre adresse e-mail ?");
+      await signup(email);
+      document.body.classList.remove('blur');
+      window.history.replaceState({}, '', window.location.origin);
+    }
+  }
+
+  await checkLogin();
+  await checkSignup();
+});
 
 function normalize(value) {
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();

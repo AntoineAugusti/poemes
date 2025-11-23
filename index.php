@@ -1,6 +1,11 @@
 <?
 require "functions.php";
 
+if (!isset($_COOKIE["auth"]) and !$_GET["action"]) {
+    header("Location: ?action=login", true, 302);
+    exit();
+}
+
 $signature = $_GET['signature'];
 $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
@@ -19,6 +24,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@simplewebauthn/browser@9.0.1/dist/bundle/index.umd.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -29,7 +35,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCA3LjMzbDIuODI5LTIuODMgOS4xNzUgOS4zMzkgOS4xNjctOS4zMzkgMi44MjkgMi44My0xMS45OTYgMTIuMTd6Ii8+PC9zdmc+">
         </div>
         <input type="search" id="search" list="themes-list">
-        <?php if ($_SERVER['PHP_AUTH_USER'] == "augusti" || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
+        <?php if ($_COOKIE["email"] == "antoine.augusti@gmail.com" || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
           <div class="add">
             <a href="add.php">
               <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0xMS41IDBjNi4zNDcgMCAxMS41IDUuMTUzIDExLjUgMTEuNXMtNS4xNTMgMTEuNS0xMS41IDExLjUtMTEuNS01LjE1My0xMS41LTExLjUgNS4xNTMtMTEuNSAxMS41LTExLjV6bTAgMWM1Ljc5NSAwIDEwLjUgNC43MDUgMTAuNSAxMC41cy00LjcwNSAxMC41LTEwLjUgMTAuNS0xMC41LTQuNzA1LTEwLjUtMTAuNSA0LjcwNS0xMC41IDEwLjUtMTAuNXptLjUgMTBoNnYxaC02djZoLTF2LTZoLTZ2LTFoNnYtNmgxdjZ6Ii8+PC9zdmc+">
@@ -66,6 +72,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
         </details>
       </div>
     <? } ?>
+
     <div class="rows">
       <div class="left">
         <div class="poeme-titles">
@@ -159,7 +166,6 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
         <? } ?>
       </div>
     </div>
-
   </div>
   <script type="text/javascript" src="js.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
