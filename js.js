@@ -12,13 +12,13 @@ function getCookie(name) {
 }
 
 function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-        let date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  let expires = "";
+  if (days) {
+    let date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
 async function signup(email) {
@@ -87,25 +87,43 @@ async function login(email) {
 document.addEventListener('DOMContentLoaded', async () => {
   async function checkLogin() {
     if (new URLSearchParams(window.location.search).get("action") == "login") {
-      document.body.classList.add('blur');
       let email = getCookie("email");
       if (email == undefined) {
-        email = prompt("Quelle est votre adresse e-mail ?");
-        setCookie("email", email, 90);
+        document.getElementById("form").addEventListener("submit", async (event) => {
+          event.preventDefault();
+          email = document.getElementById("email").value;
+          document.getElementById("form").classList.add("hidden");
+          document.getElementById("loader").classList.remove("hidden");
+          setCookie("email", email, 90);
+          await login(email);
+          setTimeout(async () => {
+            window.location.href = "/"
+          }, 2_000);
+        });
+      } else {
+        document.getElementById("form").classList.add("hidden");
+        document.getElementById("loader").classList.remove("hidden");
+        await login(email);
+        setTimeout(async () => {
+          window.location.href = "/"
+        }, 2_000);
       }
-      await login(email);
-      document.body.classList.remove('blur');
-      window.history.replaceState({}, '', window.location.origin);
     }
   }
 
   async function checkSignup() {
     if (new URLSearchParams(window.location.search).get("action") == "signup") {
-      document.body.classList.add('blur');
-      const email = prompt("Quelle est votre adresse e-mail ?");
-      await signup(email);
-      document.body.classList.remove('blur');
-      window.history.replaceState({}, '', window.location.origin);
+      document.getElementById("form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        document.getElementById("form").classList.add("hidden");
+        document.getElementById("loader").classList.remove("hidden");
+        setCookie("email", email, 90);
+        await signup(email);
+        setTimeout(async () => {
+          window.location.href = "/"
+        }, 2_000);
+      });
     }
   }
 

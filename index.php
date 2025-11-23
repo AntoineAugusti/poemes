@@ -1,8 +1,8 @@
 <?
 require "functions.php";
 
-if (!isset($_COOKIE["auth"]) and !$_GET["action"]) {
-    header("Location: ?action=login", true, 302);
+if (!isset($_COOKIE["auth"]) and !$_GET["action"] and getenv("NODE_ENV") != "test") {
+    header("Location: login.php?action=login", true, 302);
     exit();
 }
 
@@ -24,7 +24,6 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/@simplewebauthn/browser@9.0.1/dist/bundle/index.umd.min.js"></script>
 </head>
 <body>
   <div class="container">
