@@ -6,7 +6,7 @@ if (!isset($_COOKIE["auth"]) and !$_GET["action"] and getenv("NODE_ENV") != "tes
     exit();
 }
 
-$signature = $_GET['signature'];
+$signature = $_GET["signature"] ?? null;
 $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);

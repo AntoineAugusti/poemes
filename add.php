@@ -178,9 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       };
 
       const body = JSON.stringify({
-        contents: [
-          {parts: [{text: prompt}]}
-          ]
+        contents: [ {parts: [{text: prompt}]} ]
       });
 
       try {
@@ -200,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     function generateTags(text) {
-      return geminiCall(`Suggère-moi des tags pour un poème parmi une liste de tags possibles. Retourne-moi les tags, pas de texte avant ou après, au format texte et en séparant les tags par une virgule. Le maximum de tags doit être 5. Respecte la casse. Tags : ${themes}. Poème : ${text}`).toLowerCase();
+      return geminiCall(`Suggère-moi des tags pour un poème parmi une liste de tags possibles. Retourne-moi les tags, pas de texte avant ou après, au format texte et en séparant les tags par une virgule. Le maximum de tags doit être 5. Respecte la casse. Tags : ${themes}. Poème : ${text}`);
     }
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -236,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const text = document.getElementById('texte').value;
 
         generateTags(text).then(response => {
-          const themes = response.candidates[0].content.parts[0].text;
+          const themes = response.candidates[0].content.parts[0].text.toLowerCase();
           const themesInput = document.getElementById('themes');
           themesInput.value = themes;
           generateThemes.disabled = false;
