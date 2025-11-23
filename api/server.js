@@ -3,46 +3,46 @@ const {
   verifyRegistrationResponse,
   generateAuthenticationOptions,
   verifyAuthenticationResponse,
-} = require("@simplewebauthn/server")
-const express = require("express")
-const cors = require("cors")
-const cookieParser = require("cookie-parser")
+} = require("@simplewebauthn/server");
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const {
   getUserByEmail,
   createUser,
   updateUserCounter,
   getUserById,
-} = require("./db")
+} = require("./db");
 
-const app = express()
-app.use(express.json())
-app.use(cookieParser())
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
-let RP_ID = "localhost"
-let CLIENT_URL = `http://localhost:8080`
+let RP_ID = "localhost";
+let CLIENT_URL = `http://localhost:8080`;
 
 if (process.env.NODE_ENV == "production") {
-  RP_ID = "poemes.antoine-augusti.fr"
-  CLIENT_URL = `https://${RP_ID}`
+  RP_ID = "poemes.antoine-augusti.fr";
+  CLIENT_URL = `https://${RP_ID}`;
 }
 
-app.use(cors({ origin: CLIENT_URL, credentials: true }))
+app.use(cors({ origin: CLIENT_URL, credentials: true }));
 
 app.get("/init-register", async (req, res) => {
-  const email = req.query.email
+  const email = req.query.email;
   if (!email) {
-    return res.status(400).json({ error: "Email is required" })
+    return res.status(400).json({ error: "Email is required" });
   }
 
   if (getUserByEmail(email) != null) {
-    return res.status(400).json({ error: "User already exists" })
+    return res.status(400).json({ error: "User already exists" });
   }
 
   const options = await generateRegistrationOptions({
     rpID: RP_ID,
     rpName: RP_ID,
     userName: email,
-  })
+  });
 
   res.cookie(
     "regInfo",
@@ -51,17 +51,17 @@ app.get("/init-register", async (req, res) => {
       email,
       challenge: options.challenge,
     }),
-    { httpOnly: true, maxAge: 60_000, secure: true }
-  )
+    { httpOnly: true, maxAge: 60_000, secure: true },
+  );
 
-  res.json(options)
-})
+  res.json(options);
+});
 
 app.post("/verify-register", async (req, res) => {
-  const regInfo = JSON.parse(req.cookies.regInfo)
+  const regInfo = JSON.parse(req.cookies.regInfo);
 
   if (!regInfo) {
-    return res.status(400).json({ error: "Registration info not found" })
+    return res.status(400).json({ error: "Registration info not found" });
   }
 
   const verification = await verifyRegistrationResponse({
@@ -69,7 +69,7 @@ app.post("/verify-register", async (req, res) => {
     expectedChallenge: regInfo.challenge,
     expectedOrigin: CLIENT_URL,
     expectedRPID: RP_ID,
-  })
+  });
 
   if (verification.verified) {
     createUser(regInfo.userId, regInfo.email, {
@@ -79,26 +79,30 @@ app.post("/verify-register", async (req, res) => {
       deviceType: verification.registrationInfo.credentialDeviceType,
       backedUp: verification.registrationInfo.credentialBackedUp,
       transport: req.body.transports,
-    })
-    res.clearCookie("regInfo")
-    res.cookie("email", regInfo.email, { httpOnly: false, maxAge: 60*60*24*90*1_000, secure: true })
-    return res.json({ verified: verification.verified })
+    });
+    res.clearCookie("regInfo");
+    res.cookie("email", regInfo.email, {
+      httpOnly: false,
+      maxAge: 60 * 60 * 24 * 90 * 1_000,
+      secure: true,
+    });
+    return res.json({ verified: verification.verified });
   } else {
     return res
       .status(400)
-      .json({ verified: false, error: "Verification failed" })
+      .json({ verified: false, error: "Verification failed" });
   }
-})
+});
 
 app.get("/init-auth", async (req, res) => {
-  const email = req.query.email
+  const email = req.query.email;
   if (!email) {
-    return res.status(400).json({ error: "Email is required" })
+    return res.status(400).json({ error: "Email is required" });
   }
 
-  const user = getUserByEmail(email)
+  const user = getUserByEmail(email);
   if (user == null) {
-    return res.status(400).json({ error: "No user for this email" })
+    return res.status(400).json({ error: "No user for this email" });
   }
 
   const options = await generateAuthenticationOptions({
@@ -110,7 +114,7 @@ app.get("/init-auth", async (req, res) => {
         transports: user.passKey.transports,
       },
     ],
-  })
+  });
 
   res.cookie(
     "authInfo",
@@ -118,22 +122,22 @@ app.get("/init-auth", async (req, res) => {
       userId: user.id,
       challenge: options.challenge,
     }),
-    { httpOnly: true, maxAge: 60_000, secure: true }
-  )
+    { httpOnly: true, maxAge: 60_000, secure: true },
+  );
 
-  res.json(options)
-})
+  res.json(options);
+});
 
 app.post("/verify-auth", async (req, res) => {
-  const authInfo = JSON.parse(req.cookies.authInfo)
+  const authInfo = JSON.parse(req.cookies.authInfo);
 
   if (!authInfo) {
-    return res.status(400).json({ error: "Authentication info not found" })
+    return res.status(400).json({ error: "Authentication info not found" });
   }
 
-  const user = getUserById(authInfo.userId)
+  const user = getUserById(authInfo.userId);
   if (user == null || user.passKey.id != req.body.id) {
-    return res.status(400).json({ error: "Invalid user" })
+    return res.status(400).json({ error: "Invalid user" });
   }
 
   const verification = await verifyAuthenticationResponse({
@@ -147,25 +151,25 @@ app.post("/verify-auth", async (req, res) => {
       counter: user.passKey.counter,
       transports: user.passKey.transports,
     },
-  })
+  });
 
   if (verification.verified) {
-    updateUserCounter(user.id, verification.authenticationInfo.newCounter)
-    res.clearCookie("authInfo")
+    updateUserCounter(user.id, verification.authenticationInfo.newCounter);
+    res.clearCookie("authInfo");
     // Save user in a session cookie
-    res.cookie(
-      "auth",
-      JSON.stringify({userId: user.id}),
-      { httpOnly: true, maxAge: 86_400_000, secure: true }
-    )
-    return res.json({ verified: verification.verified })
+    res.cookie("auth", JSON.stringify({ userId: user.id }), {
+      httpOnly: true,
+      maxAge: 86_400_000,
+      secure: true,
+    });
+    return res.json({ verified: verification.verified });
   } else {
     return res
       .status(400)
-      .json({ verified: false, error: "Verification failed" })
+      .json({ verified: false, error: "Verification failed" });
   }
-})
+});
 
 app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000")
-})
+  console.log("Server is running on http://localhost:3000");
+});

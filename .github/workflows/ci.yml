@@ -4,15 +4,17 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Install modules
-      run: yarn
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.3'
-        ini-values: "short_open_tag=On"
-    - name: Run lint
-      run: yarn eslint
-    - name: Run tests
-      run: yarn test
+      - uses: actions/checkout@v4
+      - name: Install modules
+        run: yarn
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          ini-values: "short_open_tag=On"
+      - name: Run eslint
+        run: yarn eslint
+      - name: Run prettier
+        run: npx prettier . --check
+      - name: Run tests
+        run: yarn test

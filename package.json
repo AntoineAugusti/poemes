@@ -7,10 +7,12 @@
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
     "jquery": "^3.7.1",
-    "node-fetch": "^2.6.9"
+    "node-fetch": "^2.6.9",
+    "prettier": "3.6.2"
   },
   "scripts": {
     "start": "NODE_ENV=test php -S localhost:8080&",
+    "lint": "npx prettier . --write",
     "test": "yarn run start && jest"
   },
   "dependencies": {

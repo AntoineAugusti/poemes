@@ -1,14 +1,15 @@
 @keyframes fadeIn {
-    0% {
-        opacity: 0
-    }
+  0% {
+    opacity: 0;
+  }
 
-    100% {
-        opacity: 1
-    }
+  100% {
+    opacity: 1;
+  }
 }
 
-body, html {
+body,
+html {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -22,15 +23,15 @@ body {
   transition: 1s linear all;
 }
 body * {
-  font-family: 'Vollkorn', serif;
+  font-family: "Vollkorn", serif;
 }
 @-webkit-keyframes blur {
-    0% {
-      filter: blur(0px);
-    }
-    100% {
-      filter: blur(5px);
-    }
+  0% {
+    filter: blur(0px);
+  }
+  100% {
+    filter: blur(5px);
+  }
 }
 body.blur {
   animation-name: blur;
@@ -38,7 +39,7 @@ body.blur {
 }
 .up-down {
   display: inline;
-  margin-right: .5em;
+  margin-right: 0.5em;
   cursor: pointer;
 }
 .up-down img {
@@ -46,7 +47,7 @@ body.blur {
 }
 .add {
   display: inline;
-  margin-left: .5em;
+  margin-left: 0.5em;
   cursor: pointer;
 }
 .add a {
@@ -58,8 +59,8 @@ body.blur {
 }
 .toggle {
   display: inline;
-  font-size: .75em;
-  margin-left: .5em;
+  font-size: 0.75em;
+  margin-left: 0.5em;
 }
 .toggle a {
   text-decoration: none;
@@ -86,43 +87,43 @@ body.blur {
   flex-direction: column-reverse;
 }
 .poeme {
-  background: #F5F5F5;
-  margin: 0 .5em 2em .5em;
+  background: #f5f5f5;
+  margin: 0 0.5em 2em 0.5em;
   border: 3px solid #ccc;
   padding: 1em 2em;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 .poeme-content .poeme-title {
   font-weight: 700;
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
   background-color: #000;
   color: transparent;
-  text-shadow: 2px 2px 3px rgba(255, 255, 255, .1);
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.1);
   background-clip: text;
 }
 .poeme-date {
-  margin: -1.5em 0 .5em 0;
-  font-size: .7em;
+  margin: -1.5em 0 0.5em 0;
+  font-size: 0.7em;
   color: #bbb;
 }
 .poeme-date a {
   text-decoration: none;
   color: #bbb;
-  padding: .25em;
+  padding: 0.25em;
   margin: 0 -0.25em 0 -0.25em;
 }
 .poeme-date a:hover {
   background: #eee;
 }
 .poeme-content {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 .poeme-notes {
   background: #eee;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   margin: 1em 0 0 0;
   border: 3px solid #ccc;
-  font-size: .8em;
+  font-size: 0.8em;
   max-width: 500px;
   animation: fadeIn 2s;
 }
@@ -131,7 +132,7 @@ body.blur {
   color: #555;
   position: relative;
   top: -1.3em;
-  left: -.7em;
+  left: -0.7em;
   margin-left: -28px;
   width: 20px;
   display: inline-block;
@@ -150,24 +151,24 @@ body.blur {
   border: none;
   font-size: 25px;
   padding: 10px 20px;
-  font-family: 'Vollkorn', serif;
+  font-family: "Vollkorn", serif;
 }
 #nb-results {
   color: #ccc;
   margin-left: calc(30px + 1.5em);
   margin-top: 0.2em;
-  font-size: .8em;
+  font-size: 0.8em;
 }
 .search_wrapper {
   margin: 0 1em 1.5em 1em;
 }
 .action-button {
   background: #eee;
-  font-size: .6em;
-  padding: .3em .5em;
+  font-size: 0.6em;
+  padding: 0.3em 0.5em;
   display: inline-block;
   cursor: pointer;
-  margin-right: .5em;
+  margin-right: 0.5em;
 }
 .action-button a {
   text-decoration: none;
@@ -176,17 +177,17 @@ body.blur {
 .action-button img {
   width: 1em;
   vertical-align: middle;
-  margin-right: .3em;
+  margin-right: 0.3em;
 }
 .themes {
-  margin: .25em 0;
+  margin: 0.25em 0;
 }
 a.theme {
-  font-size: .75em;
+  font-size: 0.75em;
   color: #888;
-  margin-right: .5em;
+  margin-right: 0.5em;
   text-decoration: none;
-  padding: .25em;
+  padding: 0.25em;
 }
 a.theme:hover {
   background: #eee;
@@ -196,15 +197,15 @@ a.theme:hover {
 }
 .count {
   color: #333;
-  font-size: .8em;
+  font-size: 0.8em;
   vertical-align: center;
 }
 
 summary {
-  font-size: .8em;
+  font-size: 0.8em;
 }
 details {
-  margin: .5em 0 .5em calc(15px + 1.5em);
+  margin: 0.5em 0 0.5em calc(15px + 1.5em);
 }
 details .poeme {
   max-width: 800px;
@@ -218,20 +219,20 @@ details .poeme {
 }
 .poeme-titles .poeme-title {
   color: #111;
-  margin: 0 .5em .5em 0;
+  margin: 0 0.5em 0.5em 0;
   text-decoration: none;
-  background: #F5F5F5;
-  font-size: .8em;
-  padding: .1em .5em;
+  background: #f5f5f5;
+  font-size: 0.8em;
+  padding: 0.1em 0.5em;
   cursor: pointer;
 }
 .poeme-titles #reset-poeme-titles {
   width: 1.5em;
   cursor: pointer;
-  margin: 0 .25em .5em 0;
+  margin: 0 0.25em 0.5em 0;
 }
 .poeme-titles .poeme-title.active {
-  background: #CCC;
+  background: #ccc;
 }
 .poeme-titles .poeme-title.visible {
   display: block;
@@ -247,7 +248,7 @@ details .poeme {
   margin-right: 1em;
 }
 .days {
-  margin: .5em 0;
+  margin: 0.5em 0;
 }
 .day {
   display: inline-block;
@@ -275,8 +276,8 @@ details .poeme {
     margin-bottom: -1em;
   }
   .action-button {
-    margin-bottom: .5em;
-    font-size: .8em;
+    margin-bottom: 0.5em;
+    font-size: 0.8em;
   }
   .rows {
     flex-direction: column;

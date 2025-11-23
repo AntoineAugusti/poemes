@@ -1,39 +1,43 @@
-const fs = require('fs')
+const fs = require("fs");
 
 function getUserByEmail(email) {
-  files = fs.readdirSync("data").filter(file => file.endsWith(`${email}.txt`))
+  files = fs
+    .readdirSync("data")
+    .filter((file) => file.endsWith(`${email}.txt`));
   if (files.length == 0) {
-    return null
+    return null;
   }
-  return readUser(files[0])
+  return readUser(files[0]);
 }
 
 function getUserById(id) {
-  files = fs.readdirSync("data").filter(file => file.startsWith(id))
+  files = fs.readdirSync("data").filter((file) => file.startsWith(id));
   if (files.length == 0) {
-    return null
+    return null;
   }
-  return readUser(files[0])
+  return readUser(files[0]);
 }
 
 function createUser(id, email, passKey) {
-  saveUser({ id, email, passKey })
+  saveUser({ id, email, passKey });
 }
 
 function updateUserCounter(id, counter) {
-  const user = getUserById(id)
-  user.passKey.counter = counter
-  saveUser(user)
+  const user = getUserById(id);
+  user.passKey.counter = counter;
+  saveUser(user);
 }
 
 function saveUser(data) {
-  fs.writeFileSync(`data/${data.id}-${data.email}.txt`, JSON.stringify(data))
+  fs.writeFileSync(`data/${data.id}-${data.email}.txt`, JSON.stringify(data));
 }
 
 function readUser(filename) {
-  data = JSON.parse(fs.readFileSync(`data/${filename}`, 'utf8'))
-  data.passKey.publicKey = new Uint8Array(Object.values(data.passKey.publicKey))
-  return data
+  data = JSON.parse(fs.readFileSync(`data/${filename}`, "utf8"));
+  data.passKey.publicKey = new Uint8Array(
+    Object.values(data.passKey.publicKey),
+  );
+  return data;
 }
 
 module.exports = {
@@ -41,4 +45,4 @@ module.exports = {
   getUserById,
   createUser,
   updateUserCounter,
-}
+};

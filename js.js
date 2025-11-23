@@ -1,24 +1,25 @@
 /*global Mark*/
 /*global SimpleWebAuthnBrowser*/
-let AUTH_SERVER_URL = "https://poemes.antoine-augusti.fr/api"
+let AUTH_SERVER_URL = "https://poemes.antoine-augusti.fr/api";
 if (document.location.origin == "http://localhost:8080") {
-  AUTH_SERVER_URL = "http://localhost:3000"
+  AUTH_SERVER_URL = "http://localhost:3000";
 }
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  if (parts.length === 2)
+    return decodeURIComponent(parts.pop().split(";").shift());
 }
 
 function setCookie(name, value, days) {
   let expires = "";
   if (days) {
     let date = new Date();
-    date.setTime(date.getTime() + (days*24*60*60*1000));
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     expires = "; expires=" + date.toUTCString();
   }
-  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
 function loginError(message) {
@@ -33,14 +34,15 @@ function loginError(message) {
 async function signup(email) {
   const initResponse = await fetch(
     `${AUTH_SERVER_URL}/init-register?email=${email}`,
-    { credentials: "include" }
-  )
-  const options = await initResponse.json()
+    { credentials: "include" },
+  );
+  const options = await initResponse.json();
   if (!initResponse.ok) {
-    loginError(options.error)
+    loginError(options.error);
   }
 
-  const registrationJSON = await SimpleWebAuthnBrowser.startRegistration(options)
+  const registrationJSON =
+    await SimpleWebAuthnBrowser.startRegistration(options);
 
   const verifyResponse = await fetch(`${AUTH_SERVER_URL}/verify-register`, {
     credentials: "include",
@@ -49,30 +51,33 @@ async function signup(email) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(registrationJSON),
-  })
+  });
 
-  const verifyData = await verifyResponse.json()
+  const verifyData = await verifyResponse.json();
   if (!verifyResponse.ok) {
-    console.log(verifyData.error)
+    console.log(verifyData.error);
   }
   if (verifyData.verified) {
     setCookie("email", email, 90);
-    console.log(`Successfully registered ${email}`)
+    console.log(`Successfully registered ${email}`);
   } else {
-    console.log(`Failed to register`)
+    console.log(`Failed to register`);
   }
 }
 
 async function login(email) {
-  const initResponse = await fetch(`${AUTH_SERVER_URL}/init-auth?email=${email}`, {
-    credentials: "include",
-  })
-  const options = await initResponse.json()
+  const initResponse = await fetch(
+    `${AUTH_SERVER_URL}/init-auth?email=${email}`,
+    {
+      credentials: "include",
+    },
+  );
+  const options = await initResponse.json();
   if (!initResponse.ok) {
-    loginError(options.error)
+    loginError(options.error);
   }
 
-  const authJSON = await SimpleWebAuthnBrowser.startAuthentication(options)
+  const authJSON = await SimpleWebAuthnBrowser.startAuthentication(options);
 
   const verifyResponse = await fetch(`${AUTH_SERVER_URL}/verify-auth`, {
     credentials: "include",
@@ -81,17 +86,17 @@ async function login(email) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(authJSON),
-  })
+  });
 
-  const verifyData = await verifyResponse.json()
+  const verifyData = await verifyResponse.json();
   if (!verifyResponse.ok) {
-    console.log(verifyData.error)
+    console.log(verifyData.error);
   }
   if (verifyData.verified) {
     setCookie("email", email, 90);
-    console.log(`Successfully logged in ${email}`)
+    console.log(`Successfully logged in ${email}`);
   } else {
-    loginError(`Failed to log in`)
+    loginError(`Failed to log in`);
   }
 }
 
@@ -104,25 +109,27 @@ function submitLoginForm(email) {
   document.getElementById("welcome").classList.remove("hidden");
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   async function checkLogin() {
     if (new URLSearchParams(window.location.search).get("action") == "login") {
       let email = getCookie("email");
       if (email == undefined) {
-        document.getElementById("form").addEventListener("submit", async (event) => {
-          event.preventDefault();
-          email = document.getElementById("email").value;
-          submitLoginForm(email);
-          await login(email);
-          setTimeout(async () => {
-            window.location.href = "/"
-          }, 2_000);
-        });
+        document
+          .getElementById("form")
+          .addEventListener("submit", async (event) => {
+            event.preventDefault();
+            email = document.getElementById("email").value;
+            submitLoginForm(email);
+            await login(email);
+            setTimeout(async () => {
+              window.location.href = "/";
+            }, 2_000);
+          });
       } else {
         submitLoginForm(email);
         await login(email);
         setTimeout(async () => {
-          window.location.href = "/"
+          window.location.href = "/";
         }, 2_000);
       }
     }
@@ -130,15 +137,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function checkSignup() {
     if (new URLSearchParams(window.location.search).get("action") == "signup") {
-      document.getElementById("form").addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const email = document.getElementById("email").value;
-        submitLoginForm(email);
-        await signup(email);
-        setTimeout(async () => {
-          window.location.href = "/"
-        }, 2_000);
-      });
+      document
+        .getElementById("form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const email = document.getElementById("email").value;
+          submitLoginForm(email);
+          await signup(email);
+          setTimeout(async () => {
+            window.location.href = "/";
+          }, 2_000);
+        });
     }
   }
 
@@ -147,7 +156,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function normalize(value) {
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 function toggleReverse(div) {
@@ -159,17 +171,17 @@ function toggleReverse(div) {
 }
 
 function hide(div) {
-  div.classList.remove('visible');
-  div.classList.add('hidden');
+  div.classList.remove("visible");
+  div.classList.add("hidden");
 }
 
 function show(div) {
-  div.classList.remove('hidden');
-  div.classList.add('visible');
+  div.classList.remove("hidden");
+  div.classList.add("visible");
 }
 
 function includesAnyWord(text, words) {
-  return words.some(word => text.includes(word));
+  return words.some((word) => text.includes(word));
 }
 
 function highlightText(searchTerm) {
@@ -183,51 +195,62 @@ function highlightText(searchTerm) {
     highlightText(normalize(searchTerm));
   }
 
-  const context = document.querySelectorAll('.poemes-container .poeme.visible');
+  const context = document.querySelectorAll(".poemes-container .poeme.visible");
   let separateWordSearch = true;
-  if (searchTerm.startsWith('"') || searchTerm.startsWith('#')) {
+  if (searchTerm.startsWith('"') || searchTerm.startsWith("#")) {
     separateWordSearch = false;
   }
 
-  new Mark(context).mark(searchTerm.replaceAll('"', "").replaceAll('#', ""), {"separateWordSearch": separateWordSearch});
+  new Mark(context).mark(searchTerm.replaceAll('"', "").replaceAll("#", ""), {
+    separateWordSearch: separateWordSearch,
+  });
 }
 
 function removeHighlight() {
-  const context = document.querySelectorAll('.poemes-container .poeme.visible');
+  const context = document.querySelectorAll(".poemes-container .poeme.visible");
   new Mark(context).unmark();
 }
 
 function refreshNbResults(searchTerm) {
   const nbResults = document.querySelector("#nb-results");
   if (searchTerm != "") {
-    const nbPoemes = document.querySelectorAll('.poemes-container .poeme.visible').length
+    const nbPoemes = document.querySelectorAll(
+      ".poemes-container .poeme.visible",
+    ).length;
     const text = nbPoemes == 1 ? "poème" : "poèmes";
-    nbResults.textContent = `${nbPoemes} ${text}`
+    nbResults.textContent = `${nbPoemes} ${text}`;
   } else {
-    nbResults.textContent = '';
+    nbResults.textContent = "";
   }
 }
 
 function filterPoemes(searchTerm) {
-  document.querySelectorAll('.poeme-titles .poeme-title.visible').forEach(poemeTitle => hide(poemeTitle));
-  document.querySelectorAll('.day.visible').forEach(day => hide(day));
+  document
+    .querySelectorAll(".poeme-titles .poeme-title.visible")
+    .forEach((poemeTitle) => hide(poemeTitle));
+  document.querySelectorAll(".day.visible").forEach((day) => hide(day));
 
-  document.querySelectorAll('.poemes-container .poeme').forEach(poemeDiv => {
+  document.querySelectorAll(".poemes-container .poeme").forEach((poemeDiv) => {
     let date = null;
-    const poemeDate = poemeDiv.querySelector('.poeme-date');
+    const poemeDate = poemeDiv.querySelector(".poeme-date");
     if (poemeDate) {
       date = poemeDate.textContent.trim();
     }
 
-    const textContent = normalize(poemeDiv.querySelector('.js-poeme-search').textContent);
-    const id = poemeDiv.getAttribute('data-id');
+    const textContent = normalize(
+      poemeDiv.querySelector(".js-poeme-search").textContent,
+    );
+    const id = poemeDiv.getAttribute("data-id");
 
-    let searchTest = includesAnyWord(textContent, searchTerm.split(' ').filter(word => word != ''));
-    if (searchTerm.startsWith('"') || searchTerm.startsWith('#')) {
+    let searchTest = includesAnyWord(
+      textContent,
+      searchTerm.split(" ").filter((word) => word != ""),
+    );
+    if (searchTerm.startsWith('"') || searchTerm.startsWith("#")) {
       searchTest = textContent.includes(searchTerm.replaceAll('"', ""));
     }
 
-    if (searchTerm.trim() == '') {
+    if (searchTerm.trim() == "") {
       searchTest = true;
     }
 
@@ -238,7 +261,10 @@ function filterPoemes(searchTerm) {
     }
 
     // Matches `123-130` but not dates
-    if (searchTerm.match(/^(\d+)-(\d+)$/) && !/^\d{4}-\d{2}$/.test(searchTerm)) {
+    if (
+      searchTerm.match(/^(\d+)-(\d+)$/) &&
+      !/^\d{4}-\d{2}$/.test(searchTerm)
+    ) {
       const matches = searchTerm.match(/^(\d+)-(\d+)$/);
       const start = parseInt(matches[1]);
       const end = parseInt(matches[2]);
@@ -253,7 +279,9 @@ function filterPoemes(searchTerm) {
 
     // Matches `2025-10-01-2025-10-10`
     if (date && /^\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}$/.test(searchTerm)) {
-      const matches = searchTerm.match(/^(\d{4}-\d{2}-\d{2})-(\d{4}-\d{2}-\d{2})$/);
+      const matches = searchTerm.match(
+        /^(\d{4}-\d{2}-\d{2})-(\d{4}-\d{2}-\d{2})$/,
+      );
       const start = new Date(matches[1]);
       const end = new Date(matches[2]);
       searchTest = new Date(date) >= start && new Date(date) <= end;
@@ -262,7 +290,7 @@ function filterPoemes(searchTerm) {
     if (searchTest) {
       show(poemeDiv);
       const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
-      if (searchTerm != '' && title) {
+      if (searchTerm != "" && title) {
         show(title);
       }
       if (date != null) {
@@ -279,7 +307,7 @@ function filterPoemes(searchTerm) {
 
 function handleAnchorChange() {
   const currentHash = window.location.hash;
-  const search = document.getElementById('search');
+  const search = document.getElementById("search");
 
   if (currentHash) {
     const targetId = currentHash.substring(1);
@@ -290,32 +318,36 @@ function handleAnchorChange() {
     }
 
     if (targetDiv) {
-      document.querySelectorAll('.visible').forEach(div => hide(div));
+      document.querySelectorAll(".visible").forEach((div) => hide(div));
       show(targetDiv);
       refreshNbResults(searchTerm);
       highlightText(searchTerm);
-    }
-    else {
+    } else {
       filterPoemes(normalize(searchTerm));
     }
   } else {
-    filterPoemes('');
+    filterPoemes("");
   }
 
-  document.querySelectorAll('.poeme-title.active').forEach(span => span.classList.remove('active'));
-  hide(document.getElementById('reset-poeme-titles'));
+  document
+    .querySelectorAll(".poeme-title.active")
+    .forEach((span) => span.classList.remove("active"));
+  hide(document.getElementById("reset-poeme-titles"));
 }
 
 function copyContent(container, source, target) {
   const src = container.querySelector(source);
-  src.addEventListener('click', function() {
-    const toShow = container.querySelectorAll('.to_show');
-    toShow.forEach(div => show(div));
+  src.addEventListener("click", function () {
+    const toShow = container.querySelectorAll(".to_show");
+    toShow.forEach((div) => show(div));
 
-    const content = container.querySelector(target).textContent.trim().replace(/( ){10,}/, '\n');
+    const content = container
+      .querySelector(target)
+      .textContent.trim()
+      .replace(/( ){10,}/, "\n");
     navigator.clipboard.writeText(content);
 
-    toShow.forEach(div => hide(div));
+    toShow.forEach((div) => hide(div));
 
     const oldContent = src.innerHTML;
     src.innerHTML = "Copié !";
@@ -325,78 +357,77 @@ function copyContent(container, source, target) {
   });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('search');
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("search");
   if (searchInput) {
     const hash = window.location.hash;
-    if (hash && hash.startsWith('#')) {
+    if (hash && hash.startsWith("#")) {
       const searchTerm = decodeURI(hash.substring(1));
       searchInput.value = searchTerm;
     }
 
-    searchInput.addEventListener('input', function() {
+    searchInput.addEventListener("input", function () {
       let value = this.value;
       if (this.value.startsWith("#")) {
-        value = "#" + value
+        value = "#" + value;
       }
       window.location.hash = value;
     });
   }
-
 });
-document.addEventListener('keydown', () => {
-  if (event.key === '/') {
-    const searchDiv = document.getElementById('search');
+document.addEventListener("keydown", () => {
+  if (event.key === "/") {
+    const searchDiv = document.getElementById("search");
     searchDiv.focus();
     event.preventDefault();
   }
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.poeme-container').forEach(container => {
-    copyContent(container, '.js-copy-button', '.poeme-text');
-    copyContent(container, '.js-share-button', '.js-share-url');
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".poeme-container").forEach((container) => {
+    copyContent(container, ".js-copy-button", ".poeme-text");
+    copyContent(container, ".js-share-button", ".js-share-url");
   });
 });
 
-window.addEventListener('hashchange', handleAnchorChange);
-document.addEventListener('DOMContentLoaded', handleAnchorChange);
+window.addEventListener("hashchange", handleAnchorChange);
+document.addEventListener("DOMContentLoaded", handleAnchorChange);
 
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.js-notes-auteur').forEach(function (div) {
-    div.addEventListener('click', () => {
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".js-notes-auteur").forEach(function (div) {
+    div.addEventListener("click", () => {
       const target = document.querySelector(".poeme-notes");
       if (target.classList.contains("visible")) {
         hide(target);
       } else {
         show(target);
       }
-    })
+    });
   });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelector('.up-down').addEventListener('click', function () {
-    const container = document.querySelector('.poemes-container');
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelector(".up-down").addEventListener("click", function () {
+    const container = document.querySelector(".poemes-container");
     toggleReverse(container);
-    toggleReverse(document.querySelector('.poeme-titles'));
+    toggleReverse(document.querySelector(".poeme-titles"));
 
-    container.querySelectorAll('.poeme-container').forEach(div => {
+    container.querySelectorAll(".poeme-container").forEach((div) => {
       div.classList.add("animate__animated", "animate__fadeInDown");
-      div.addEventListener('animationend', () => {
+      div.addEventListener("animationend", () => {
         div.classList.remove("animate__animated", "animate__fadeInDown");
       });
-    })
+    });
   });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll(`[tabindex="0"]`).forEach(div => {
-    div.addEventListener('keydown', () => {
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(`[tabindex="0"]`).forEach((div) => {
+    div.addEventListener("keydown", () => {
       if (!document.activeElement === div) {
         return;
       }
-      if (['Enter', 'Space'].includes(event.code)) {
+      if (["Enter", "Space"].includes(event.code)) {
         event.preventDefault();
         div.click();
       }
@@ -404,43 +435,54 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  let poemeDivs = [...document.querySelectorAll('.poeme.visible')];
+document.addEventListener("DOMContentLoaded", function () {
+  let poemeDivs = [...document.querySelectorAll(".poeme.visible")];
   let currentPoemeIndex = 0;
 
   function focusPoemeDiv(index) {
     currentPoemeIndex = index;
     if (poemeDivs[currentPoemeIndex]) {
-      poemeDivs[currentPoemeIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-      poemeDivs[currentPoemeIndex].classList.add("animate__animated", "animate__fadeIn")
-      poemeDivs[currentPoemeIndex].addEventListener('animationend', () => {
-        poemeDivs[currentPoemeIndex].classList.remove("animate__animated", "animate__fadeIn");
+      poemeDivs[currentPoemeIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      poemeDivs[currentPoemeIndex].classList.add(
+        "animate__animated",
+        "animate__fadeIn",
+      );
+      poemeDivs[currentPoemeIndex].addEventListener("animationend", () => {
+        poemeDivs[currentPoemeIndex].classList.remove(
+          "animate__animated",
+          "animate__fadeIn",
+        );
       });
     }
   }
 
   function refreshPoemes() {
-    poemeDivs = [...document.querySelectorAll('.poeme.visible')];
+    poemeDivs = [...document.querySelectorAll(".poeme.visible")];
     currentPoemeIndex = 0;
   }
 
-  window.addEventListener('hashchange', () => refreshPoemes());
-  window.addEventListener('poemes-changed', () => refreshPoemes());
+  window.addEventListener("hashchange", () => refreshPoemes());
+  window.addEventListener("poemes-changed", () => refreshPoemes());
 
-  document.querySelector('.up-down').addEventListener('click', () => poemeDivs = poemeDivs.reverse());
+  document
+    .querySelector(".up-down")
+    .addEventListener("click", () => (poemeDivs = poemeDivs.reverse()));
 
-  document.addEventListener('keydown', () => {
-    const searchInput = document.getElementById('search');
+  document.addEventListener("keydown", () => {
+    const searchInput = document.getElementById("search");
     if (searchInput == document.activeElement) {
       return;
     }
-    if (event.key === 't') {
-      document.querySelector('.up-down').click();
+    if (event.key === "t") {
+      document.querySelector(".up-down").click();
     }
-    if (event.key === 'j') {
+    if (event.key === "j") {
       focusPoemeDiv((currentPoemeIndex + 1) % poemeDivs.length);
     }
-    if (event.key === 'k') {
+    if (event.key === "k") {
       const nextIndex = currentPoemeIndex - 1;
       if (nextIndex < 0) {
         focusPoemeDiv(poemeDivs.length - 1);
@@ -451,35 +493,41 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   function searchAllPoems() {
     const searchTerm = decodeURI(window.location.hash.substring(1));
     filterPoemes(normalize(searchTerm));
   }
 
-  const poemeTitlesReset = document.getElementById('reset-poeme-titles');
+  const poemeTitlesReset = document.getElementById("reset-poeme-titles");
 
-  poemeTitlesReset.addEventListener('click', () => {
-    document.querySelectorAll('.poeme-titles .poeme-title.active').forEach(title => {
-      title.classList.remove("active");
-    });
+  poemeTitlesReset.addEventListener("click", () => {
+    document
+      .querySelectorAll(".poeme-titles .poeme-title.active")
+      .forEach((title) => {
+        title.classList.remove("active");
+      });
     searchAllPoems();
     hide(poemeTitlesReset);
   });
 
-  document.querySelectorAll('.poeme-titles .poeme-title').forEach(title => {
-    title.addEventListener('click', () => {
+  document.querySelectorAll(".poeme-titles .poeme-title").forEach((title) => {
+    title.addEventListener("click", () => {
       if (title.classList.contains("active")) {
         title.classList.remove("active");
       } else {
         title.classList.add("active");
         show(poemeTitlesReset);
       }
-      document.querySelectorAll('.poemes-container .poeme').forEach(div => hide(div));
+      document
+        .querySelectorAll(".poemes-container .poeme")
+        .forEach((div) => hide(div));
 
-      const activeTitles = document.querySelectorAll('.poeme-titles .poeme-title.active');
+      const activeTitles = document.querySelectorAll(
+        ".poeme-titles .poeme-title.active",
+      );
       activeTitles.forEach(function (title) {
-        const targetId = title.getAttribute('data-id');
+        const targetId = title.getAttribute("data-id");
         const poeme = document.querySelector(`.poeme[data-id="${targetId}"]`);
         poeme.classList.add("visible");
       });
@@ -492,10 +540,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
     try {
-      await navigator.serviceWorker.register('/service-worker.js');
+      await navigator.serviceWorker.register("/service-worker.js");
     } catch (err) {
       console.log(err);
     }
