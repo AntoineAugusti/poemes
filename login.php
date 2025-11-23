@@ -25,7 +25,6 @@
       box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
       line-height: 1.5;
     }
-
     @keyframes gradient {
       0% {
         background-position: 0% 50%;
@@ -79,7 +78,7 @@
       border: 0;
     }
     .btn-grad:hover {
-      background-position: right center; /* change the direction of the change here */
+      background-position: right center;
       color: #fff;
       text-decoration: none;
     }
@@ -92,8 +91,18 @@
       width: 80%;
       text-align: center;
     }
+    #error-message {
+      border: 5px solid #ccc;
+      padding: 1em 2em;
+      margin-bottom: 2em;
+      color: #c0392b;
+    }
+    #welcome {
+      font-size: .6em;
+      font-style: italic;
+    }
   </style>
-  <script src="https://unpkg.com/@simplewebauthn/browser@9.0.1/dist/bundle/index.umd.min.js"></script>
+  <script src="https://unpkg.com/@simplewebauthn/browser@9.0.1/dist/bundle/index.umd.min.js" integrity="sha384-9+Bm5pUMP2324xMjhRahdomA9HaTxP6JcMhbl3tUAcV2+Jiohq8/T+dGj/rx/MaM" crossorigin="anonymous"></script>
 </head>
 <body class="gradient">
   <div class="container">
@@ -103,13 +112,21 @@
       Une éternité à rimer.
     </p>
     <hr>
+    <div class="hidden" id="error-message"></div>
     <form id="form">
       <label for="email">E-mail</label>
       <input type="email" id="email" required>
       <button class="btn-grad" id="submit">Se connecter</button>
     </form>
+    <div class="hidden" id="welcome"></div>
     <div class="loader hidden" id="loader"></div>
   </div>
   <script type="text/javascript" src="js.js"></script>
+  <script>
+    const action = new URLSearchParams(window.location.search).get("action");
+    if (action == undefined) {
+      window.location.href = "?action=login"
+    }
+  </script>
 </body>
 </html>

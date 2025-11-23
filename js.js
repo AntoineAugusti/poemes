@@ -21,6 +21,15 @@ function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 }
 
+function loginError(message) {
+  const errorDiv = document.getElementById("error-message");
+  errorDiv.textContent = message;
+  errorDiv.classList.remove("hidden");
+  document.getElementById("loader").classList.add("hidden");
+  document.getElementById("welcome").classList.add("hidden");
+  document.getElementById("form").classList.remove("hidden");
+}
+
 async function signup(email) {
   const initResponse = await fetch(
     `${AUTH_SERVER_URL}/init-register?email=${email}`,
@@ -28,7 +37,7 @@ async function signup(email) {
   )
   const options = await initResponse.json()
   if (!initResponse.ok) {
-    console.error(options.error)
+    loginError(options.error)
   }
 
   const registrationJSON = await SimpleWebAuthnBrowser.startRegistration(options)
@@ -47,6 +56,7 @@ async function signup(email) {
     console.log(verifyData.error)
   }
   if (verifyData.verified) {
+    setCookie("email", email, 90);
     console.log(`Successfully registered ${email}`)
   } else {
     console.log(`Failed to register`)
@@ -59,7 +69,7 @@ async function login(email) {
   })
   const options = await initResponse.json()
   if (!initResponse.ok) {
-    console.error(options.error)
+    loginError(options.error)
   }
 
   const authJSON = await SimpleWebAuthnBrowser.startAuthentication(options)
@@ -78,10 +88,20 @@ async function login(email) {
     console.log(verifyData.error)
   }
   if (verifyData.verified) {
+    setCookie("email", email, 90);
     console.log(`Successfully logged in ${email}`)
   } else {
-    console.error(`Failed to log in`)
+    loginError(`Failed to log in`)
   }
+}
+
+function submitLoginForm(email) {
+  document.getElementById("error-message").classList.add("hidden");
+  document.getElementById("form").classList.add("hidden");
+  document.getElementById("loader").classList.remove("hidden");
+
+  document.getElementById("welcome").textContent = `Hello, ${email}`;
+  document.getElementById("welcome").classList.remove("hidden");
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -92,17 +112,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("form").addEventListener("submit", async (event) => {
           event.preventDefault();
           email = document.getElementById("email").value;
-          document.getElementById("form").classList.add("hidden");
-          document.getElementById("loader").classList.remove("hidden");
-          setCookie("email", email, 90);
+          submitLoginForm(email);
           await login(email);
           setTimeout(async () => {
             window.location.href = "/"
           }, 2_000);
         });
       } else {
-        document.getElementById("form").classList.add("hidden");
-        document.getElementById("loader").classList.remove("hidden");
+        submitLoginForm(email);
         await login(email);
         setTimeout(async () => {
           window.location.href = "/"
@@ -116,9 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById("form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const email = document.getElementById("email").value;
-        document.getElementById("form").classList.add("hidden");
-        document.getElementById("loader").classList.remove("hidden");
-        setCookie("email", email, 90);
+        submitLoginForm(email);
         await signup(email);
         setTimeout(async () => {
           window.location.href = "/"
