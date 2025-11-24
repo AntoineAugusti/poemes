@@ -65,7 +65,7 @@
    .btn-grad {background-image: linear-gradient(to right, #777 0%, #555  51%, #777 100%)}
    .btn-grad {
       margin: 10px;
-      padding: 1em 2em;
+      padding: 1em 1.5em;
       text-align: center;
       transition: 0.5s;
       background-size: 200% auto;
@@ -76,6 +76,7 @@
       cursor: pointer;
       display: inline-block;
       border: 0;
+      font-size: 1em;
     }
     .btn-grad:hover {
       background-position: right center;
