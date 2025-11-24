@@ -122,7 +122,7 @@
     <div class="hidden" id="welcome"></div>
     <div class="loader hidden" id="loader"></div>
   </div>
-  <script type="text/javascript" src="js.js"></script>
+  <script type="text/javascript" src="login.js"></script>
   <script>
     const action = new URLSearchParams(window.location.search).get("action");
     if (action == undefined) {
