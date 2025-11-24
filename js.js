@@ -23,6 +23,12 @@ function setCookie(name, value, days) {
 }
 
 function loginError(message) {
+  if (message == "User already exists") {
+    const email = getCookie("email") || document.getElementById("email").value;
+    setCookie("email", email, 90);
+    window.location.href = "/";
+    return;
+  }
   const errorDiv = document.getElementById("error-message");
   errorDiv.textContent = message;
   errorDiv.classList.remove("hidden");
