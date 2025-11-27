@@ -57,10 +57,13 @@
     @keyframes l47 {
       100% {background-position: 36.36%}
     }
-    input[type="email"] {
+    input {
       width: 80%;
       padding: 10px;
       margin-bottom: 1em;
+    }
+    label {
+      display: block;
     }
    .btn-grad {background-image: linear-gradient(to right, #777 0%, #555  51%, #777 100%)}
    .btn-grad {
@@ -117,6 +120,8 @@
     <form id="form">
       <label for="email">E-mail</label>
       <input type="email" id="email" required>
+      <label for="password" id="password-label" class="hidden">Mot de passe</label>
+      <input type="password" id="password" class="hidden">
       <button class="btn-grad" id="submit">Se connecter</button>
     </form>
     <div class="hidden" id="welcome"></div>

@@ -115,6 +115,8 @@ function submitLoginForm(email) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const supportsWebAuthn = SimpleWebAuthnBrowser.browserSupportsWebAuthn();
+
   async function checkLogin() {
     if (new URLSearchParams(window.location.search).get("action") == "login") {
       let email = getCookie("email");
@@ -155,7 +157,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
   }
+  function setupPasswordLogin() {
+    document.getElementById("password").classList.remove("hidden");
+    document.getElementById("password").required = true;
+    document.getElementById("password-label").classList.remove("hidden");
 
-  await checkLogin();
-  await checkSignup();
+    document
+      .getElementById("form")
+      .addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        submitLoginForm(email);
+        const response = await fetch(`${AUTH_SERVER_URL}/password-auth`, {
+          credentials: "include",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+          loginError(json.error);
+        } else {
+          setCookie("email", email, 90);
+          setTimeout(async () => {
+            window.location.href = "/";
+          }, 2_000);
+        }
+      });
+  }
+
+  if (supportsWebAuthn) {
+    await checkLogin();
+    await checkSignup();
+  } else {
+    setupPasswordLogin();
+  }
 });

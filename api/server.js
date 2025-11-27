@@ -170,6 +170,18 @@ app.post("/verify-auth", async (req, res) => {
   }
 });
 
+app.post("/password-auth", async (req, res) => {
+  if (req.body.password != process.env.EXPECTED_PASSWORD) {
+    return res.status(400).json({ error: "Password is incorrect" });
+  }
+  res.cookie("auth", JSON.stringify({ userEmail: req.body.email }), {
+    httpOnly: true,
+    maxAge: 86_400_000,
+    secure: true,
+  });
+  return res.json({ auth: true });
+});
+
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
 });
