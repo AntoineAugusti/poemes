@@ -33,6 +33,10 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==">
           <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCA3LjMzbDIuODI5LTIuODMgOS4xNzUgOS4zMzkgOS4xNjctOS4zMzkgMi44MjkgMi44My0xMS45OTYgMTIuMTd6Ii8+PC9zdmc+">
         </div>
+
+        <input id="checkbox_theme" class="switch__input" name="switch" type="checkbox">
+        <label id="theme-switch" class="switch__label" for="checkbox_theme"></label>
+
         <input type="search" id="search" list="themes-list">
         <?php if ($_COOKIE["email"] == "antoine.augusti@gmail.com" || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
           <div class="add">
@@ -167,6 +171,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
     </div>
   </div>
   <script type="text/javascript" src="js.js"></script>
+  <script type="text/javascript" src="theme.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

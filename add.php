@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin-bottom: 2em;
     }
     .container {
-      background-color: #fff;
+      background-color: var(--panel-color);
       padding: 20px;
       max-width: 800px;
       margin: 2em auto;
@@ -156,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="submit" value="Ajouter le texte">
     </form>
   </div>
+  <script type="text/javascript" src="theme.js"></script>
   <script>
     const themes = <?= json_encode(allThemes($THEMES_FILENAME)); ?>;
     const GEMINI_API_KEY = <?= json_encode(getenv("GEMINI_API_KEY")); ?>;

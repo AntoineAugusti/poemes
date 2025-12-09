@@ -1,3 +1,17 @@
+:root {
+  --font-color: #000;
+  --bg-color: #fff;
+  --panel-color: rgb(245, 245, 245);
+  --day-color: #aaa;
+}
+
+[data-theme="dark"] {
+  --font-color: #000;
+  --bg-color: #777;
+  --panel-color: #f5f5f5;
+  --day-color: #fff;
+}
+
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -14,7 +28,8 @@ html {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #777;
+  background: var(--bg-color);
+  color: var(--font-color);
   font-size: 25px;
   font-weight: 400;
 }
@@ -87,7 +102,7 @@ body.blur {
   flex-direction: column-reverse;
 }
 .poeme {
-  background: #f5f5f5;
+  background: var(--panel-color);
   margin: 0 0.5em 2em 0.5em;
   border: 3px solid #ccc;
   padding: 1em 2em;
@@ -154,8 +169,8 @@ body.blur {
   font-family: "Vollkorn", serif;
 }
 #nb-results {
-  color: #ccc;
-  margin-left: calc(30px + 1.5em);
+  color: var(--day-color);
+  margin-left: calc(90px + 1.5em);
   margin-top: 0.2em;
   font-size: 0.8em;
 }
@@ -205,7 +220,7 @@ summary {
   font-size: 0.8em;
 }
 details {
-  margin: 0.5em 0 0.5em calc(15px + 1.5em);
+  margin: 0.5em 0 0.5em calc(65px + 2.5em);
 }
 details .poeme {
   max-width: 800px;
@@ -253,7 +268,7 @@ details .poeme {
 .day {
   display: inline-block;
   width: 5px;
-  background: white;
+  background: var(--day-color);
   height: 1px;
   margin-top: 10px;
 }
@@ -299,4 +314,61 @@ details .poeme {
     flex-direction: row-reverse;
     justify-content: flex-end;
   }
+  .add,
+  .toggle {
+    margin-left: 0.25em;
+  }
+}
+
+.switch__input {
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  z-index: 1;
+}
+.switch__label {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 25px;
+  background-color: #333;
+  border-radius: 13px;
+  transition: 0.4s;
+  margin-right: 0.5em;
+}
+.switch__label::before {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: auto;
+  left: 0;
+  bottom: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 100%;
+  border: 2px #333 solid;
+  background-color: #fff;
+  color: #333;
+  transition: 0.4s;
+  content: "☀️";
+  font-size: 15px;
+  font-weight: 900;
+  box-sizing: border-box;
+}
+.switch__input:checked + .switch__label {
+  background-color: #fff;
+}
+.switch__input:checked + .switch__label::before {
+  left: calc(100% - 25px);
+  border-color: #fff;
+  background-color: #333;
+  color: #fff;
+  content: "☾";
 }
