@@ -53,6 +53,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
           <? endif ?>
         </div>
         <div id="nb-results"></div>
+        <button id="reset">Effacer</button>
         <datalist id="themes-list">
           <? foreach(allThemes($THEMES_FILENAME) as $theme) { ?>
             <option value="#<?= $theme ?>"></option>

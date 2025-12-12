@@ -58,14 +58,17 @@ function removeHighlight() {
 
 function refreshNbResults(searchTerm) {
   const nbResults = document.querySelector("#nb-results");
+  const reset = document.querySelector("#reset");
   if (searchTerm != "") {
     const nbPoemes = document.querySelectorAll(
       ".poemes-container .poeme.visible",
     ).length;
     const text = nbPoemes == 1 ? "poème" : "poèmes";
     nbResults.textContent = `${nbPoemes} ${text}`;
+    show(reset);
   } else {
     nbResults.textContent = "";
+    hide(reset);
   }
 }
 
@@ -219,6 +222,10 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.hash = value;
     });
   }
+  document.querySelector("#reset").addEventListener("click", function () {
+    searchInput.value = "";
+    window.location.hash = "";
+  });
 });
 document.addEventListener("keydown", () => {
   if (event.key === "/") {

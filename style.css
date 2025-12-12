@@ -165,14 +165,25 @@ body.blur {
   background: #ddd;
   border: none;
   font-size: 25px;
-  padding: 10px 20px;
+  padding: 0.5em 1em;
   font-family: "Vollkorn", serif;
 }
 #nb-results {
+  display: inline-block;
   color: var(--day-color);
   margin-left: calc(90px + 1.5em);
-  margin-top: 0.2em;
+  margin-top: 0.5em;
   font-size: 0.8em;
+}
+#reset {
+  display: inline-block;
+  margin-top: 0.5em;
+  margin-left: 1em;
+  background: var(--day-color);
+  border: 0;
+}
+#reset.hidden {
+  display: none;
 }
 .search_wrapper {
   margin: 0 1em 1.5em 1em;
@@ -317,6 +328,12 @@ details .poeme {
   .add,
   .toggle {
     margin-left: 0.25em;
+  }
+  #nb-results {
+    margin-left: 5px;
+  }
+  details {
+    margin-left: 5px;
   }
 }
 
