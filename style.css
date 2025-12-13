@@ -167,26 +167,31 @@ body.blur {
   font-size: 25px;
   padding: 0.5em 1em;
   font-family: "Vollkorn", serif;
+  width: 75%;
+  max-width: 350px;
 }
 #nb-results {
   display: inline-block;
   color: var(--day-color);
-  margin-left: calc(90px + 1.5em);
-  margin-top: 0.5em;
+  margin-top: 1em;
   font-size: 0.8em;
 }
 #reset {
   display: inline-block;
-  margin-top: 0.5em;
+  margin-top: 1em;
   margin-left: 1em;
   background: var(--day-color);
   border: 0;
+  font-size: .8em;
+  padding: .25em;
+  color: var(--font-color);
 }
 #reset.hidden {
   display: none;
 }
 .search_wrapper {
   margin: 0 1em 1.5em 1em;
+  text-align: center;
 }
 .action-button {
   background: #eee;
@@ -231,7 +236,7 @@ summary {
   font-size: 0.8em;
 }
 details {
-  margin: 0.5em 0 0.5em calc(65px + 2.5em);
+  margin: 0.5em 0;
 }
 details .poeme {
   max-width: 800px;
@@ -287,6 +292,10 @@ details .poeme {
   height: 1px !important;
 }
 
+.mobile-block {
+  display: inline-block;
+}
+
 @media only screen and (max-width: 768px) {
   body,
   #search {
@@ -333,7 +342,11 @@ details .poeme {
     margin-left: 5px;
   }
   details {
+    text-align: left;
     margin-left: 5px;
+  }
+  .mobile-block {
+    display: block;
   }
 }
 
@@ -357,6 +370,7 @@ details .poeme {
   border-radius: 13px;
   transition: 0.4s;
   margin-right: 0.5em;
+  cursor: pointer;
 }
 .switch__label::before {
   display: flex;
