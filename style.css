@@ -182,8 +182,8 @@ body.blur {
   margin-left: 1em;
   background: var(--day-color);
   border: 0;
-  font-size: .8em;
-  padding: .25em;
+  font-size: 0.8em;
+  padding: 0.25em;
   color: var(--font-color);
 }
 #reset.hidden {

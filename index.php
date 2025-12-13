@@ -1,15 +1,19 @@
 <?
 require "functions.php";
 
-if (!isset($_COOKIE["auth"]) and !$_GET["action"] and getenv("NODE_ENV") != "test") {
-    header("Location: login.php?action=login", true, 302);
-    exit();
-}
-
 $signature = $_GET["signature"] ?? null;
+
 $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);
+
+if (!isset($_COOKIE["auth"]) && !$_GET["action"] && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature)) {
+  header("Location: login.php?action=login", true, 302);
+  exit();
+}
+
+$isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
+
 ?>
 <html lang="fr">
 <head>
@@ -29,31 +33,35 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
   <div class="container">
     <? if (empty($signature)) { ?>
       <div class="search_wrapper">
-        <div class="up-down" tabindex="0" role="button">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCA3LjMzbDIuODI5LTIuODMgOS4xNzUgOS4zMzkgOS4xNjctOS4zMzkgMi44MjkgMi44My0xMS45OTYgMTIuMTd6Ii8+PC9zdmc+">
+        <div class="mobile-block">
+          <div class="up-down" tabindex="0" role="button">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCA3LjMzbDIuODI5LTIuODMgOS4xNzUgOS4zMzkgOS4xNjctOS4zMzkgMi44MjkgMi44My0xMS45OTYgMTIuMTd6Ii8+PC9zdmc+">
+          </div>
+
+          <input id="checkbox_theme" class="switch__input" name="switch" type="checkbox">
+          <label id="theme-switch" class="switch__label" for="checkbox_theme"></label>
         </div>
 
-        <input id="checkbox_theme" class="switch__input" name="switch" type="checkbox">
-        <label id="theme-switch" class="switch__label" for="checkbox_theme"></label>
-
         <input type="search" id="search" list="themes-list">
-        <?php if ($_COOKIE["email"] == "antoine.augusti@gmail.com" || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
+        <?php if ($isAntoine || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
           <div class="add">
             <a href="add.php">
               <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0xMS41IDBjNi4zNDcgMCAxMS41IDUuMTUzIDExLjUgMTEuNXMtNS4xNTMgMTEuNS0xMS41IDExLjUtMTEuNS01LjE1My0xMS41LTExLjUgNS4xNTMtMTEuNSAxMS41LTExLjV6bTAgMWM1Ljc5NSAwIDEwLjUgNC43MDUgMTAuNSAxMC41cy00LjcwNSAxMC41LTEwLjUgMTAuNS0xMC41LTQuNzA1LTEwLjUtMTAuNSA0LjcwNS0xMC41IDEwLjUtMTAuNXptLjUgMTBoNnYxaC02djZoLTF2LTZoLTZ2LTFoNnYtNmgxdjZ6Ii8+PC9zdmc+">
             </a>
           </div>
-          <?php } ?>
+        <?php } ?>
         <div class="toggle">
           <? if ($TEXTES_FILENAME == 'poemes.txt'): ?>
-          <a href="?mode=textes">Textes</a>
+            <a href="?mode=textes">Textes</a>
           <? else: ?>
-          <a href="?mode=poemes">Poèmes</a>
+            <a href="?mode=poemes">Poèmes</a>
           <? endif ?>
         </div>
-        <div id="nb-results"></div>
-        <button id="reset">Effacer</button>
+        <div id="results">
+          <div id="nb-results"></div>
+          <button id="reset">Effacer</button>
+        </div>
         <datalist id="themes-list">
           <? foreach(allThemes($THEMES_FILENAME) as $theme) { ?>
             <option value="#<?= $theme ?>"></option>
@@ -86,13 +94,13 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
             $matches = parsePoeme($poeme);
             if (! empty($matches["titre"])) { ?>
               <span
-                class="poeme-title hidden"
-                tabindex="0"
-                role="switch"
-                data-id="<?= $i ?>"
-                <? if (! empty($matches["lang"])) { ?>
-                  lang="<?= $matches["lang"] ?>"
-                <? } ?>
+              class="poeme-title hidden"
+              tabindex="0"
+              role="switch"
+              data-id="<?= $i ?>"
+              <? if (! empty($matches["lang"])) { ?>
+                lang="<?= $matches["lang"] ?>"
+              <? } ?>
               ><?= $matches["titre"]; ?></span>
             <? }
           } ?>
@@ -105,8 +113,12 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
           $i = $i + 1;
           $poeme_signature = md5($poeme);
           $matches = parsePoeme($poeme);
-          ?>
-          <div
+          $validSignature = empty($signature) || $signature == $poeme_signature;
+          $hasMasqué = in_array("masqué", $themes[$i-1]);
+          $validHasMasqué = !$hasMasqué || ($hasMasqué && $isAntoine);
+          if ($validSignature && $validHasMasqué) {
+            ?>
+            <div
             class="poeme-container"
             id="poeme-<?= $i ?>"
             <? if (! empty($matches["lang"])) { ?>
@@ -120,22 +132,20 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
               <div class="js-poeme-search">
                 <div class="poeme-content">
                   <?
-                  if (empty($signature) or $signature == $poeme_signature) {
-                    if (! empty($matches["titre"])) { ?>
-                      <div class="poeme-title"><?= $matches["titre"]; ?></div>
-                    <? }
-                    if (! empty($matches["date"])) { ?>
-                      <div class="poeme-date">
-                        <a href="#<?= substr($matches["date"], 0, 7) ?>"><?= substr($matches["date"], 0, 7) ?></a><?= substr($matches["date"], 7) ?>
-                      </div>
-                    <? } ?>
-                    <div class="poeme-text">
-                      <? if (! empty($matches["titre"])) { ?>
-                        <div class="to_show">## <?= $matches["titre"]; ?></div>
-                      <? } ?>
-                      <?= nl2br(trim($matches["poeme"])); ?>
+                  if (! empty($matches["titre"])) { ?>
+                    <div class="poeme-title"><?= $matches["titre"]; ?></div>
+                  <? }
+                  if (! empty($matches["date"])) { ?>
+                    <div class="poeme-date">
+                      <a href="#<?= substr($matches["date"], 0, 7) ?>"><?= substr($matches["date"], 0, 7) ?></a><?= substr($matches["date"], 7) ?>
                     </div>
                   <? } ?>
+                  <div class="poeme-text">
+                    <? if (! empty($matches["titre"])) { ?>
+                      <div class="to_show">## <?= $matches["titre"]; ?></div>
+                    <? } ?>
+                    <?= nl2br(trim($matches["poeme"])); ?>
+                  </div>
                 </div>
                 <div class="themes">
                   <? foreach ($themes[$i-1] as $theme) { ?>
@@ -156,7 +166,7 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
                 Copier
               </div>
               <div class="action-button js-share-button">
-                <span class="hidden js-share-url">https://poemes.antoine-augusti.fr/share?signature=<?= $poeme_signature; ?>#<?= $i; ?></span>
+                <span class="hidden js-share-url">https://poemes.antoine-augusti.fr/share?signature=<?= $poeme_signature; ?></span>
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNiAxN2MyLjI2OS05Ljg4MSAxMS0xMS42NjcgMTEtMTEuNjY3di0zLjMzM2w3IDYuNjM3LTcgNi42OTZ2LTMuMzMzcy02LjE3LS4xNzEtMTEgNXptMTIgLjE0NXYyLjg1NWgtMTZ2LTEyaDYuNTk4Yy43NjgtLjc4NyAxLjU2MS0xLjQ0OSAyLjMzOS0yaC0xMC45Mzd2MTZoMjB2LTYuNzY5bC0yIDEuOTE0eiIvPjwvc3ZnPg==">
                 Partager
               </div>
@@ -165,14 +175,15 @@ $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), tru
                   <?= $matches["notes"]; ?>
                 </div>
               <? } ?>
-            </div>
+            <? } ?>
           </div>
         <? } ?>
       </div>
     </div>
   </div>
-  <script type="text/javascript" src="js.js"></script>
-  <script type="text/javascript" src="theme.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</div>
+<script type="text/javascript" src="js.js"></script>
+<script type="text/javascript" src="theme.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

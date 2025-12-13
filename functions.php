@@ -24,6 +24,11 @@ function flatten(array $array) {
   return $return;
 }
 
+function validSignature($poemes, $signature) {
+  $hashes = array_map(function ($poeme) { return md5($poeme);}, $poemes );
+  return in_array($signature, $hashes);
+}
+
 function parsePoeme($poeme) {
   $poeme_content = trim($poeme);
   $re = '~(?:---(?<notes>(?:.|\n)*)---)?(?:\n*(?<date>\d{4}-\d{2}-\d{2}))?\n*(?:lang: (?<lang>[a-z]{2}))?\n*(?:## (?<titre>.*))?(?<poeme>(?:.|\n)*)~';
