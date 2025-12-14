@@ -101,7 +101,7 @@ function frequencies($poemes) {
     $month = $date->format('Y-m');
     $day = $date->format('Y-m-d');
     if (isset($dates[$dateString])) {
-      echo "<a class='day visible' data-day='".$day."' title=".$day." href='#".$day."' style='height: ".(15*$dates[$dateString])."px'></a>";
+      echo "<a class='day visible' tabindex='-1' data-day='".$day."' title=".$day." href='#".$day."' style='height: ".(15*$dates[$dateString])."px'></a>";
     } else {
       echo "<a class='day' data-day='".$day."'></a>";
     }
