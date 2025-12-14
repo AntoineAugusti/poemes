@@ -92,7 +92,9 @@ $isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
           foreach ($poemes as $i => $poeme) {
             $i = $i + 1;
             $matches = parsePoeme($poeme);
-            if (! empty($matches["titre"])) { ?>
+            $hasMasqué = in_array("masqué", $themes[$i-1]);
+            $validHasMasqué = !$hasMasqué || ($hasMasqué && $isAntoine);
+            if (!empty($matches["titre"]) && $validHasMasqué) { ?>
               <span
               class="poeme-title hidden"
               tabindex="0"
@@ -175,10 +177,10 @@ $isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
                   <?= $matches["notes"]; ?>
                 </div>
               <? } ?>
-            <? } ?>
-          </div>
-        <? } ?>
-      </div>
+            </div>
+          <? } ?>
+        </div>
+      <? } ?>
     </div>
   </div>
 </div>
