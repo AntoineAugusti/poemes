@@ -2,18 +2,16 @@
 require "functions.php";
 
 $signature = $_GET["signature"] ?? null;
+$isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
 
 $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);
 
-if (!isset($_COOKIE["auth"]) && !$_GET["action"] && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature)) {
+if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature)) {
   header("Location: login.php?action=login", true, 302);
   exit();
 }
-
-$isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
-
 ?>
 <html lang="fr">
 <head>
@@ -32,7 +30,7 @@ $isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
 <body>
   <div class="container">
     <? if (empty($signature)) { ?>
-      <div class="search_wrapper">
+      <header class="search_wrapper">
         <div class="mobile-block">
           <div class="up-down" tabindex="0" role="button">
             <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==">
@@ -82,11 +80,11 @@ $isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
             <? } ?>
           </div>
         </details>
-      </div>
+      </header>
     <? } ?>
 
-    <div class="rows">
-      <div class="left">
+    <main class="rows">
+      <aside class="left">
         <div class="poeme-titles">
           <?
           foreach ($poemes as $i => $poeme) {
@@ -106,9 +104,9 @@ $isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
               ><?= $matches["titre"]; ?></span>
             <? }
           } ?>
-          <img id="reset-poeme-titles" class="hidden" tabindex="0" role="button" src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTEuOTk4IDJjNS41MTcgMCA5Ljk5NyA0LjQ4IDkuOTk3IDkuOTk4IDAgNS41MTctNC40OCA5Ljk5Ny05Ljk5NyA5Ljk5Ny01LjUxOCAwLTkuOTk4LTQuNDgtOS45OTgtOS45OTcgMC01LjUxOCA0LjQ4LTkuOTk4IDkuOTk4LTkuOTk4em0tNi41MTUgNC41NDRjLTEuMjM3IDEuNDc2LTEuOTgzIDMuMzc4LTEuOTgzIDUuNDU0IDAgNC42OSAzLjgwOCA4LjQ5NyA4LjQ5OCA4LjQ5NyAyLjA3NSAwIDMuOTc3LS43NDUgNS40NTQtMS45ODN6bTEzLjAyOSAxMC45MDhjMS4yMzgtMS40NzcgMS45ODMtMy4zNzkgMS45ODMtNS40NTQgMC00LjY5LTMuODA3LTguNDk4LTguNDk3LTguNDk4LTIuMDc2IDAtMy45NzguNzQ2LTUuNDU0IDEuOTgzeiIgZmlsbD0iI0Y1RjVGNSIvPjwvc3ZnPg==">
+          <img id="reset-poeme-titles" class="hidden" tabindex="0" role="button" aria-label="Réinitialiser" src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTEuOTk4IDJjNS41MTcgMCA5Ljk5NyA0LjQ4IDkuOTk3IDkuOTk4IDAgNS41MTctNC40OCA5Ljk5Ny05Ljk5NyA5Ljk5Ny01LjUxOCAwLTkuOTk4LTQuNDgtOS45OTgtOS45OTcgMC01LjUxOCA0LjQ4LTkuOTk4IDkuOTk4LTkuOTk4em0tNi41MTUgNC41NDRjLTEuMjM3IDEuNDc2LTEuOTgzIDMuMzc4LTEuOTgzIDUuNDU0IDAgNC42OSAzLjgwOCA4LjQ5NyA4LjQ5OCA4LjQ5NyAyLjA3NSAwIDMuOTc3LS43NDUgNS40NTQtMS45ODN6bTEzLjAyOSAxMC45MDhjMS4yMzgtMS40NzcgMS45ODMtMy4zNzkgMS45ODMtNS40NTQgMC00LjY5LTMuODA3LTguNDk4LTguNDk3LTguNDk4LTIuMDc2IDAtMy45NzguNzQ2LTUuNDU0IDEuOTgzeiIgZmlsbD0iI0Y1RjVGNSIvPjwvc3ZnPg==">
         </div>
-      </div>
+      </aside>
       <div class="poemes-container">
         <?
         foreach ($poemes as $i => $poeme) {
@@ -181,6 +179,18 @@ $isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
           <? } ?>
         </div>
       <? } ?>
+    </div>
+  </main>
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>Raccourcis clavier</h2>
+      <ul>
+        <li><kbd>J</kbd> : poème suivant</li>
+        <li><kbd>K</kbd> : poème précédent</li>
+        <li><kbd>T</kbd> : changer l'ordre des poèmes</li>
+        <li><kbd>/</kbd> : rechercher</li>
+      </ul>
     </div>
   </div>
 </div>

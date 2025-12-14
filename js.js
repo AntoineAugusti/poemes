@@ -227,13 +227,6 @@ document.addEventListener("DOMContentLoaded", function () {
     window.location.hash = "";
   });
 });
-document.addEventListener("keydown", () => {
-  if (event.key === "/") {
-    const searchDiv = document.getElementById("search");
-    searchDiv.focus();
-    event.preventDefault();
-  }
-});
 
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".poeme-container").forEach((container) => {
@@ -323,10 +316,14 @@ document.addEventListener("DOMContentLoaded", function () {
     .querySelector(".up-down")
     .addEventListener("click", () => (poemeDivs = poemeDivs.reverse()));
 
-  document.addEventListener("keydown", () => {
+  document.addEventListener("keydown", (event) => {
     const searchInput = document.getElementById("search");
     if (searchInput == document.activeElement) {
       return;
+    }
+    if (event.key === "/") {
+      searchInput.focus();
+      event.preventDefault();
     }
     if (event.key === "t") {
       document.querySelector(".up-down").click();
@@ -390,6 +387,30 @@ document.addEventListener("DOMContentLoaded", function () {
       document.dispatchEvent(new Event("poemes-changed", { bubbles: true }));
     });
   });
+
+  const modal = document.getElementById("modal");
+  const close = document.getElementsByClassName("close-btn")[0];
+
+  close.onclick = function () {
+    modal.style.display = "none";
+  };
+
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
+
+  document.onkeydown = function (event) {
+    if (event.key === "?") {
+      modal.style.display = "block";
+    }
+    if (event.key === "Escape" || event.keyCode === 27) {
+      if (modal.style.display === "block") {
+        modal.style.display = "none";
+      }
+    }
+  };
 });
 
 if ("serviceWorker" in navigator) {
