@@ -3,10 +3,6 @@ const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const jQuery = require("jquery");
 
-import iconv from "iconv-lite";
-import encodings from "iconv-lite/encodings";
-iconv.encodings = encodings;
-
 const { exec } = require("node:child_process");
 
 beforeAll(async () => {
