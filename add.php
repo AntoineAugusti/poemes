@@ -150,6 +150,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       <label for="themes">Thèmes</label><br>
       <input spellcheck="false" required type="text" id="themes" name="themes" /><br>
+      <input type="checkbox" name="checkbox" id="checkbox">
+      <label for="checkbox">Poème masqué</label><br>
       <button id="generate-themes" type="button">Générer des thèmes</button><br>
       <div id="themes-suggestions"></div>
 
@@ -228,6 +230,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           });
         });
       });
+
+      const checkbox = document.getElementById('checkbox');
+      checkbox.addEventListener('click', function () {
+        const themesInput = document.getElementById('themes');
+        if (checkbox.checked) {
+          if (themesInput.value === '') {
+            themesInput.value = 'masqué'
+          }
+          else {
+            themesInput.value = themesInput.value + ',masqué'
+          }
+        }
+        else {
+          themesInput.value = themesInput.value.replace(/(,)?masqué/, '')
+        }
+      })
 
       const generateThemes = document.getElementById('generate-themes');
       generateThemes.addEventListener('click', function() {
