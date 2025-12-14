@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         generateTags(text).then(response => {
           const themes = response.candidates[0].content.parts[0].text.toLowerCase();
           const themesInput = document.getElementById('themes');
-          themesInput.value = themes;
+          themesInput.value = uniqueArray(themes.split(",")).join(",");
           generateThemes.disabled = false;
         });
       });
