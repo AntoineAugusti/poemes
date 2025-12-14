@@ -10,6 +10,9 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {});
 
 self.addEventListener("fetch", (event) => {
+  if (!event.request.url.startsWith("http")) {
+    return;
+  }
   if (event.request.method === "POST") {
     return;
   }
