@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ddd;
       box-sizing: border-box;
       font-size: 1em;
     }
@@ -65,9 +64,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       cursor: pointer;
     }
     input[type="text"] {
-      width: 80%;
+      width: 100%;
       padding: 10px;
       margin-bottom: 1em;
+      box-sizing: border-box;
     }
     input[type="date"] {
       padding: 10px;
@@ -111,6 +111,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       background: #333;
       cursor: default;
     }
+    .label {
+      padding: 2px 5px;
+      margin: 0 .5em .5em 0;
+      background: #aaa;
+      color: white;
+      display: inline-block;
+      cursor: pointer;
+      font-size: 0.8em;
+    }
+    #themes-counts {
+      margin-bottom: 1em;
+    }
     #themes-suggestions {
       margin-bottom: 2em;
     }
@@ -153,6 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="checkbox" name="checkbox" id="checkbox">
       <label for="checkbox">Poème masqué</label><br>
       <button id="generate-themes" type="button">Générer des thèmes</button><br>
+      <div id="themes-counts"></div>
       <div id="themes-suggestions"></div>
 
       <input type="submit" value="Ajouter le texte">
@@ -163,6 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     const themes = <?= json_encode(allThemes($THEMES_FILENAME)); ?>;
     const GEMINI_API_KEY = <?= json_encode(getenv("GEMINI_API_KEY")); ?>;
     const commonThemes = <?= json_encode(commonThemes($THEMES_FILENAME)); ?>;
+    const countThemes = <?= json_encode(countThemes($THEMES_FILENAME)); ?>;
 
     function uniqueArray(a) {
       return [...new Set(a)].sort((a, b) => a.localeCompare(b, 'fr'));
@@ -239,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             themesInput.value = 'masqué'
           }
           else {
-            themesInput.value = themesInput.value + ',masqué'
+            themesInput.value = themesInput.value.replace(/,$/, '') + ',masqué'
           }
         }
         else {
@@ -256,17 +270,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           const themes = response.candidates[0].content.parts[0].text.toLowerCase();
           const themesInput = document.getElementById('themes');
           themesInput.value = uniqueArray(themes.split(",")).join(",");
+          themesInput.dispatchEvent(new Event('input', {
+            bubbles: true,
+            cancelable: true
+          }));
           generateThemes.disabled = false;
         });
       });
 
       const themesInput = document.getElementById('themes');
       const themesSuggestions = document.getElementById('themes-suggestions');
+      const themesCounts = document.getElementById('themes-counts');
       themesInput.addEventListener('input', function() {
         themesInput.value = themesInput.value.toLowerCase();
         const lastWord = themesInput.value.split(',').slice(-1)[0];
         const previousInput = themesInput.value.split(',').slice(0, -1);
         let suggestions = uniqueArray(themes);
+        themesCounts.textContent = '';
+
+        themesInput.value.split(',')
+        .filter(x => x in countThemes)
+        .forEach((tag) => {
+          const span = document.createElement('span');
+          span.textContent = `${tag} (${countThemes[tag]})`;
+          span.setAttribute('class', 'label');
+          themesCounts.appendChild(span);
+        })
 
         if (previousInput.length > 0) {
           suggestions = uniqueArray(
@@ -291,6 +320,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               span.addEventListener("click", function (event) {
                 themesInput.value = previousInput.concat([event.srcElement.innerText]).join(",");
                 themesInput.focus();
+                themesInput.dispatchEvent(new Event('input', {
+                  bubbles: true,
+                  cancelable: true
+                }));
               });
               span.addEventListener('keydown', event => {
                 if (!document.activeElement === span) {
