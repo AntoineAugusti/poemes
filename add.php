@@ -35,11 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <style>
     body, html {
       font-size: 18px;
+      height: auto;
     }
     h1 {
       font-weight: bold;
       font-size: 1.5em;
       margin-bottom: 2em;
+      text-shadow: 2px 2px 3px rgba(128, 128, 128, 0.5);
+      background-clip: text;
+      background-color: #000;
+      color: transparent;
     }
     .container {
       background-color: var(--panel-color);

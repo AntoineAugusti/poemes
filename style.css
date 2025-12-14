@@ -101,7 +101,7 @@ body * {
   margin-bottom: 0.5em;
   background-color: #000;
   color: transparent;
-  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.1);
+  text-shadow: 2px 2px 3px rgba(128, 128, 128, 0.5);
   background-clip: text;
 }
 .poeme-date {
