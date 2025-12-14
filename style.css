@@ -40,18 +40,6 @@ body {
 body * {
   font-family: "Vollkorn", serif;
 }
-@-webkit-keyframes blur {
-  0% {
-    filter: blur(0px);
-  }
-  100% {
-    filter: blur(5px);
-  }
-}
-body.blur {
-  animation-name: blur;
-  filter: blur(5px);
-}
 .up-down {
   display: inline;
   margin-right: 0.5em;
@@ -79,7 +67,7 @@ body.blur {
 }
 .toggle a {
   text-decoration: none;
-  color: #111;
+  color: var(--font-color);
 }
 .container {
   display: flex;
@@ -106,7 +94,7 @@ body.blur {
   margin: 0 0.5em 2em 0.5em;
   border: 3px solid #ccc;
   padding: 1em 2em;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: rgba(50, 50, 50, 0.5) 0px 8px 24px;
 }
 .poeme-content .poeme-title {
   font-weight: 700;
@@ -236,6 +224,7 @@ summary {
   font-size: 0.8em;
 }
 details {
+  text-align: left;
   margin: 0.5em 0;
 }
 details .poeme {
@@ -279,7 +268,7 @@ details .poeme {
   margin-right: 1em;
 }
 .days {
-  margin: 0.5em 0;
+  margin: 1em 0;
 }
 .day {
   display: inline-block;
@@ -299,7 +288,7 @@ details .poeme {
 @media only screen and (max-width: 768px) {
   body,
   #search {
-    font-size: 16px;
+    font-size: 18px;
   }
   .poeme {
     padding: 1em;
