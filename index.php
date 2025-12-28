@@ -176,8 +176,8 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
                 </div>
               <? } ?>
             </div>
-          <? } ?>
-        </div>
+          </div>
+        <? } ?>
       <? } ?>
     </div>
   </main>
