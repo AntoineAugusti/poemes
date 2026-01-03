@@ -169,17 +169,20 @@ body * {
   margin-top: 1em;
   font-size: 0.8em;
 }
-#reset {
+#reset,
+#show-favorites {
   display: inline-block;
   margin-top: 1em;
   margin-left: 1em;
   background: var(--day-color);
   border: 0;
   font-size: 0.8em;
-  padding: 0.25em;
+  padding: 0.25em 0.5em;
   color: var(--font-color);
+  cursor: pointer;
 }
-#reset.hidden {
+#reset.hidden,
+#show-favorites.hidden {
   display: none;
 }
 .search_wrapper {
@@ -202,6 +205,12 @@ body * {
   width: 1em;
   vertical-align: middle;
   margin-right: 0.3em;
+}
+.js-favorite-button.is-favorite {
+  background: #ffd700;
+}
+.js-favorite-button.is-favorite .favorite-icon {
+  fill: #333;
 }
 .themes {
   margin: 0.25em 0;
