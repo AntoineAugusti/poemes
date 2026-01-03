@@ -62,8 +62,10 @@ function refreshNbResults(searchTerm) {
   const hasSearch = searchTerm != "";
 
   if (hasSearch || showingFavoritesOnly) {
-    const nbPoemes = document.querySelectorAll(".poemes-container .poeme.visible").length;
-    const label = (showingFavoritesOnly && !hasSearch) ? "favori" : "poème";
+    const nbPoemes = document.querySelectorAll(
+      ".poemes-container .poeme.visible",
+    ).length;
+    const label = showingFavoritesOnly && !hasSearch ? "favori" : "poème";
     const text = nbPoemes == 1 ? label : label + "s";
     nbResults.textContent = `${nbPoemes} ${text}`;
     hasSearch ? show(reset) : hide(reset);
@@ -74,7 +76,9 @@ function refreshNbResults(searchTerm) {
 }
 
 function matchesSearchCriteria(poemeDiv, searchTerm, date, id) {
-  const textContent = normalize(poemeDiv.querySelector(".js-poeme-search").textContent);
+  const textContent = normalize(
+    poemeDiv.querySelector(".js-poeme-search").textContent,
+  );
 
   // Recherche vide = tout afficher
   if (searchTerm.trim() == "") return true;
@@ -106,14 +110,19 @@ function matchesSearchCriteria(poemeDiv, searchTerm, date, id) {
 
   // Recherche par range de dates : `2025-10-01-2025-10-10`
   if (date && /^\d{4}-\d{2}-\d{2}-\d{4}-\d{2}-\d{2}$/.test(searchTerm)) {
-    const matches = searchTerm.match(/^(\d{4}-\d{2}-\d{2})-(\d{4}-\d{2}-\d{2})$/);
+    const matches = searchTerm.match(
+      /^(\d{4}-\d{2}-\d{2})-(\d{4}-\d{2}-\d{2})$/,
+    );
     const start = new Date(matches[1]);
     const end = new Date(matches[2]);
     return new Date(date) >= start && new Date(date) <= end;
   }
 
   // Recherche par mots-clés
-  return includesAnyWord(textContent, searchTerm.split(" ").filter((word) => word != ""));
+  return includesAnyWord(
+    textContent,
+    searchTerm.split(" ").filter((word) => word != ""),
+  );
 }
 
 function filterPoemes(searchTerm) {
@@ -343,7 +352,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.key === "s") {
       if (poemeDivs[currentPoemeIndex]) {
         const poemeId = poemeDivs[currentPoemeIndex].getAttribute("data-id");
-        const button = document.querySelector(`.js-favorite-button[data-poeme-id="${poemeId}"]`);
+        const button = document.querySelector(
+          `.js-favorite-button[data-poeme-id="${poemeId}"]`,
+        );
         if (button) {
           button.click();
         }
@@ -482,9 +493,13 @@ function updateFavoriteButton(button, isFav) {
   // Animation quand on ajoute en favori
   if (isFav) {
     button.classList.add("animate__animated", "animate__heartBeat");
-    button.addEventListener("animationend", () => {
-      button.classList.remove("animate__animated", "animate__heartBeat");
-    }, { once: true });
+    button.addEventListener(
+      "animationend",
+      () => {
+        button.classList.remove("animate__animated", "animate__heartBeat");
+      },
+      { once: true },
+    );
   }
 }
 
@@ -545,8 +560,12 @@ function displayOnlyFavorites() {
 function displayAllPoemes() {
   setFavoritesMode(false);
 
-  document.querySelectorAll(".poemes-container .poeme").forEach((div) => show(div));
-  document.querySelectorAll(".poeme-titles .poeme-title").forEach((title) => hide(title));
+  document
+    .querySelectorAll(".poemes-container .poeme")
+    .forEach((div) => show(div));
+  document
+    .querySelectorAll(".poeme-titles .poeme-title")
+    .forEach((title) => hide(title));
 
   const nbResults = document.querySelector("#nb-results");
   nbResults.textContent = "";
@@ -558,7 +577,6 @@ function displayAllPoemes() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-
   // Initialiser les boutons favoris
   document.querySelectorAll(".js-favorite-button").forEach((button) => {
     const poemeId = button.getAttribute("data-poeme-id");
@@ -581,6 +599,4 @@ document.addEventListener("DOMContentLoaded", function () {
   showFavButton.addEventListener("click", function () {
     showingFavoritesOnly ? displayAllPoemes() : displayOnlyFavorites();
   });
-
-
 });
