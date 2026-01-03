@@ -119,7 +119,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
           if ($validSignature && $validHasMasqué) {
             ?>
             <div
-            class="poeme-container"
+            class="poeme-container <? if ($hasMasqué) { ?>poeme-masque<? } ?>"
             id="poeme-<?= $i ?>"
             <? if (! empty($matches["lang"])) { ?>
               lang="<?= $matches["lang"] ?>"

@@ -96,6 +96,11 @@ body * {
   padding: 1em 2em;
   box-shadow: rgba(50, 50, 50, 0.5) 0px 8px 24px;
 }
+.poeme-masque .poeme {
+  background: #e0e0e0;
+  border: 3px dashed #424242;
+  box-shadow: rgba(66, 66, 66, 0.3) 0px 8px 24px;
+}
 .poeme-content .poeme-title {
   font-weight: 700;
   margin-bottom: 0.5em;
