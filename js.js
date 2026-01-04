@@ -517,14 +517,33 @@ function updateShowFavoritesButton() {
 }
 
 function filterByFavorites(favorites) {
+  // Collecter les dates des poèmes favoris
+  const favoriteDates = new Set();
+
   document.querySelectorAll(".poemes-container .poeme").forEach((div) => {
     const poemeId = div.getAttribute("data-id");
-    favorites.includes(poemeId) ? show(div) : hide(div);
+    const isFavorite = favorites.includes(poemeId);
+
+    if (isFavorite) {
+      const poemeDate = div.querySelector(".poeme-date");
+      if (poemeDate) {
+        const date = poemeDate.textContent.trim();
+        favoriteDates.add(date);
+      }
+    }
+
+    isFavorite ? show(div) : hide(div);
   });
 
   document.querySelectorAll(".poeme-titles .poeme-title").forEach((title) => {
     const titleId = title.getAttribute("data-id");
     favorites.includes(titleId) ? show(title) : hide(title);
+  });
+
+  // Filtrer les jours pour n'afficher que ceux des favoris
+  document.querySelectorAll(".day").forEach((day) => {
+    const dayDate = day.getAttribute("data-day");
+    favoriteDates.has(dayDate) ? show(day) : hide(day);
   });
 }
 
@@ -541,6 +560,64 @@ function setFavoritesMode(enabled) {
   }
 }
 
+function updateFavoritesCounter() {
+  const favorites = getFavorites();
+  const nbResults = document.querySelector("#nb-results");
+
+  if (favorites.length > 0) {
+    const text = favorites.length === 1 ? "favori" : "favoris";
+    nbResults.textContent = `${favorites.length} ${text}`;
+  } else {
+    nbResults.textContent = "";
+  }
+}
+
+function updateDaysForFavorites() {
+  const favoriteDates = new Set();
+
+  document
+    .querySelectorAll(".poemes-container .poeme.visible")
+    .forEach((div) => {
+      const poemeDate = div.querySelector(".poeme-date");
+      if (poemeDate) {
+        favoriteDates.add(poemeDate.textContent.trim());
+      }
+    });
+
+  document.querySelectorAll(".day").forEach((day) => {
+    const dayDate = day.getAttribute("data-day");
+    favoriteDates.has(dayDate) ? show(day) : hide(day);
+  });
+}
+
+function animateRemoveFromFavorites(button) {
+  const poemeContainer = button.closest(".poeme-container");
+  if (!poemeContainer) return;
+
+  const poemeId = button.getAttribute("data-poeme-id");
+
+  poemeContainer.classList.add("animate__animated", "animate__fadeOut");
+  poemeContainer.addEventListener(
+    "animationend",
+    () => {
+      hide(poemeContainer.querySelector(".poeme"));
+      poemeContainer.classList.remove("animate__animated", "animate__fadeOut");
+
+      // Cacher le titre du poème
+      const poemeTitle = document.querySelector(
+        `.poeme-title[data-id="${poemeId}"]`,
+      );
+      if (poemeTitle) {
+        hide(poemeTitle);
+      }
+
+      updateFavoritesCounter();
+      updateDaysForFavorites();
+    },
+    { once: true },
+  );
+}
+
 function displayOnlyFavorites() {
   setFavoritesMode(true);
 
@@ -550,10 +627,7 @@ function displayOnlyFavorites() {
   } else {
     const favorites = getFavorites();
     filterByFavorites(favorites);
-
-    const nbResults = document.querySelector("#nb-results");
-    const text = favorites.length === 1 ? "favori" : "favoris";
-    nbResults.textContent = `${favorites.length} ${text}`;
+    updateFavoritesCounter();
   }
 }
 
@@ -566,6 +640,7 @@ function displayAllPoemes() {
   document
     .querySelectorAll(".poeme-titles .poeme-title")
     .forEach((title) => hide(title));
+  document.querySelectorAll(".day").forEach((day) => show(day));
 
   const nbResults = document.querySelector("#nb-results");
   nbResults.textContent = "";
@@ -587,6 +662,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const newIsFav = toggleFavorite(poemeId);
       updateFavoriteButton(button, newIsFav);
       updateShowFavoritesButton();
+
+      // Si on retire un favori en mode favoris, l'animer puis le cacher
+      if (!newIsFav && showingFavoritesOnly) {
+        animateRemoveFromFavorites(button);
+      }
     });
   });
 
