@@ -573,6 +573,18 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// Remonter en haut quand on clique sur un thème
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("a.theme").forEach(function (link) {
+    link.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+  });
+});
+
 // Utilitaires pour gérer les hauteurs des jours
 const DayHeights = {
   save() {
