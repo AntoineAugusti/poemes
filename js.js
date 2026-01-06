@@ -550,6 +550,29 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Bouton retour en haut (visible uniquement sur mobile)
+document.addEventListener("DOMContentLoaded", function () {
+  const scrollToTopBtn = document.getElementById("scroll-to-top");
+  if (!scrollToTopBtn) return;
+
+  // Afficher/masquer le bouton en fonction du scroll
+  window.addEventListener("scroll", function () {
+    if (window.pageYOffset > 300) {
+      scrollToTopBtn.classList.remove("hidden");
+    } else {
+      scrollToTopBtn.classList.add("hidden");
+    }
+  });
+
+  // Remonter en haut au clic
+  scrollToTopBtn.addEventListener("click", function () {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  });
+});
+
 // Utilitaires pour gérer les hauteurs des jours
 const DayHeights = {
   save() {

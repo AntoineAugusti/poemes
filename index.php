@@ -209,6 +209,9 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
       </ul>
     </div>
   </div>
+  <button id="scroll-to-top" class="scroll-to-top hidden">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMCAxNi42N2wyLjgyOSAyLjgzIDkuMTc1LTkuMzM5IDkuMTY3IDkuMzM5IDIuODI5LTIuODMtMTEuOTk2LTEyLjE3eiIvPjwvc3ZnPg==" alt="Retour en haut">
+  </button>
 </div>
 <script type="text/javascript" src="js.js"></script>
 <script type="text/javascript" src="theme.js"></script>
