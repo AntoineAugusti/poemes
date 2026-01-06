@@ -36,11 +36,25 @@ function highlightText(searchTerm) {
     return;
   }
 
+  const context = document.querySelectorAll(".poemes-container .poeme.visible");
+
+  // Recherche par couple de rimes : surligner les deux mots
+  if (searchTerm.startsWith("rime:")) {
+    const parts = searchTerm.split(":");
+    if (parts.length === 3) {
+      const word1 = parts[1].trim();
+      const word2 = parts[2].trim();
+      const markInstance = new Mark(context);
+      markInstance.mark(word1, { separateWordSearch: false });
+      markInstance.mark(word2, { separateWordSearch: false });
+    }
+    return;
+  }
+
   if (searchTerm != normalize(searchTerm)) {
     highlightText(normalize(searchTerm));
   }
 
-  const context = document.querySelectorAll(".poemes-container .poeme.visible");
   let separateWordSearch = true;
   if (searchTerm.startsWith('"') || searchTerm.startsWith("#")) {
     separateWordSearch = false;
@@ -75,6 +89,77 @@ function refreshNbResults(searchTerm) {
   }
 }
 
+// Utilitaires pour la recherche de rimes
+const RhymeUtils = {
+  normalizeWord(word) {
+    return normalize(word).replace(/[^\w\s-]/g, "");
+  },
+
+  getRhymeSound(word) {
+    let normalized = this.normalizeWord(word);
+
+    // Retirer les 'e' muets finaux et 's' du pluriel
+    if (normalized.endsWith("e") && normalized.length > 1) {
+      normalized = normalized.slice(0, -1);
+    }
+    if (normalized.endsWith("s") && normalized.length > 1) {
+      normalized = normalized.slice(0, -1);
+    }
+
+    return normalized.slice(-3);
+  },
+
+  extractLastWords(poemeDiv) {
+    const poemeText = poemeDiv.querySelector(".poeme-text");
+    if (!poemeText) return [];
+
+    return poemeText.textContent
+      .split("\n")
+      .filter((v) => v.trim())
+      .map((verse) => {
+        const words = verse.trim().split(/\s+/);
+        return words.length > 0
+          ? this.normalizeWord(words[words.length - 1])
+          : "";
+      });
+  },
+
+  findRhymePair(lastWords, word1, word2) {
+    const RHYME_OFFSETS = [1, 2]; // Consécutives (AA) et alternées (ABAB)
+
+    for (let i = 0; i < lastWords.length; i++) {
+      const currentWord = lastWords[i];
+      if (currentWord !== word1 && currentWord !== word2) continue;
+
+      const searchWord = currentWord === word1 ? word2 : word1;
+
+      for (const offset of RHYME_OFFSETS) {
+        if (
+          i + offset < lastWords.length &&
+          lastWords[i + offset] === searchWord
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  },
+
+  searchPair(poemeDiv, word1, word2) {
+    const normalizedWord1 = this.normalizeWord(word1);
+    const normalizedWord2 = this.normalizeWord(word2);
+
+    // Vérifier que les deux mots ont le même son de rime
+    const sound1 = this.getRhymeSound(word1);
+    const sound2 = this.getRhymeSound(word2);
+    if (sound1 !== sound2) return false;
+
+    const lastWords = this.extractLastWords(poemeDiv);
+    return this.findRhymePair(lastWords, normalizedWord1, normalizedWord2);
+  },
+};
+
 function matchesSearchCriteria(poemeDiv, searchTerm, date, id) {
   const textContent = normalize(
     poemeDiv.querySelector(".js-poeme-search").textContent,
@@ -82,6 +167,15 @@ function matchesSearchCriteria(poemeDiv, searchTerm, date, id) {
 
   // Recherche vide = tout afficher
   if (searchTerm.trim() == "") return true;
+
+  // Recherche par couple de rimes : `rime:mot1:mot2`
+  if (searchTerm.startsWith("rime:")) {
+    const parts = searchTerm.split(":");
+    if (parts.length === 3) {
+      return RhymeUtils.searchPair(poemeDiv, parts[1].trim(), parts[2].trim());
+    }
+    return false;
+  }
 
   // Recherche exacte (citation ou hashtag)
   if (searchTerm.startsWith('"') || searchTerm.startsWith("#")) {
@@ -456,6 +550,41 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Utilitaires pour gérer les hauteurs des jours
+const DayHeights = {
+  save() {
+    document.querySelectorAll(".day").forEach((day) => {
+      const originalHeight = day.style.height || "1px";
+      day.setAttribute("data-original-height", originalHeight);
+    });
+  },
+
+  restore() {
+    document.querySelectorAll(".day").forEach((day) => {
+      const originalHeight = day.getAttribute("data-original-height");
+      if (originalHeight) {
+        day.style.height = originalHeight;
+      }
+      show(day);
+    });
+  },
+
+  updateFromCounts(dateCounts) {
+    document.querySelectorAll(".day").forEach((day) => {
+      const dayDate = day.getAttribute("data-day");
+      if (dateCounts[dayDate]) {
+        show(day);
+        day.style.height = 15 * dateCounts[dayDate] + "px";
+      } else {
+        hide(day);
+      }
+    });
+  },
+};
+
+// Sauvegarder les hauteurs originales au chargement
+document.addEventListener("DOMContentLoaded", () => DayHeights.save());
+
 // Gestion des favoris
 const FAVORITES_KEY = "poemes-favorites";
 let showingFavoritesOnly = false;
@@ -516,35 +645,34 @@ function updateShowFavoritesButton() {
   }
 }
 
-function filterByFavorites(favorites) {
-  // Collecter les dates des poèmes favoris
-  const favoriteDates = new Set();
+function countPoemesByDate(selector) {
+  const dateCounts = {};
+  document.querySelectorAll(selector).forEach((div) => {
+    const poemeDate = div.querySelector(".poeme-date");
+    if (poemeDate) {
+      const date = poemeDate.textContent.trim();
+      dateCounts[date] = (dateCounts[date] || 0) + 1;
+    }
+  });
+  return dateCounts;
+}
 
+function filterByFavorites(favorites) {
+  // Afficher/cacher les poèmes
   document.querySelectorAll(".poemes-container .poeme").forEach((div) => {
     const poemeId = div.getAttribute("data-id");
-    const isFavorite = favorites.includes(poemeId);
-
-    if (isFavorite) {
-      const poemeDate = div.querySelector(".poeme-date");
-      if (poemeDate) {
-        const date = poemeDate.textContent.trim();
-        favoriteDates.add(date);
-      }
-    }
-
-    isFavorite ? show(div) : hide(div);
+    favorites.includes(poemeId) ? show(div) : hide(div);
   });
 
+  // Afficher/cacher les titres
   document.querySelectorAll(".poeme-titles .poeme-title").forEach((title) => {
     const titleId = title.getAttribute("data-id");
     favorites.includes(titleId) ? show(title) : hide(title);
   });
 
-  // Filtrer les jours pour n'afficher que ceux des favoris
-  document.querySelectorAll(".day").forEach((day) => {
-    const dayDate = day.getAttribute("data-day");
-    favoriteDates.has(dayDate) ? show(day) : hide(day);
-  });
+  // Mettre à jour les hauteurs des jours basées sur les favoris visibles
+  const dateCounts = countPoemesByDate(".poemes-container .poeme.visible");
+  DayHeights.updateFromCounts(dateCounts);
 }
 
 function setFavoritesMode(enabled) {
@@ -552,7 +680,7 @@ function setFavoritesMode(enabled) {
   showingFavoritesOnly = enabled;
 
   if (enabled) {
-    showFavButton.style.background = "#ffd700";
+    showFavButton.style.background = "var(--favorite-color)";
     showFavButton.classList.add("active");
   } else {
     showFavButton.style.background = "var(--day-color)";
@@ -573,21 +701,8 @@ function updateFavoritesCounter() {
 }
 
 function updateDaysForFavorites() {
-  const favoriteDates = new Set();
-
-  document
-    .querySelectorAll(".poemes-container .poeme.visible")
-    .forEach((div) => {
-      const poemeDate = div.querySelector(".poeme-date");
-      if (poemeDate) {
-        favoriteDates.add(poemeDate.textContent.trim());
-      }
-    });
-
-  document.querySelectorAll(".day").forEach((day) => {
-    const dayDate = day.getAttribute("data-day");
-    favoriteDates.has(dayDate) ? show(day) : hide(day);
-  });
+  const dateCounts = countPoemesByDate(".poemes-container .poeme.visible");
+  DayHeights.updateFromCounts(dateCounts);
 }
 
 function animateRemoveFromFavorites(button) {
@@ -640,7 +755,8 @@ function displayAllPoemes() {
   document
     .querySelectorAll(".poeme-titles .poeme-title")
     .forEach((title) => hide(title));
-  document.querySelectorAll(".day").forEach((day) => show(day));
+
+  DayHeights.restore();
 
   const nbResults = document.querySelector("#nb-results");
   nbResults.textContent = "";

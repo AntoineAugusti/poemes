@@ -156,10 +156,12 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
                   <? } ?>
                 </div>
               </div>
-              <div class="action-button js-favorite-button" data-poeme-id="<?= $i ?>">
-                <img class="favorite-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgLjU4N2wzLjY2OCA3LjU2OCA4LjMzMiAxLjE1MS02LjA2NCA1LjgyOCAxLjQ4IDguMjc5LTcuNDE2LTMuOTY3LTcuNDE3IDMuOTY3IDEuNDgxLTguMjc5LTYuMDY0LTUuODI4IDguMzMyLTEuMTUxeiIvPjwvc3ZnPg==">
-                <span class="favorite-text">Favori</span>
-              </div>
+              <? if (empty($signature)) { ?>
+                <div class="action-button js-favorite-button" data-poeme-id="<?= $i ?>">
+                  <img class="favorite-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgLjU4N2wzLjY2OCA3LjU2OCA4LjMzMiAxLjE1MS02LjA2NCA1LjgyOCAxLjQ4IDguMjc5LTcuNDE2LTMuOTY3LTcuNDE3IDMuOTY3IDEuNDgxLTguMjc5LTYuMDY0LTUuODI4IDguMzMyLTEuMTUxeiIvPjwvc3ZnPg==">
+                  <span class="favorite-text">Favori</span>
+                </div>
+              <? } ?>
               <? if (! empty($matches["notes"])) { ?>
                 <div class="action-button js-notes-auteur">
                   <img src="data:image/svg+xml;base64,PHN2ZyBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjIiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMTEuMjUgNmMuMzk4IDAgLjc1LjM1Mi43NS43NSAwIC40MTQtLjMzNi43NS0uNzUuNzUtMS41MDUgMC03Ljc1IDAtNy43NSAwdjEyaDE3di04Ljc1YzAtLjQxNC4zMzYtLjc1Ljc1LS43NXMuNzUuMzM2Ljc1Ljc1djkuMjVjMCAuNjIxLS41MjIgMS0xIDFoLTE4Yy0uNDggMC0xLS4zNzktMS0xdi0xM2MwLS40ODEuMzgtMSAxLTF6bS0yLjAxMSA2LjUyNmMtMS4wNDUgMy4wMDMtMS4yMzggMy40NS0xLjIzOCAzLjg0IDAgLjQ0MS4zODUuNjI2LjYyNy42MjYuMjcyIDAgMS4xMDgtLjMwMSAzLjgyOS0xLjI0OXptLjg4OC0uODg5IDMuMjIgMy4yMiA4LjQwOC04LjRjLjE2My0uMTYzLjI0NS0uMzc3LjI0NS0uNTkyIDAtLjIxMy0uMDgyLS40MjctLjI0NS0uNTkxLS41OC0uNTc4LTEuNDU4LTEuNDU3LTIuMDM5LTIuMDM2LS4xNjMtLjE2My0uMzc3LS4yNDUtLjU5MS0uMjQ1LS4yMTMgMC0uNDI4LjA4Mi0uNTkyLjI0NXoiIGZpbGwtcnVsZT0ibm9uemVybyIvPjwvc3ZnPg==">
@@ -196,6 +198,14 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
         <li><kbd>T</kbd> : changer l'ordre des poèmes</li>
         <li><kbd>S</kbd> : ajouter/retirer des favoris</li>
         <li><kbd>/</kbd> : rechercher</li>
+      </ul>
+      <h2>Recherche avancée</h2>
+      <ul>
+        <li><code>rime:mot1:mot2</code> : recherche par couple de rimes</li>
+        <li><code>#thème</code> : recherche exacte de thème</li>
+        <li><code>"texte exact"</code> : recherche exacte</li>
+        <li><code>123-456</code> : poèmes de 123 à 456</li>
+        <li><code>2025-01-01-</code> : poèmes depuis cette date</li>
       </ul>
     </div>
   </div>
