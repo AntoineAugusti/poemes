@@ -95,20 +95,6 @@ const RhymeUtils = {
     return normalize(word).replace(/[^\w\s-]/g, "");
   },
 
-  getRhymeSound(word) {
-    let normalized = this.normalizeWord(word);
-
-    // Retirer les 'e' muets finaux et 's' du pluriel
-    if (normalized.endsWith("e") && normalized.length > 1) {
-      normalized = normalized.slice(0, -1);
-    }
-    if (normalized.endsWith("s") && normalized.length > 1) {
-      normalized = normalized.slice(0, -1);
-    }
-
-    return normalized.slice(-3);
-  },
-
   extractLastWords(poemeDiv) {
     const poemeText = poemeDiv.querySelector(".poeme-text");
     if (!poemeText) return [];
@@ -118,9 +104,16 @@ const RhymeUtils = {
       .filter((v) => v.trim())
       .map((verse) => {
         const words = verse.trim().split(/\s+/);
-        return words.length > 0
-          ? this.normalizeWord(words[words.length - 1])
-          : "";
+        if (words.length === 0) return "";
+
+        let lastWord = words[words.length - 1];
+        // Gérer les apostrophes : "l'air" -> "air"
+        if (lastWord.includes("'")) {
+          const parts = lastWord.split("'");
+          lastWord = parts[parts.length - 1];
+        }
+
+        return this.normalizeWord(lastWord);
       });
   },
 
@@ -149,11 +142,6 @@ const RhymeUtils = {
   searchPair(poemeDiv, word1, word2) {
     const normalizedWord1 = this.normalizeWord(word1);
     const normalizedWord2 = this.normalizeWord(word2);
-
-    // Vérifier que les deux mots ont le même son de rime
-    const sound1 = this.getRhymeSound(word1);
-    const sound2 = this.getRhymeSound(word2);
-    if (sound1 !== sound2) return false;
 
     const lastWords = this.extractLastWords(poemeDiv);
     return this.findRhymePair(lastWords, normalizedWord1, normalizedWord2);
