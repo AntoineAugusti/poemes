@@ -679,7 +679,8 @@ function updateFavoriteTitles() {
 
   document.querySelectorAll(".poeme-titles .poeme-title").forEach((title) => {
     const titleId = title.getAttribute("data-id");
-    if (favorites.includes(titleId)) {
+    // Ne pas colorer en mode favoris car tous sont des favoris
+    if (!showingFavoritesOnly && favorites.includes(titleId)) {
       title.classList.add("favorite");
     } else {
       title.classList.remove("favorite");
@@ -830,6 +831,7 @@ function displayOnlyFavorites() {
     updateFavoritesCounter();
   }
   updateFavoriteDays();
+  updateFavoriteTitles();
 }
 
 function displayAllPoemes() {
@@ -852,6 +854,7 @@ function displayAllPoemes() {
     filterPoemes(normalize(searchInput.value));
   }
   updateFavoriteDays();
+  updateFavoriteTitles();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
