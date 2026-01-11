@@ -674,6 +674,48 @@ function updateShowFavoritesButton() {
   }
 }
 
+function updateFavoriteDays() {
+  const favorites = getFavorites();
+
+  // Réinitialiser le style de tous les jours
+  document.querySelectorAll(".day").forEach((day) => {
+    day.style.background = "";
+  });
+
+  // Compter les favoris par jour et le total de poèmes par jour
+  const favoritesPerDay = {};
+  const totalPerDay = {};
+
+  document.querySelectorAll(".poeme").forEach((poeme) => {
+    const poemeDate = poeme.querySelector(".poeme-date");
+    if (poemeDate) {
+      const date = poemeDate.textContent.trim();
+      const poemeId = poeme.getAttribute("data-id");
+
+      totalPerDay[date] = (totalPerDay[date] || 0) + 1;
+      if (favorites.includes(poemeId)) {
+        favoritesPerDay[date] = (favoritesPerDay[date] || 0) + 1;
+      }
+    }
+  });
+
+  // Appliquer un dégradé proportionnel pour chaque jour avec des favoris
+  Object.keys(favoritesPerDay).forEach((date) => {
+    const day = document.querySelector(`.day[data-day="${date}"]`);
+    if (day) {
+      const favoriteCount = favoritesPerDay[date];
+      const totalCount = totalPerDay[date];
+      const percentage = (favoriteCount / totalCount) * 100;
+
+      if (percentage === 100) {
+        day.style.background = "var(--favorite-color)";
+      } else {
+        day.style.background = `linear-gradient(to top, var(--favorite-color) ${percentage}%, var(--day-color) ${percentage}%)`;
+      }
+    }
+  });
+}
+
 function countPoemesByDate(selector) {
   const dateCounts = {};
   document.querySelectorAll(selector).forEach((div) => {
@@ -807,6 +849,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const newIsFav = toggleFavorite(poemeId);
       updateFavoriteButton(button, newIsFav);
       updateShowFavoritesButton();
+      updateFavoriteDays();
 
       // Si on retire un favori en mode favoris, l'animer puis le cacher
       if (!newIsFav && showingFavoritesOnly) {
@@ -817,6 +860,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Afficher le bouton "Favoris" si des favoris existent
   updateShowFavoritesButton();
+
+  // Colorer les jours correspondant aux favoris dans la frise
+  updateFavoriteDays();
 
   // Filtrer pour afficher uniquement les favoris
   const showFavButton = document.getElementById("show-favorites");
