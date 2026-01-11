@@ -707,7 +707,8 @@ function updateFavoriteDays() {
       const totalCount = totalPerDay[date];
       const percentage = (favoriteCount / totalCount) * 100;
 
-      if (percentage === 100) {
+      // En mode favoris, afficher 100% jaune car seuls les favoris sont visibles
+      if (showingFavoritesOnly || percentage === 100) {
         day.style.background = "var(--favorite-color)";
       } else {
         day.style.background = `linear-gradient(to top, var(--favorite-color) ${percentage}%, var(--day-color) ${percentage}%)`;
@@ -815,6 +816,7 @@ function displayOnlyFavorites() {
     filterByFavorites(favorites);
     updateFavoritesCounter();
   }
+  updateFavoriteDays();
 }
 
 function displayAllPoemes() {
@@ -836,6 +838,7 @@ function displayAllPoemes() {
   if (searchInput && searchInput.value) {
     filterPoemes(normalize(searchInput.value));
   }
+  updateFavoriteDays();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
