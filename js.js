@@ -45,8 +45,14 @@ function highlightText(searchTerm) {
       const word1 = parts[1].trim();
       const word2 = parts[2].trim();
       const markInstance = new Mark(context);
-      markInstance.mark(word1, { separateWordSearch: false });
-      markInstance.mark(word2, { separateWordSearch: false });
+      markInstance.mark(word1, {
+        accuracy: { value: "exactly", limiters: [".", ","] },
+        separateWordSearch: false,
+      });
+      markInstance.mark(word2, {
+        accuracy: { value: "exactly", limiters: [".", ","] },
+        separateWordSearch: false,
+      });
     }
     return;
   }
