@@ -1,16 +1,41 @@
 :root {
-  --font-color: #000;
-  --bg-color: #fff;
-  --panel-color: rgb(245, 245, 245);
-  --day-color: #aaa;
-  --favorite-color: #ffd700;
+  --font-color: #2c2c2c;
+  --font-color-secondary: #5a5a5a;
+  --font-color-muted: #8a8a8a;
+  --bg-color: #f9f6f1;
+  --panel-color: #fffdf9;
+  --panel-color-alt: #f3efe8;
+  --border-color: #d4cfc5;
+  --day-color: #a89f91;
+  --favorite-color: #e6b800;
+  --search-bg: #ebe7df;
+  --hover-bg: #f0ece4;
+  --title-shadow: rgba(100, 80, 60, 0.4);
+  --shadow-color: rgba(60, 50, 40, 0.15);
+  --code-color: #c44569;
+  --code-bg: #f3efe8;
 }
 
 [data-theme="dark"] {
-  --font-color: #000;
-  --bg-color: #777;
-  --panel-color: #f5f5f5;
-  --day-color: #fff;
+  --font-color: #e8e8e8;
+  --font-color-secondary: #bbb;
+  --font-color-muted: #999;
+  --bg-color: #1a1a2e;
+  --panel-color: #16213e;
+  --panel-color-alt: #1f2b47;
+  --border-color: #2d3a5a;
+  --day-color: #6b7aa1;
+  --favorite-color: #f0c040;
+  --search-bg: #2d3a5a;
+  --hover-bg: #2d3a5a;
+  --title-shadow: rgba(200, 200, 200, 0.3);
+  --shadow-color: rgba(0, 0, 0, 0.6);
+  --code-color: #ff8a9b;
+  --code-bg: #2d3a5a;
+}
+
+[data-theme="dark"] img:not(.favorite-icon) {
+  filter: invert(0.85);
 }
 
 @keyframes fadeIn {
@@ -35,8 +60,8 @@ html {
   font-weight: 400;
 }
 body {
-  border-top: 4px solid #ccc;
-  transition: 1s linear all;
+  border-top: 4px solid var(--border-color);
+  transition: 0.3s ease all;
 }
 body * {
   font-family: "Vollkorn", serif;
@@ -93,52 +118,51 @@ body * {
 .poeme {
   background: var(--panel-color);
   margin: 0 0.5em 2em 0.5em;
-  border: 3px solid #ccc;
+  border: 3px solid var(--border-color);
   padding: 1em 2em;
-  box-shadow: rgba(50, 50, 50, 0.5) 0px 8px 24px;
+  box-shadow: var(--shadow-color) 0px 8px 24px;
 }
 .poeme-masque .poeme {
-  background: #e0e0e0;
   border: 3px dashed #424242;
   box-shadow: rgba(66, 66, 66, 0.3) 0px 8px 24px;
 }
 .poeme-content .poeme-title {
   font-weight: 700;
   margin-bottom: 0.5em;
-  background-color: #000;
+  background-color: var(--font-color);
   color: transparent;
-  text-shadow: 2px 2px 3px rgba(128, 128, 128, 0.5);
+  text-shadow: 2px 2px 3px var(--title-shadow);
   background-clip: text;
 }
 .poeme-date {
   margin: -1.5em 0 0.5em 0;
   font-size: 0.7em;
-  color: #bbb;
+  color: var(--font-color-muted);
 }
 .poeme-date a {
   text-decoration: none;
-  color: #bbb;
+  color: var(--font-color-muted);
   padding: 0.25em;
   margin: 0 -0.25em 0 -0.25em;
 }
 .poeme-date a:hover {
-  background: #eee;
+  background: var(--hover-bg);
 }
 .poeme-content {
   margin-bottom: 0.5em;
 }
 .poeme-notes {
-  background: #eee;
+  background: var(--panel-color-alt);
   padding: 0.5em 1em;
   margin: 1em 0 0 0;
-  border: 3px solid #ccc;
+  border: 3px solid var(--border-color);
   font-size: 0.8em;
   max-width: 500px;
   animation: fadeIn 2s;
 }
 .id {
   font-size: 20px;
-  color: #555;
+  color: var(--font-color-secondary);
   position: relative;
   top: -1.3em;
   left: -0.7em;
@@ -156,13 +180,17 @@ body * {
   display: block;
 }
 #search {
-  background: #ddd;
+  background: var(--search-bg);
   border: none;
   font-size: 25px;
   padding: 0.5em 1em;
   font-family: "Vollkorn", serif;
   width: 75%;
   max-width: 350px;
+  color: var(--font-color);
+}
+#search::placeholder {
+  color: var(--font-color-muted);
 }
 #nb-results {
   display: inline-block;
@@ -191,7 +219,7 @@ body * {
   text-align: center;
 }
 .action-button {
-  background: #eee;
+  background: var(--panel-color-alt);
   font-size: 0.6em;
   padding: 0.3em 0.5em;
   display: inline-block;
@@ -200,7 +228,7 @@ body * {
 }
 .action-button a {
   text-decoration: none;
-  color: black;
+  color: var(--font-color);
 }
 .action-button img {
   width: 1em;
@@ -209,6 +237,7 @@ body * {
 }
 .js-favorite-button.is-favorite {
   background: var(--favorite-color);
+  color: #333;
 }
 .js-favorite-button.is-favorite .favorite-icon {
   fill: #333;
@@ -218,25 +247,27 @@ body * {
 }
 a.theme {
   font-size: 0.75em;
-  color: #888;
+  color: var(--font-color-muted);
   margin-right: 0.5em;
   text-decoration: none;
   padding: 0.25em;
 }
 a.theme:hover {
-  background: #eee;
+  background: var(--hover-bg);
 }
 .hashtag {
-  color: #333;
+  color: var(--font-color-secondary);
 }
 .count {
-  color: #333;
+  color: var(--font-color-secondary);
   font-size: 0.8em;
   vertical-align: center;
 }
 
 summary {
   font-size: 0.8em;
+  color: var(--font-color);
+  cursor: pointer;
 }
 details {
   text-align: left;
@@ -253,10 +284,10 @@ details .poeme {
   align-items: flex-end;
 }
 .poeme-titles .poeme-title {
-  color: #111;
+  color: var(--font-color);
   margin: 0 0.5em 0.5em 0;
   text-decoration: none;
-  background: #f5f5f5;
+  background: var(--panel-color);
   font-size: 0.8em;
   padding: 0.1em 0.5em;
   cursor: pointer;
@@ -267,10 +298,11 @@ details .poeme {
   margin: 0 0.25em 0.5em 0;
 }
 .poeme-titles .poeme-title.active {
-  background: #ccc;
+  background: var(--border-color);
 }
 .poeme-titles .poeme-title.favorite {
   background: var(--favorite-color);
+  color: #333;
 }
 .poeme-titles .poeme-title.visible {
   display: block;
@@ -320,11 +352,11 @@ details .poeme {
   background-color: var(--panel-color);
   margin: 8vh auto;
   padding: 1.5em;
-  border: 3px solid #ccc;
+  border: 3px solid var(--border-color);
   width: 90%;
   max-width: 600px;
   border-radius: 12px;
-  box-shadow: rgba(50, 50, 50, 0.5) 0px 12px 32px;
+  box-shadow: var(--shadow-color) 0px 12px 32px;
   font-size: 0.8em;
   animation: slideDown 0.3s ease-out;
 }
@@ -346,7 +378,7 @@ details .poeme {
   margin-bottom: 0.5em;
   margin-top: 0.5em;
   color: var(--font-color);
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid var(--border-color);
   padding-bottom: 0.3em;
 }
 
@@ -366,7 +398,7 @@ details .poeme {
 }
 
 .close-btn {
-  color: #999;
+  color: var(--font-color-muted);
   float: right;
   font-size: 32px;
   font-weight: bold;
@@ -377,19 +409,17 @@ details .poeme {
 
 .close-btn:hover,
 .close-btn:focus {
-  color: #333;
+  color: var(--font-color);
   transform: rotate(90deg);
   cursor: pointer;
 }
 
 kbd {
-  background: linear-gradient(to bottom, #f9f9f9, #e9e9e9);
+  background: var(--panel-color-alt);
   border-radius: 4px;
-  border: 1px solid #b4b4b4;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.15),
-    0 2px 0 0 rgb(255 255 255 / 0.8) inset;
-  color: #333333;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 2px var(--shadow-color);
+  color: var(--font-color);
   display: inline-block;
   font-size: 0.9em;
   font-weight: 600;
@@ -402,13 +432,13 @@ kbd {
 }
 
 code {
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
+  background-color: var(--code-bg);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 2px 6px;
   font-family: "Courier New", monospace;
   font-size: 0.9em;
-  color: #c7254e;
+  color: var(--code-color);
 }
 
 .scroll-to-top {
@@ -421,12 +451,12 @@ code {
     bottom: 20px;
     right: 20px;
     background: var(--panel-color);
-    border: 3px solid #ccc;
+    border: 3px solid var(--border-color);
     border-radius: 50%;
     width: 50px;
     height: 50px;
     cursor: pointer;
-    box-shadow: rgba(50, 50, 50, 0.2) 0px 2px 8px;
+    box-shadow: var(--shadow-color) 0px 2px 8px;
     z-index: 999;
     transition: all 0.3s ease;
     padding: 0;
@@ -436,7 +466,7 @@ code {
   }
   .scroll-to-top:hover {
     transform: translateY(-3px);
-    box-shadow: rgba(50, 50, 50, 0.3) 0px 4px 12px;
+    box-shadow: var(--shadow-color) 0px 4px 12px;
   }
   .scroll-to-top.hidden {
     display: none;
