@@ -269,6 +269,9 @@ details .poeme {
 .poeme-titles .poeme-title.active {
   background: #ccc;
 }
+.poeme-titles .poeme-title.favorite {
+  background: var(--favorite-color);
+}
 .poeme-titles .poeme-title.visible {
   display: block;
 }

@@ -674,6 +674,19 @@ function updateShowFavoritesButton() {
   }
 }
 
+function updateFavoriteTitles() {
+  const favorites = getFavorites();
+
+  document.querySelectorAll(".poeme-titles .poeme-title").forEach((title) => {
+    const titleId = title.getAttribute("data-id");
+    if (favorites.includes(titleId)) {
+      title.classList.add("favorite");
+    } else {
+      title.classList.remove("favorite");
+    }
+  });
+}
+
 function updateFavoriteDays() {
   const favorites = getFavorites();
 
@@ -853,6 +866,7 @@ document.addEventListener("DOMContentLoaded", function () {
       updateFavoriteButton(button, newIsFav);
       updateShowFavoritesButton();
       updateFavoriteDays();
+      updateFavoriteTitles();
 
       // Si on retire un favori en mode favoris, l'animer puis le cacher
       if (!newIsFav && showingFavoritesOnly) {
@@ -866,6 +880,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Colorer les jours correspondant aux favoris dans la frise
   updateFavoriteDays();
+
+  // Colorer les titres des poèmes favoris
+  updateFavoriteTitles();
 
   // Filtrer pour afficher uniquement les favoris
   const showFavButton = document.getElementById("show-favorites");
