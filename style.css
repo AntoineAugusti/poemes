@@ -1,4 +1,25 @@
 :root {
+  --font-color: #e8e8e8;
+  --font-color-secondary: #bbb;
+  --font-color-muted: #999;
+  --font-color-on-accent: #1a1a2e;
+  --bg-color: #1a1a2e;
+  --panel-color: #16213e;
+  --panel-color-alt: #344f8d;
+  --border-color: #2d3a5a;
+  --day-color: #6b7aa1;
+  --favorite-color: #f0c040;
+  --accent-color: #ff7b54;
+  --accent-color-light: rgba(255, 123, 84, 0.3);
+  --search-bg: #2d3a5a;
+  --hover-bg: #2d3a5a;
+  --title-shadow: rgba(200, 200, 200, 0.3);
+  --shadow-color: rgba(0, 0, 0, 0.6);
+  --code-color: #ff8a9b;
+  --code-bg: #2d3a5a;
+}
+
+[data-theme="light"] {
   --font-color: #2c2c2c;
   --font-color-secondary: #5a5a5a;
   --font-color-muted: #8a8a8a;
@@ -19,36 +40,20 @@
   --code-bg: #f3efe8;
 }
 
-[data-theme="dark"] {
-  --font-color: #e8e8e8;
-  --font-color-secondary: #bbb;
-  --font-color-muted: #999;
-  --font-color-on-accent: #1a1a2e;
-  --bg-color: #1a1a2e;
-  --panel-color: #16213e;
-  --panel-color-alt: #1f2b47;
-  --border-color: #2d3a5a;
-  --day-color: #6b7aa1;
-  --favorite-color: #f0c040;
-  --accent-color: #ff7b54;
-  --accent-color-light: rgba(255, 123, 84, 0.3);
-  --search-bg: #2d3a5a;
-  --hover-bg: #2d3a5a;
-  --title-shadow: rgba(200, 200, 200, 0.3);
-  --shadow-color: rgba(0, 0, 0, 0.6);
-  --code-color: #ff8a9b;
-  --code-bg: #2d3a5a;
-}
-
-[data-theme="dark"] img:not(.favorite-icon) {
+img:not(.favorite-icon) {
   filter: invert(0.85);
 }
 
-[data-theme="dark"] .favorite-icon {
+.favorite-icon {
   filter: invert(1);
 }
 
-[data-theme="dark"] .is-favorite .favorite-icon {
+.is-favorite .favorite-icon {
+  filter: none;
+}
+
+[data-theme="light"] img:not(.favorite-icon),
+[data-theme="light"] .favorite-icon {
   filter: none;
 }
 
@@ -308,6 +313,7 @@ details .poeme {
   font-size: 0.8em;
   padding: 0.1em 0.5em;
   cursor: pointer;
+  border: 1px solid var(--border-color);
 }
 .poeme-titles #reset-poeme-titles {
   width: 1.5em;
@@ -572,7 +578,7 @@ mark {
   position: relative;
   width: 50px;
   height: 25px;
-  background-color: #333;
+  background-color: #fff;
   border-radius: 13px;
   transition: 0.4s;
   margin-right: 0.5em;
@@ -585,27 +591,27 @@ mark {
   position: absolute;
   top: 0;
   right: auto;
-  left: 0;
+  left: calc(100% - 25px);
   bottom: 0;
   width: 25px;
   height: 25px;
   border-radius: 100%;
-  border: 2px #333 solid;
-  background-color: #fff;
-  color: #333;
+  border: 2px #fff solid;
+  background-color: #333;
+  color: #fff;
   transition: 0.4s;
-  content: "☀️";
+  content: "☾";
   font-size: 15px;
   font-weight: 900;
   box-sizing: border-box;
 }
 .switch__input:checked + .switch__label {
-  background-color: #fff;
+  background-color: #333;
 }
 .switch__input:checked + .switch__label::before {
-  left: calc(100% - 25px);
-  border-color: #fff;
-  background-color: #333;
-  color: #fff;
-  content: "☾";
+  left: 0;
+  border-color: #333;
+  background-color: #fff;
+  color: #333;
+  content: "☀️";
 }
