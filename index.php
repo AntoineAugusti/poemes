@@ -177,6 +177,10 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNiAxN2MyLjI2OS05Ljg4MSAxMS0xMS42NjcgMTEtMTEuNjY3di0zLjMzM2w3IDYuNjM3LTcgNi42OTZ2LTMuMzMzcy02LjE3LS4xNzEtMTEgNXptMTIgLjE0NXYyLjg1NWgtMTZ2LTEyaDYuNTk4Yy43NjgtLjc4NyAxLjU2MS0xLjQ0OSAyLjMzOS0yaC0xMC45Mzd2MTZoMjB2LTYuNzY5bC0yIDEuOTE0eiIvPjwvc3ZnPg==">
                 Partager
               </div>
+              <div class="action-button js-image-button">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNCAyMmgtMjR2LTIwaDI0djIwem0tMS0xOWgtMjJ2MThoMjJ2LTE4em0tMSAxNmgtMTlsNC03LjQ5MiAzIDMuMDQ4IDUuMDEzLTcuNTU2IDYuOTg3IDEyem0tMTEuODQ4LTIuODY1bC0yLjkxLTIuOTU2LTIuNTc0IDQuODIxaDE1LjU5M2wtNS4zMDMtOS4xMDgtNC44MDYgNy4yNDN6bS00LjY1Mi0xMS4xMzVjMS4zOCAwIDIuNSAxLjEyIDIuNSAyLjVzLTEuMTIgMi41LTIuNSAyLjUtMi41LTEuMTItMi41LTIuNSAxLjEyLTIuNSAyLjUtMi41em0wIDFjLjgyOCAwIDEuNS42NzIgMS41IDEuNXMtLjY3MiAxLjUtMS41IDEuNS0xLjUtLjY3Mi0xLjUtMS41LjY3Mi0xLjUgMS41LTEuNXoiLz48L3N2Zz4=">
+                Image
+              </div>
               <? if (! empty($matches["notes"])) { ?>
                 <div class="poeme-notes hidden">
                   <?= $matches["notes"]; ?>
