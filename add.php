@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       text-shadow: 2px 2px 3px rgba(128, 128, 128, 0.5);
       background-clip: text;
       background-color: #000;
-      color: transparent;
     }
     .container {
       background-color: var(--panel-color);
@@ -134,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     a.back {
       width: 100%;
       font-size: .8em;
-      color: #888;
+      color: #ccc;
       text-decoration: none;
     }
   </style>

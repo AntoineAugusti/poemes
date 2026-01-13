@@ -40,7 +40,7 @@
   --code-bg: #f3efe8;
 }
 
-img:not(.favorite-icon) {
+img:not(.favorite-icon):not(#reset-poeme-titles) {
   filter: invert(0.85);
 }
 
