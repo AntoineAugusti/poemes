@@ -351,6 +351,7 @@ details .poeme {
 }
 .day.hidden {
   height: 1px !important;
+  background: var(--day-color) !important;
 }
 .mobile-block {
   display: inline-block;
