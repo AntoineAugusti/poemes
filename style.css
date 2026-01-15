@@ -20,24 +20,24 @@
 }
 
 [data-theme="light"] {
-  --font-color: #2c2c2c;
-  --font-color-secondary: #5a5a5a;
-  --font-color-muted: #8a8a8a;
-  --font-color-on-accent: #333;
-  --bg-color: #f9f6f1;
-  --panel-color: #fffdf9;
-  --panel-color-alt: #f3efe8;
-  --border-color: #d4cfc5;
-  --day-color: #a89f91;
-  --favorite-color: #e6b800;
-  --accent-color: #e07b53;
-  --accent-color-light: rgba(224, 123, 83, 0.25);
-  --search-bg: #ebe7df;
-  --hover-bg: #f0ece4;
-  --title-shadow: rgba(100, 80, 60, 0.4);
-  --shadow-color: rgba(60, 50, 40, 0.15);
-  --code-color: #c44569;
-  --code-bg: #f3efe8;
+  --font-color: #2d3436;
+  --font-color-secondary: #636e72;
+  --font-color-muted: #95a5a6;
+  --font-color-on-accent: #fff;
+  --bg-color: #f8f9fa;
+  --panel-color: #ffffff;
+  --panel-color-alt: #e9ecef;
+  --border-color: #dee2e6;
+  --day-color: #adb5bd;
+  --favorite-color: #f1c40f;
+  --accent-color: #e17055;
+  --accent-color-light: rgba(225, 112, 85, 0.2);
+  --search-bg: #f1f3f4;
+  --hover-bg: #e9ecef;
+  --title-shadow: rgba(45, 52, 54, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --code-color: #d63031;
+  --code-bg: #f1f3f4;
 }
 
 .is-favorite .favorite-icon {
