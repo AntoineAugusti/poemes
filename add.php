@@ -57,6 +57,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       box-sizing: border-box;
       font-size: 1em;
     }
+    .editor-container {
+      display: flex;
+      gap: 1em;
+    }
+    .editor-left {
+      flex: 1;
+    }
+    .editor-right {
+      width: 250px;
+      flex-shrink: 0;
+    }
+    #rhymes-panel {
+      background: var(--panel-color-alt);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    #rhymes-panel h3 {
+      margin: 0 0 0.5em 0;
+      font-size: 0.9em;
+      color: var(--font-color-muted);
+    }
+    #current-word {
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 0.5em;
+    }
+    #rhymes-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #rhymes-list li {
+      padding: 3px 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      border-radius: 3px;
+    }
+    #rhymes-list li:hover {
+      background: var(--hover-bg);
+    }
+    @media (max-width: 768px) {
+      .editor-container {
+        flex-direction: column;
+      }
+      .editor-right {
+        width: 100%;
+      }
+    }
     button[type="button"] {
       margin-bottom: 1em;
     }
@@ -158,7 +208,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input required type="text" name="titre" id="titre"><br>
 
       <label for="texte">Texte</label><br>
-      <textarea required id="texte" name="texte" rows="10" cols="100"></textarea><br>
+      <div class="editor-container">
+        <div class="editor-left">
+          <textarea required id="texte" name="texte" rows="10" cols="100"></textarea>
+        </div>
+        <div class="editor-right">
+          <div id="rhymes-panel">
+            <div id="current-word"></div>
+            <ul id="rhymes-list"></ul>
+          </div>
+        </div>
+      </div>
 
       <div id="suggested-titles"></div>
 
@@ -222,8 +282,123 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       return geminiCall(`Suggère-moi des tags pour un poème parmi une liste de tags possibles. Retourne-moi les tags, pas de texte avant ou après, au format texte et en séparant les tags par une virgule. Le maximum de tags doit être 5. Respecte la casse. Tags : ${themes}. Poème : ${text}`);
     }
 
+    // Suggestions de rimes
+    const rhymesCache = {};
+    let lastRhymeWord = '';
+
+    async function fetchRhymes(word) {
+      if (!word || word.length < 2) return [];
+
+      const cleanWord = word.toLowerCase().replace(/[^a-zàâäéèêëïîôùûüœæç'-]/gi, '');
+      if (!cleanWord) return [];
+
+      if (rhymesCache[cleanWord]) {
+        return rhymesCache[cleanWord];
+      }
+
+      try {
+        const prompt = `Donne-moi 15 mots français qui riment avec "${cleanWord}". Retourne uniquement les mots séparés par des virgules, sans numérotation, sans explication, sans phrase. Juste les mots.`;
+        const response = await geminiCall(prompt);
+        const text = response.candidates[0].content.parts[0].text;
+        const rhymes = text.split(',').map(r => r.trim().toLowerCase()).filter(r => r && r !== cleanWord);
+        rhymesCache[cleanWord] = rhymes;
+        return rhymes;
+      } catch (error) {
+        console.error('Erreur lors de la recherche de rimes:', error);
+        return [];
+      }
+    }
+
+    function getLastWordBeforePunctuation(textarea) {
+      const text = textarea.value;
+      const cursorPos = textarea.selectionStart;
+
+      // Trouver le début de la ligne courante
+      let lineStart = text.lastIndexOf('\n', cursorPos - 1) + 1;
+      const currentLine = text.substring(lineStart, cursorPos);
+
+      // Extraire le dernier mot avant la ponctuation
+      const match = currentLine.match(/(\S+)[.,;:!?]\s*$/);
+      if (match) {
+        return match[1].replace(/['"()«»—–-]+/g, '');
+      }
+      return null;
+    }
+
+    function displayRhymes(word, rhymes, loading = false) {
+      const currentWordEl = document.getElementById('current-word');
+      const rhymesList = document.getElementById('rhymes-list');
+
+      if (loading) {
+        currentWordEl.textContent = `Recherche de rimes pour "${word}"...`;
+        rhymesList.innerHTML = '<li style="color: var(--font-color-muted)">Chargement…</li>';
+        return;
+      }
+
+      if (!word) {
+        currentWordEl.textContent = '';
+        rhymesList.innerHTML = '<li style="color: var(--font-color-muted)">Terminez un vers avec une ponctuation (.,;:!?) pour voir des suggestions.</li>';
+        return;
+      }
+
+      currentWordEl.textContent = `Rimes pour "${word}"`;
+
+      if (rhymes.length === 0) {
+        rhymesList.innerHTML = '<li style="color: var(--font-color-muted)">Aucune rime trouvée</li>';
+        return;
+      }
+
+      rhymesList.innerHTML = rhymes.map(rhyme =>
+        `<li data-rhyme="${rhyme}">${rhyme}</li>`
+      ).join('');
+    }
+
+    async function updateRhymes(textarea, forceUpdate = false) {
+      const lastWord = getLastWordBeforePunctuation(textarea);
+
+      if (!lastWord) return;
+      if (lastWord === lastRhymeWord && !forceUpdate) return;
+      lastRhymeWord = lastWord;
+
+      displayRhymes(lastWord, [], true);
+      const rhymes = await fetchRhymes(lastWord);
+      displayRhymes(lastWord, rhymes);
+    }
+
+    function shouldTriggerRhymes(e) {
+      return [',', '.', ';', ':', '!', '?'].includes(e.key);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('date').valueAsDate = new Date();
+
+      // Initialiser le panneau de rimes
+      const texteArea = document.getElementById('texte');
+      const rhymesList = document.getElementById('rhymes-list');
+
+      // Déclencher la recherche de rimes seulement quand on tape une ponctuation
+      texteArea.addEventListener('keyup', function(e) {
+        if (shouldTriggerRhymes(e)) {
+          updateRhymes(texteArea);
+        }
+      });
+
+      // Cliquer sur une rime pour l'insérer
+      rhymesList.addEventListener('click', function(e) {
+        const li = e.target.closest('li');
+        if (li && li.dataset.rhyme) {
+          const rhyme = li.dataset.rhyme;
+          const cursorPos = texteArea.selectionStart;
+          const text = texteArea.value;
+
+          // Insérer la rime à la position du curseur
+          texteArea.value = text.substring(0, cursorPos) + ' ' + rhyme;
+          texteArea.focus();
+          texteArea.selectionStart = texteArea.selectionEnd = cursorPos + rhyme.length + 1;
+        }
+      });
+
+      displayRhymes('', []);
 
       const generateTitle = document.getElementById('generate-title');
 
