@@ -454,8 +454,8 @@ function generatePoemeImage(container) {
   const highlightPaddingY = 8;
   const canvasWidth = Math.max(500, maxTextWidth + panelPadding * 2);
   const titleHeight = title ? titleSize + highlightPaddingY + 10 : 0;
-  const dateHeight = date ? dateSize + highlightPaddingY + 15 : 0;
-  const textHeight = lines.length * (lineHeight + highlightPaddingY);
+  const dateHeight = date ? dateSize + highlightPaddingY + 20 : 0;
+  const textHeight = lines.length * (lineHeight + highlightPaddingY * .25);
   const canvasHeight = panelPadding * 2 + titleHeight + dateHeight + textHeight + highlightPaddingY;
 
   // Créer le canvas final
@@ -503,7 +503,7 @@ function generatePoemeImage(container) {
     // Texte
     ctx.fillStyle = "#555555";
     ctx.fillText(date, panelPadding, currentY + dateSize - 4);
-    currentY += dateSize + highlightPaddingY + 15;
+    currentY += dateSize + highlightPaddingY + 20;
   }
 
   // Texte du poème
@@ -522,8 +522,8 @@ function generatePoemeImage(container) {
     }
     // Texte
     ctx.fillStyle = "#1a1a2e";
-    ctx.fillText(line, panelPadding, currentY + lineHeight * 0.75);
-    currentY += lineHeight + highlightPaddingY;
+    ctx.fillText(line, panelPadding, currentY + lineHeight);
+    currentY += lineHeight + highlightPaddingY * .25;
   });
 
   return canvas;
