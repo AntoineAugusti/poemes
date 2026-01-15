@@ -334,6 +334,60 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Génération d'image pour un poème
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function randomColor(alpha = 1) {
+  const colors = [
+    [102, 126, 234],  // violet
+    [118, 75, 162],   // purple
+    [240, 147, 251],  // rose
+    [255, 123, 84],   // orange
+    [100, 200, 255],  // cyan
+    [240, 192, 64],   // doré
+    [64, 224, 208],   // turquoise
+    [255, 107, 107],  // coral
+    [78, 205, 196],   // teal
+    [199, 128, 232],  // lavender
+  ];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+}
+
+function drawRandomGradients(ctx, width, height) {
+  // Fond de base sombre
+  const baseColors = [
+    ["#1a1a2e", "#16213e"],
+    ["#0f0f1a", "#1a1a2e"],
+    ["#1f1f3d", "#2d2d5a"],
+    ["#0d1b2a", "#1b263b"],
+  ];
+  const baseColor = baseColors[Math.floor(Math.random() * baseColors.length)];
+  const baseGradient = ctx.createLinearGradient(0, 0, width, height);
+  baseGradient.addColorStop(0, baseColor[0]);
+  baseGradient.addColorStop(1, baseColor[1]);
+  ctx.fillStyle = baseGradient;
+  ctx.fillRect(0, 0, width, height);
+
+  // 3 à 5 gradients aléatoires
+  const numGradients = Math.floor(randomBetween(3, 6));
+
+  for (let i = 0; i < numGradients; i++) {
+    const x = randomBetween(0, width);
+    const y = randomBetween(0, height);
+    const radius = randomBetween(width * 0.3, width * 0.9);
+
+    const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+    gradient.addColorStop(0, randomColor(randomBetween(0.3, 0.6)));
+    gradient.addColorStop(randomBetween(0.4, 0.7), randomColor(randomBetween(0.1, 0.3)));
+    gradient.addColorStop(1, "transparent");
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+  }
+}
+
 function getThemeColors() {
   const style = getComputedStyle(document.documentElement);
   return {
@@ -346,7 +400,6 @@ function getThemeColors() {
 }
 
 function generatePoemeImage(container) {
-  const colors = getThemeColors();
   const poemeContent = container.querySelector(".poeme-content");
   const titleEl = poemeContent.querySelector(".poeme-title");
   const dateEl = poemeContent.querySelector(".poeme-date");
@@ -373,10 +426,10 @@ function generatePoemeImage(container) {
 
   // Configuration du canvas
   const padding = 60;
-  const lineHeight = 20;
+  const lineHeight = 15;
   const titleSize = 28;
-  const textSize = 24;
-  const dateSize = 18;
+  const textSize = 22;
+  const dateSize = 16;
 
   // Créer un canvas temporaire pour mesurer le texte
   const tempCanvas = document.createElement("canvas");
@@ -397,11 +450,13 @@ function generatePoemeImage(container) {
   }
 
   // Dimensions du canvas
-  const canvasWidth = Math.max(500, maxTextWidth + padding * 2);
-  const titleHeight = title ? titleSize + 10 : 0;
-  const dateHeight = date ? dateSize + 25 : 0;
-  const textHeight = lines.length * lineHeight;
-  const canvasHeight = padding * 2 + titleHeight + dateHeight + textHeight + 20;
+  const panelPadding = 40;
+  const highlightPaddingY = 8;
+  const canvasWidth = Math.max(500, maxTextWidth + panelPadding * 2);
+  const titleHeight = title ? titleSize + highlightPaddingY + 10 : 0;
+  const dateHeight = date ? dateSize + highlightPaddingY + 15 : 0;
+  const textHeight = lines.length * (lineHeight + highlightPaddingY);
+  const canvasHeight = panelPadding * 2 + titleHeight + dateHeight + textHeight + highlightPaddingY;
 
   // Créer le canvas final
   const canvas = document.createElement("canvas");
@@ -409,49 +464,66 @@ function generatePoemeImage(container) {
   canvas.height = canvasHeight;
   const ctx = canvas.getContext("2d");
 
-  // Fond
-  ctx.fillStyle = colors.bgColor;
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+  // Fond avec gradients aléatoires
+  drawRandomGradients(ctx, canvasWidth, canvasHeight);
 
-  // Panneau du poème
-  const panelMargin = 20;
-  const panelX = panelMargin;
-  const panelY = panelMargin;
-  const panelWidth = canvasWidth - panelMargin * 2;
-  const panelHeight = canvasHeight - panelMargin * 2;
-
-  ctx.fillStyle = colors.panelColor;
-  ctx.fillRect(panelX, panelY, panelWidth, panelHeight);
-
-  // Bordure
-  ctx.strokeStyle = colors.borderColor;
-  ctx.lineWidth = 3;
-  ctx.strokeRect(panelX, panelY, panelWidth, panelHeight);
-
-  let currentY = padding;
+  let currentY = panelPadding;
+  const highlightPaddingX = 8;
 
   // Titre
   if (title) {
     ctx.font = `bold ${titleSize}px Vollkorn, serif`;
-    ctx.fillStyle = colors.fontColor;
-    ctx.fillText(title, padding, currentY + titleSize);
-    currentY += titleSize + 10;
+    const titleWidth = ctx.measureText(title).width;
+    // Fond blanc (surlignage)
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.fillRect(
+      panelPadding - highlightPaddingX,
+      currentY - highlightPaddingY,
+      titleWidth + highlightPaddingX * 2,
+      titleSize + highlightPaddingY * 2
+    );
+    // Texte
+    ctx.fillStyle = "#1a1a2e";
+    ctx.fillText(title, panelPadding, currentY + titleSize - 4);
+    currentY += titleSize + highlightPaddingY + 10;
   }
 
   // Date
   if (date) {
     ctx.font = `${dateSize}px Vollkorn, serif`;
-    ctx.fillStyle = colors.fontColorMuted;
-    ctx.fillText(date, padding, currentY + dateSize);
-    currentY += dateSize + 25;
+    const dateWidth = ctx.measureText(date).width;
+    // Fond blanc (surlignage)
+    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+    ctx.fillRect(
+      panelPadding - highlightPaddingX,
+      currentY - highlightPaddingY,
+      dateWidth + highlightPaddingX * 2,
+      dateSize + highlightPaddingY * 2
+    );
+    // Texte
+    ctx.fillStyle = "#555555";
+    ctx.fillText(date, panelPadding, currentY + dateSize - 4);
+    currentY += dateSize + highlightPaddingY + 15;
   }
 
   // Texte du poème
   ctx.font = `${textSize}px Vollkorn, serif`;
-  ctx.fillStyle = colors.fontColor;
   lines.forEach((line) => {
-    currentY += lineHeight;
-    ctx.fillText(line, padding, currentY);
+    if (line.trim()) {
+      const lineWidth = ctx.measureText(line).width;
+      // Fond blanc (surlignage)
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.fillRect(
+        panelPadding - highlightPaddingX,
+        currentY - highlightPaddingY,
+        lineWidth + highlightPaddingX * 2,
+        lineHeight + highlightPaddingY * 2
+      );
+    }
+    // Texte
+    ctx.fillStyle = "#1a1a2e";
+    ctx.fillText(line, panelPadding, currentY + lineHeight * 0.75);
+    currentY += lineHeight + highlightPaddingY;
   });
 
   return canvas;
@@ -467,18 +539,89 @@ function downloadPoemeImage(container) {
   link.click();
 }
 
+// Modal de prévisualisation d'image
+function createImagePreviewModal() {
+  const modal = document.createElement("div");
+  modal.id = "image-preview-modal";
+  modal.className = "modal";
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 90%; width: auto;">
+      <span class="close-btn" id="close-image-preview">&times;</span>
+      <div id="image-preview-container" style="text-align: center; margin: 1em 0;"></div>
+      <div style="text-align: center; margin-top: 1em;">
+        <button id="regenerate-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; margin-right: 0.5em; cursor: pointer;">
+          Régénérer
+        </button>
+        <button id="download-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; cursor: pointer; background: var(--accent-color); color: var(--font-color-on-accent);">
+          Télécharger
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  return modal;
+}
+
+let currentPoemeContainer = null;
+let currentCanvas = null;
+
+function showImagePreview(container) {
+  currentPoemeContainer = container;
+  let modal = document.getElementById("image-preview-modal");
+  if (!modal) {
+    modal = createImagePreviewModal();
+  }
+
+  regeneratePreview();
+  modal.style.display = "block";
+}
+
+function regeneratePreview() {
+  if (!currentPoemeContainer) return;
+
+  currentCanvas = generatePoemeImage(currentPoemeContainer);
+  const previewContainer = document.getElementById("image-preview-container");
+  previewContainer.innerHTML = "";
+
+  const img = document.createElement("img");
+  img.src = currentCanvas.toDataURL("image/png");
+  img.style.maxWidth = "100%";
+  img.style.maxHeight = "60vh";
+  img.style.borderRadius = "8px";
+  img.style.boxShadow = "0 4px 20px rgba(0,0,0,0.3)";
+  previewContainer.appendChild(img);
+}
+
+function downloadCurrentImage() {
+  if (!currentCanvas || !currentPoemeContainer) return;
+
+  const poemeId = currentPoemeContainer.querySelector(".poeme").getAttribute("data-id");
+  const link = document.createElement("a");
+  link.download = `poeme-${poemeId}.png`;
+  link.href = currentCanvas.toDataURL("image/png");
+  link.click();
+
+  document.getElementById("image-preview-modal").style.display = "none";
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".js-image-button").forEach((button) => {
     button.addEventListener("click", function () {
       const container = this.closest(".poeme-container");
-      downloadPoemeImage(container);
-
-      const oldContent = this.innerHTML;
-      this.innerHTML = "Téléchargé !";
-      setTimeout(() => {
-        this.innerHTML = oldContent;
-      }, 1500);
+      showImagePreview(container);
     });
+  });
+
+  document.addEventListener("click", function (e) {
+    if (e.target.id === "close-image-preview" || e.target.id === "image-preview-modal") {
+      document.getElementById("image-preview-modal").style.display = "none";
+    }
+    if (e.target.id === "regenerate-image") {
+      regeneratePreview();
+    }
+    if (e.target.id === "download-image") {
+      downloadCurrentImage();
+    }
   });
 });
 
