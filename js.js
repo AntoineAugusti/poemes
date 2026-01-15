@@ -388,17 +388,6 @@ function drawRandomGradients(ctx, width, height) {
   }
 }
 
-function getThemeColors() {
-  const style = getComputedStyle(document.documentElement);
-  return {
-    bgColor: style.getPropertyValue("--bg-color").trim(),
-    panelColor: style.getPropertyValue("--panel-color").trim(),
-    fontColor: style.getPropertyValue("--font-color").trim(),
-    fontColorMuted: style.getPropertyValue("--font-color-muted").trim(),
-    borderColor: style.getPropertyValue("--border-color").trim(),
-  };
-}
-
 function generatePoemeImage(container) {
   const poemeContent = container.querySelector(".poeme-content");
   const titleEl = poemeContent.querySelector(".poeme-title");
@@ -524,16 +513,24 @@ function generatePoemeImage(container) {
   lines.forEach((line) => {
     if (line.trim()) {
       const lineWidth = ctx.measureText(line).width;
+      const rectX = panelPadding - highlightPaddingX;
+      const rectY = highlightY - highlightPaddingY;
+      const rectW = lineWidth + highlightPaddingX * 2;
+      const rectH = lineHeight + highlightPaddingY * 2;
+
+      // Rotation aléatoire légère (-0.8 à 0.8 degrés)
+      const angle = (Math.random() - 0.5) * 1.6 * (Math.PI / 180);
+      const centerX = rectX + rectW / 2;
+      const centerY = rectY + rectH / 2;
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(angle);
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
-      ctx.roundRect(
-        panelPadding - highlightPaddingX,
-        highlightY - highlightPaddingY,
-        lineWidth + highlightPaddingX * 2,
-        lineHeight + highlightPaddingY * 2,
-        4
-      );
+      ctx.roundRect(-rectW / 2, -rectH / 2, rectW, rectH, 4);
       ctx.fill();
+      ctx.restore();
     }
     highlightY += lineHeight + highlightPaddingY * 0.25;
   });
