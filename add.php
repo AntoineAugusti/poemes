@@ -259,7 +259,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       };
 
       const body = JSON.stringify({
-        contents: [ {parts: [{text: prompt}]} ]
+        contents: [ {parts: [{text: prompt}]} ],
+        generationConfig: {
+          thinkingConfig: {
+            includeThoughts: false,
+            thinkingBudget: 0
+          }
+        }
       });
 
       try {
@@ -297,7 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       try {
-        const prompt = `Donne-moi 15 mots français qui riment avec "${cleanWord}". Retourne uniquement les mots séparés par des virgules, sans numérotation, sans explication, sans phrase. Juste les mots.`;
+        const prompt = `Donne-moi 15 mots français qui riment avec "${cleanWord}". Retourne uniquement les mots séparés par des virgules, sans numérotation, sans explication, sans phrase, sans raisonnement. Juste les mots.`;
         const response = await geminiCall(prompt);
         const text = response.candidates[0].content.parts[0].text;
         const rhymes = text.split(',').map(r => r.trim().toLowerCase()).filter(r => r && r !== cleanWord);
@@ -330,7 +336,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const rhymesList = document.getElementById('rhymes-list');
 
       if (loading) {
-        currentWordEl.textContent = `Recherche de rimes pour "${word}"...`;
+        currentWordEl.textContent = `Recherche de rimes pour "${word}"…`;
         rhymesList.innerHTML = '<li style="color: var(--font-color-muted)">Chargement…</li>';
         return;
       }
