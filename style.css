@@ -54,7 +54,7 @@ body.is-offline {
   --favorite-color: #f1c40f;
   --accent-color: #e17055;
   --accent-color-light: rgba(225, 112, 85, 0.2);
-  --search-bg: #f1f3f4;
+  --search-bg: #e2e6ea;
   --hover-bg: #e9ecef;
   --title-shadow: rgba(45, 52, 54, 0.2);
   --shadow-color: rgba(0, 0, 0, 0.08);
@@ -497,40 +497,41 @@ mark {
 }
 
 .scroll-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--panel-color);
+  border: 3px solid var(--border-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  box-shadow: var(--shadow-color) 0px 2px 8px;
+  z-index: 999;
+  transition: all 0.3s ease;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scroll-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-color) 0px 4px 12px;
+}
+.scroll-to-top.hidden {
   display: none;
+}
+.scroll-to-top img {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+}
+
+[data-theme="light"] .scroll-to-top img {
+  filter: invert(0);
 }
 
 @media only screen and (max-width: 768px) {
-  .scroll-to-top {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: var(--panel-color);
-    border: 3px solid var(--border-color);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    box-shadow: var(--shadow-color) 0px 2px 8px;
-    z-index: 999;
-    transition: all 0.3s ease;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .scroll-to-top:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-color) 0px 4px 12px;
-  }
-  .scroll-to-top.hidden {
-    display: none;
-  }
-  .scroll-to-top img {
-    width: 24px;
-    height: 24px;
-  }
-
   body,
   #search {
     font-size: 18px;
