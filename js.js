@@ -340,16 +340,16 @@ function randomBetween(min, max) {
 
 function randomColor(alpha = 1) {
   const colors = [
-    [102, 126, 234],  // violet
-    [118, 75, 162],   // purple
-    [240, 147, 251],  // rose
-    [255, 123, 84],   // orange
-    [100, 200, 255],  // cyan
-    [240, 192, 64],   // doré
-    [64, 224, 208],   // turquoise
-    [255, 107, 107],  // coral
-    [78, 205, 196],   // teal
-    [199, 128, 232],  // lavender
+    [102, 126, 234], // violet
+    [118, 75, 162], // purple
+    [240, 147, 251], // rose
+    [255, 123, 84], // orange
+    [100, 200, 255], // cyan
+    [240, 192, 64], // doré
+    [64, 224, 208], // turquoise
+    [255, 107, 107], // coral
+    [78, 205, 196], // teal
+    [199, 128, 232], // lavender
     // https://flatuicolors.com/palette/fr
     [250, 211, 144],
     [248, 194, 145],
@@ -400,7 +400,10 @@ function drawRandomGradients(ctx, width, height) {
 
     const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
     gradient.addColorStop(0, randomColor(randomBetween(0.3, 0.6)));
-    gradient.addColorStop(randomBetween(0.4, 0.7), randomColor(randomBetween(0.1, 0.3)));
+    gradient.addColorStop(
+      randomBetween(0.4, 0.7),
+      randomColor(randomBetween(0.1, 0.3)),
+    );
     gradient.addColorStop(1, "transparent");
 
     ctx.fillStyle = gradient;
@@ -490,8 +493,13 @@ function generatePoemeImage(container) {
   const canvasWidth = Math.max(500, maxTextWidth + panelPadding * 2);
   const titleHeight = title ? titleSize + highlightPaddingY + 10 : 0;
   const dateHeight = date ? dateSize + highlightPaddingY + 20 : 0;
-  const textHeight = lines.length * (lineHeight + highlightPaddingY * .25);
-  const canvasHeight = panelPadding * 2 + titleHeight + dateHeight + textHeight + highlightPaddingY;
+  const textHeight = lines.length * (lineHeight + highlightPaddingY * 0.25);
+  const canvasHeight =
+    panelPadding * 2 +
+    titleHeight +
+    dateHeight +
+    textHeight +
+    highlightPaddingY;
 
   // Créer le canvas final avec haute résolution
   const canvas = document.createElement("canvas");
@@ -518,7 +526,7 @@ function generatePoemeImage(container) {
       currentY - highlightPaddingY,
       titleWidth + highlightPaddingX * 2,
       titleSize + highlightPaddingY * 2,
-      4
+      4,
     );
     ctx.fill();
     // Texte
@@ -541,7 +549,7 @@ function generatePoemeImage(container) {
       currentY - datePaddingY,
       dateWidth + datePaddingX * 2,
       dateSize + datePaddingY * 2,
-      3
+      3,
     );
     ctx.fill();
     // Texte
@@ -646,7 +654,9 @@ function regeneratePreview() {
 function downloadCurrentImage() {
   if (!currentCanvas || !currentPoemeContainer) return;
 
-  const poemeId = currentPoemeContainer.querySelector(".poeme").getAttribute("data-id");
+  const poemeId = currentPoemeContainer
+    .querySelector(".poeme")
+    .getAttribute("data-id");
   const link = document.createElement("a");
   link.download = `poeme-${poemeId}.png`;
   link.href = currentCanvas.toDataURL("image/png");
@@ -664,7 +674,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.addEventListener("click", function (e) {
-    if (e.target.id === "close-image-preview" || e.target.id === "image-preview-modal") {
+    if (
+      e.target.id === "close-image-preview" ||
+      e.target.id === "image-preview-modal"
+    ) {
       document.getElementById("image-preview-modal").style.display = "none";
     }
     if (e.target.id === "regenerate-image") {
@@ -1006,7 +1019,7 @@ async function loadFavoritesFromAPI() {
         return favorites;
       }
     }
-  } catch (e) {
+  } catch {
     // Ignore les erreurs réseau
   }
   // Fallback sur localStorage
@@ -1021,7 +1034,7 @@ async function saveFavoritesToAPI(favorites) {
       credentials: "include",
       body: JSON.stringify({ favorites }),
     });
-  } catch (e) {
+  } catch {
     // Ignore les erreurs réseau
   }
   // Toujours sauvegarder en local aussi
