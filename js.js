@@ -350,6 +350,26 @@ function randomColor(alpha = 1) {
     [255, 107, 107],  // coral
     [78, 205, 196],   // teal
     [199, 128, 232],  // lavender
+    // https://flatuicolors.com/palette/fr
+    [250, 211, 144],
+    [248, 194, 145],
+    [246, 185, 59],
+    [235, 47, 6],
+    [250, 152, 58],
+    [229, 142, 38],
+    [183, 21, 64],
+    [12, 36, 97],
+    [30, 55, 153],
+    [74, 105, 189],
+    [106, 137, 204],
+    [130, 204, 221],
+    [96, 163, 188],
+    [60, 99, 130],
+    [10, 61, 98],
+    [184, 233, 148],
+    [120, 224, 143],
+    [56, 173, 169],
+    [7, 153, 146],
   ];
   const color = colors[Math.floor(Math.random() * colors.length)];
   return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
@@ -370,10 +390,10 @@ function drawRandomGradients(ctx, width, height) {
   ctx.fillStyle = baseGradient;
   ctx.fillRect(0, 0, width, height);
 
-  // 3 à 5 gradients aléatoires
-  const numGradients = Math.floor(randomBetween(3, 6));
+  // 3 à 5 cercles en gradient
+  const numCircles = Math.floor(randomBetween(3, 6));
 
-  for (let i = 0; i < numGradients; i++) {
+  for (let i = 0; i < numCircles; i++) {
     const x = randomBetween(0, width);
     const y = randomBetween(0, height);
     const radius = randomBetween(width * 0.3, width * 0.9);
@@ -385,6 +405,32 @@ function drawRandomGradients(ctx, width, height) {
 
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
+  }
+
+  // 2 à 4 traits en gradient
+  const numLines = Math.floor(randomBetween(2, 5));
+
+  for (let i = 0; i < numLines; i++) {
+    const x1 = randomBetween(-width * 0.2, width * 1.2);
+    const y1 = randomBetween(-height * 0.2, height * 1.2);
+    const angle = randomBetween(0, Math.PI * 2);
+    const length = randomBetween(width * 0.5, width * 1.5);
+    const x2 = x1 + Math.cos(angle) * length;
+    const y2 = y1 + Math.sin(angle) * length;
+
+    const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
+    gradient.addColorStop(0, "transparent");
+    gradient.addColorStop(0.3, randomColor(randomBetween(0.2, 0.5)));
+    gradient.addColorStop(0.7, randomColor(randomBetween(0.2, 0.5)));
+    gradient.addColorStop(1, "transparent");
+
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = randomBetween(20, 80);
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
   }
 }
 
@@ -554,7 +600,7 @@ function createImagePreviewModal() {
       <span class="close-btn" id="close-image-preview">&times;</span>
       <div id="image-preview-container" style="text-align: center; margin: 1em 0;"></div>
       <div style="text-align: center; margin-top: 1em;">
-        <button id="regenerate-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; margin-right: 0.5em; cursor: pointer;">
+        <button id="regenerate-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; margin-right: 0.5em; color: #fff">
           Régénérer
         </button>
         <button id="download-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; cursor: pointer; background: var(--accent-color); color: var(--font-color-on-accent);">
