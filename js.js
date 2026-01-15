@@ -475,13 +475,16 @@ function generatePoemeImage(container) {
     ctx.font = `bold ${titleSize}px Vollkorn, serif`;
     const titleWidth = ctx.measureText(title).width;
     // Fond blanc (surlignage)
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.fillRect(
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.roundRect(
       panelPadding - highlightPaddingX,
       currentY - highlightPaddingY,
       titleWidth + highlightPaddingX * 2,
-      titleSize + highlightPaddingY * 2
+      titleSize + highlightPaddingY * 2,
+      4
     );
+    ctx.fill();
     // Texte
     ctx.fillStyle = "#1a1a2e";
     ctx.fillText(title, panelPadding, currentY + titleSize - 4);
@@ -493,13 +496,16 @@ function generatePoemeImage(container) {
     ctx.font = `${dateSize}px Vollkorn, serif`;
     const dateWidth = ctx.measureText(date).width;
     // Fond blanc (surlignage)
-    ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-    ctx.fillRect(
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.roundRect(
       panelPadding - highlightPaddingX,
       currentY - highlightPaddingY,
       dateWidth + highlightPaddingX * 2,
-      dateSize + highlightPaddingY * 2
+      dateSize + highlightPaddingY * 2,
+      4
     );
+    ctx.fill();
     // Texte
     ctx.fillStyle = "#555555";
     ctx.fillText(date, panelPadding, currentY + dateSize - 4);
@@ -508,22 +514,31 @@ function generatePoemeImage(container) {
 
   // Texte du poème
   ctx.font = `${textSize}px Vollkorn, serif`;
+
+  // Première passe : dessiner tous les surlignages
+  let highlightY = currentY;
   lines.forEach((line) => {
     if (line.trim()) {
       const lineWidth = ctx.measureText(line).width;
-      // Fond blanc (surlignage)
-      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-      ctx.fillRect(
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(
         panelPadding - highlightPaddingX,
-        currentY - highlightPaddingY,
+        highlightY - highlightPaddingY,
         lineWidth + highlightPaddingX * 2,
-        lineHeight + highlightPaddingY * 2
+        lineHeight + highlightPaddingY * 2,
+        4
       );
+      ctx.fill();
     }
-    // Texte
+    highlightY += lineHeight + highlightPaddingY * 0.25;
+  });
+
+  // Seconde passe : dessiner le texte par-dessus
+  lines.forEach((line) => {
     ctx.fillStyle = "#1a1a2e";
     ctx.fillText(line, panelPadding, currentY + lineHeight);
-    currentY += lineHeight + highlightPaddingY * .25;
+    currentY += lineHeight + highlightPaddingY * 0.25;
   });
 
   return canvas;
