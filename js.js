@@ -452,17 +452,19 @@ function generatePoemeImage(container) {
   // Dimensions du canvas
   const panelPadding = 40;
   const highlightPaddingY = 8;
+  const scale = 3; // Facteur d'échelle pour une meilleure qualité
   const canvasWidth = Math.max(500, maxTextWidth + panelPadding * 2);
   const titleHeight = title ? titleSize + highlightPaddingY + 10 : 0;
   const dateHeight = date ? dateSize + highlightPaddingY + 20 : 0;
   const textHeight = lines.length * (lineHeight + highlightPaddingY * .25);
   const canvasHeight = panelPadding * 2 + titleHeight + dateHeight + textHeight + highlightPaddingY;
 
-  // Créer le canvas final
+  // Créer le canvas final avec haute résolution
   const canvas = document.createElement("canvas");
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
+  canvas.width = canvasWidth * scale;
+  canvas.height = canvasHeight * scale;
   const ctx = canvas.getContext("2d");
+  ctx.scale(scale, scale);
 
   // Fond avec gradients aléatoires
   drawRandomGradients(ctx, canvasWidth, canvasHeight);
@@ -495,21 +497,23 @@ function generatePoemeImage(container) {
   if (date) {
     ctx.font = `${dateSize}px Vollkorn, serif`;
     const dateWidth = ctx.measureText(date).width;
+    const datePaddingX = 5;
+    const datePaddingY = 4;
     // Fond blanc (surlignage)
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
     ctx.roundRect(
-      panelPadding - highlightPaddingX,
-      currentY - highlightPaddingY,
-      dateWidth + highlightPaddingX * 2,
-      dateSize + highlightPaddingY * 2,
-      4
+      panelPadding - datePaddingX,
+      currentY - datePaddingY,
+      dateWidth + datePaddingX * 2,
+      dateSize + datePaddingY * 2,
+      3
     );
     ctx.fill();
     // Texte
     ctx.fillStyle = "#555555";
     ctx.fillText(date, panelPadding, currentY + dateSize - 4);
-    currentY += dateSize + highlightPaddingY + 20;
+    currentY += dateSize + datePaddingY + 20;
   }
 
   // Texte du poème
