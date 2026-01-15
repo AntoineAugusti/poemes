@@ -204,6 +204,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
         <li><kbd>K</kbd> : poème précédent</li>
         <li><kbd>T</kbd> : changer l'ordre des poèmes</li>
         <li><kbd>S</kbd> : ajouter/retirer des favoris</li>
+        <li><kbd>D</kbd> : basculer dark/light mode</li>
         <li><kbd>/</kbd> : rechercher</li>
       </ul>
       <h2>Recherche avancée</h2>
