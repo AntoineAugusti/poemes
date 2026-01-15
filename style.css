@@ -19,6 +19,28 @@
   --code-bg: #2d3a5a;
 }
 
+.offline-banner {
+  display: none;
+  background: var(--accent-color);
+  color: var(--font-color-on-accent);
+  text-align: center;
+  padding: 0.4em 1em;
+  font-size: 0.75em;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.offline-banner.visible {
+  display: block;
+}
+
+body.is-offline {
+  padding-top: 2em;
+}
+
 [data-theme="light"] {
   --font-color: #2d3436;
   --font-color-secondary: #636e72;

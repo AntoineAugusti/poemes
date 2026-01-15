@@ -28,6 +28,9 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="offline-banner" id="offline-banner">
+    Mode hors ligne — les données affichées peuvent ne pas être à jour
+  </div>
   <div class="container">
     <? if (empty($signature)) { ?>
       <header class="search_wrapper">

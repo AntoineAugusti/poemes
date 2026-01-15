@@ -693,6 +693,24 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Gestion du mode hors ligne
+function updateOfflineStatus() {
+  const banner = document.getElementById("offline-banner");
+  if (!banner) return;
+
+  if (!navigator.onLine) {
+    banner.classList.add("visible");
+    document.body.classList.add("is-offline");
+  } else {
+    banner.classList.remove("visible");
+    document.body.classList.remove("is-offline");
+  }
+}
+
+window.addEventListener("online", updateOfflineStatus);
+window.addEventListener("offline", updateOfflineStatus);
+document.addEventListener("DOMContentLoaded", updateOfflineStatus);
+
 // Bouton retour en haut (visible uniquement sur mobile)
 document.addEventListener("DOMContentLoaded", function () {
   const scrollToTopBtn = document.getElementById("scroll-to-top");
