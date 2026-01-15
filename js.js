@@ -414,7 +414,6 @@ function generatePoemeImage(container) {
   const lines = text.split("\n");
 
   // Configuration du canvas
-  const padding = 60;
   const lineHeight = 15;
   const titleSize = 28;
   const textSize = 22;
@@ -543,16 +542,6 @@ function generatePoemeImage(container) {
   });
 
   return canvas;
-}
-
-function downloadPoemeImage(container) {
-  const canvas = generatePoemeImage(container);
-  const poemeId = container.querySelector(".poeme").getAttribute("data-id");
-
-  const link = document.createElement("a");
-  link.download = `poeme-${poemeId}.png`;
-  link.href = canvas.toDataURL("image/png");
-  link.click();
 }
 
 // Modal de prévisualisation d'image
