@@ -40,9 +40,24 @@ function readUser(filename) {
   return data;
 }
 
+function getFavorites(identifier) {
+  const filePath = `data/favorites-${identifier}.json`;
+  if (!fs.existsSync(filePath)) {
+    return [];
+  }
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function saveFavorites(identifier, favorites) {
+  const filePath = `data/favorites-${identifier}.json`;
+  fs.writeFileSync(filePath, JSON.stringify(favorites));
+}
+
 module.exports = {
   getUserByEmail,
   getUserById,
   createUser,
   updateUserCounter,
+  getFavorites,
+  saveFavorites,
 };

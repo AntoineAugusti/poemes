@@ -12,6 +12,8 @@ const {
   createUser,
   updateUserCounter,
   getUserById,
+  getFavorites,
+  saveFavorites,
 } = require("./db");
 
 const app = express();
@@ -180,6 +182,36 @@ app.post("/password-auth", async (req, res) => {
     secure: true,
   });
   return res.json({ auth: true });
+});
+
+function getAuthIdentifier(req) {
+  if (!req.cookies.auth) {
+    return null;
+  }
+  const auth = JSON.parse(req.cookies.auth);
+  return auth.userId || auth.userEmail || null;
+}
+
+app.get("/favorites", (req, res) => {
+  const identifier = getAuthIdentifier(req);
+  if (!identifier) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const favorites = getFavorites(identifier);
+  return res.json(favorites);
+});
+
+app.post("/favorites", (req, res) => {
+  const identifier = getAuthIdentifier(req);
+  if (!identifier) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const { favorites } = req.body;
+  if (!Array.isArray(favorites)) {
+    return res.status(400).json({ error: "Favorites must be an array" });
+  }
+  saveFavorites(identifier, favorites);
+  return res.json({ success: true });
 });
 
 app.listen(3000, () => {

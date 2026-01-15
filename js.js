@@ -928,13 +928,61 @@ document.addEventListener("DOMContentLoaded", () => DayHeights.save());
 const FAVORITES_KEY = "poemes-favorites";
 let showingFavoritesOnly = false;
 
-function getFavorites() {
+let FAVORITES_API_URL = "https://poemes.antoine-augusti.fr/api";
+if (window.location.hostname === "localhost") {
+  FAVORITES_API_URL = "http://localhost:3000";
+}
+
+function getFavoritesFromLocalStorage() {
   const favorites = localStorage.getItem(FAVORITES_KEY);
   return favorites ? JSON.parse(favorites) : [];
 }
 
-function saveFavorites(favorites) {
+function saveFavoritesToLocalStorage(favorites) {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+}
+
+async function loadFavoritesFromAPI() {
+  try {
+    const response = await fetch(`${FAVORITES_API_URL}/favorites`, {
+      credentials: "include",
+    });
+    if (response.ok) {
+      const favorites = await response.json();
+      if (favorites.length > 0) {
+        // Synchroniser avec localStorage
+        saveFavoritesToLocalStorage(favorites);
+        return favorites;
+      }
+    }
+  } catch (e) {
+    // Ignore les erreurs réseau
+  }
+  // Fallback sur localStorage
+  return getFavoritesFromLocalStorage();
+}
+
+async function saveFavoritesToAPI(favorites) {
+  try {
+    await fetch(`${FAVORITES_API_URL}/favorites`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ favorites }),
+    });
+  } catch (e) {
+    // Ignore les erreurs réseau
+  }
+  // Toujours sauvegarder en local aussi
+  saveFavoritesToLocalStorage(favorites);
+}
+
+function getFavorites() {
+  return getFavoritesFromLocalStorage();
+}
+
+function saveFavorites(favorites) {
+  saveFavoritesToAPI(favorites);
 }
 
 function isFavorite(poemeId) {
@@ -1167,7 +1215,10 @@ function displayAllPoemes() {
   updateFavoriteTitles();
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+  // Charger les favoris depuis l'API (ou localStorage en fallback)
+  await loadFavoritesFromAPI();
+
   // Initialiser les boutons favoris
   document.querySelectorAll(".js-favorite-button").forEach((button) => {
     const poemeId = button.getAttribute("data-poeme-id");
