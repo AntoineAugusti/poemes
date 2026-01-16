@@ -1,14 +1,18 @@
 <?
 require "functions.php";
 
+$scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+$host = $_SERVER['HTTP_HOST'];
+$baseUrl = $scheme . "://" . $host;
+
 $signature = $_GET["signature"] ?? null;
-$isAntoine = $_COOKIE["email"] == "antoine.augusti@gmail.com";
+$isAdmin = $_COOKIE["email"] == "antoine.augusti@gmail.com" || $host != "poemes.antoine-augusti.fr";
 
 $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);
 
-if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature)) {
+if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature) && $host != "poemes.andrea.antoine-augusti.fr") {
   header("Location: login.php?action=login", true, 302);
   exit();
 }
@@ -45,7 +49,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
         </div>
 
         <input type="search" id="search" list="themes-list">
-        <?php if ($isAntoine || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
+        <?php if ($isAdmin || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
           <div class="add">
             <a href="add.php">
               <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0xMS41IDBjNi4zNDcgMCAxMS41IDUuMTUzIDExLjUgMTEuNXMtNS4xNTMgMTEuNS0xMS41IDExLjUtMTEuNS01LjE1My0xMS41LTExLjUgNS4xNTMtMTEuNSAxMS41LTExLjV6bTAgMWM1Ljc5NSAwIDEwLjUgNC43MDUgMTAuNSAxMC41cy00LjcwNSAxMC41LTEwLjUgMTAuNS0xMC41LTQuNzA1LTEwLjUtMTAuNSA0LjcwNS0xMC41IDEwLjUtMTAuNXptLjUgMTBoNnYxaC02djZoLTF2LTZoLTZ2LTFoNnYtNmgxdjZ6Ii8+PC9zdmc+">
@@ -95,7 +99,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
             $i = $i + 1;
             $matches = parsePoeme($poeme);
             $hasMasqué = in_array("masqué", $themes[$i-1]);
-            $validHasMasqué = !$hasMasqué || ($hasMasqué && $isAntoine);
+            $validHasMasqué = !$hasMasqué || ($hasMasqué && $isAdmin);
             if (!empty($matches["titre"]) && $validHasMasqué) { ?>
               <span
               class="poeme-title hidden"
@@ -119,7 +123,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
           $matches = parsePoeme($poeme);
           $validSignature = empty($signature) || $signature == $poeme_signature;
           $hasMasqué = in_array("masqué", $themes[$i-1]);
-          $validHasMasqué = !$hasMasqué || ($hasMasqué && $isAntoine);
+          $validHasMasqué = !$hasMasqué || ($hasMasqué && $isAdmin);
           if ($validSignature && $validHasMasqué) {
             ?>
             <div
@@ -176,7 +180,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
                 Copier
               </div>
               <div class="action-button js-share-button">
-                <span class="hidden js-share-url">https://poemes.antoine-augusti.fr/share?signature=<?= $poeme_signature; ?></span>
+                <span class="hidden js-share-url"><?= $baseUrl; ?>/share?signature=<?= $poeme_signature; ?></span>
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNiAxN2MyLjI2OS05Ljg4MSAxMS0xMS42NjcgMTEtMTEuNjY3di0zLjMzM2w3IDYuNjM3LTcgNi42OTZ2LTMuMzMzcy02LjE3LS4xNzEtMTEgNXptMTIgLjE0NXYyLjg1NWgtMTZ2LTEyaDYuNTk4Yy43NjgtLjc4NyAxLjU2MS0xLjQ0OSAyLjMzOS0yaC0xMC45Mzd2MTZoMjB2LTYuNzY5bC0yIDEuOTE0eiIvPjwvc3ZnPg==">
                 Partager
               </div>
