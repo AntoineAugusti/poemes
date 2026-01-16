@@ -445,10 +445,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       displayRhymes(wordToRhyme, rhymes, false, schemeInfo);
     }
 
-    function shouldTriggerRhymes(e) {
-      return [',', '.', ';', ':', '!', '?'].includes(e.key);
-    }
-
     function toggleRhymeScheme() {
       rhymeScheme = rhymeScheme === 'AABB' ? 'ABAB' : 'AABB';
       document.getElementById('rhyme-scheme-btn').textContent = `Schéma: ${rhymeScheme}`;
@@ -461,11 +457,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const texteArea = document.getElementById('texte');
       const rhymesList = document.getElementById('rhymes-list');
 
-      // Déclencher la recherche de rimes seulement quand on tape une ponctuation
-      texteArea.addEventListener('keyup', function(e) {
-        if (shouldTriggerRhymes(e)) {
-          updateRhymes(texteArea);
+      // Déclencher la recherche de rimes quand la ligne se termine par une ponctuation
+      let lastValue = '';
+      texteArea.addEventListener('input', function() {
+        const currentValue = texteArea.value;
+        // Vérifier si un caractère de ponctuation a été ajouté
+        if (currentValue.length > lastValue.length) {
+          const addedChar = currentValue[texteArea.selectionStart - 1];
+          if ([',', '.', ';', ':', '!', '?'].includes(addedChar)) {
+            updateRhymes(texteArea);
+          }
         }
+        lastValue = currentValue;
       });
 
       // Cliquer sur une rime pour l'insérer
