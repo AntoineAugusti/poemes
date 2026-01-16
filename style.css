@@ -268,7 +268,7 @@ body * {
   cursor: pointer;
   margin-right: 0.5em;
 }
-.action-button a {
+.action-button a, a.action-button {
   text-decoration: none;
   color: var(--font-color);
 }
@@ -278,9 +278,15 @@ body * {
   margin-right: 0.3em;
   filter: invert(1);
 }
+.action-button:hover {
+  background: var(--hover-bg);
+}
 .js-favorite-button.is-favorite {
   background: var(--favorite-color);
   color: var(--font-color-on-accent);
+}
+.js-favorite-button.is-favorite:hover {
+  background: var(--accent-color);
 }
 .js-favorite-button.is-favorite .favorite-icon {
   fill: var(--font-color-on-accent);

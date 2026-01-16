@@ -188,6 +188,12 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
                 <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNCAyMmgtMjR2LTIwaDI0djIwem0tMS0xOWgtMjJ2MThoMjJ2LTE4em0tMSAxNmgtMTlsNC03LjQ5MiAzIDMuMDQ4IDUuMDEzLTcuNTU2IDYuOTg3IDEyem0tMTEuODQ4LTIuODY1bC0yLjkxLTIuOTU2LTIuNTc0IDQuODIxaDE1LjU5M2wtNS4zMDMtOS4xMDgtNC44MDYgNy4yNDN6bS00LjY1Mi0xMS4xMzVjMS4zOCAwIDIuNSAxLjEyIDIuNSAyLjVzLTEuMTIgMi41LTIuNSAyLjUtMi41LTEuMTItMi41LTIuNSAxLjEyLTIuNSAyLjUtMi41em0wIDFjLjgyOCAwIDEuNS42NzIgMS41IDEuNXMtLjY3MiAxLjUtMS41IDEuNS0xLjUtLjY3Mi0xLjUtMS41LjY3Mi0xLjUgMS41LTEuNXoiLz48L3N2Zz4=">
                 Image
               </div>
+              <?php if ($isAdmin) { ?>
+              <a class="action-button" href="edit.php?id=<?= $i ?>">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTguMzYzIDguNDY0bDEuNDMzIDEuNDMxLTEyLjY3IDEyLjY2OS03LjEyNSAxLjQzNiAxLjQzOS03LjEyNyAxMi42NjUtMTIuNjY4IDEuNDMxIDEuNDMxLTEyLjI1NSAxMi4yMjQtLjcyNiAzLjU4NCAzLjU4NC0uNzIzIDEyLjIyNC0xMi4yNTd6bS0uMDU2LTguNDY0bC0yLjgxNSAyLjgxNyA1LjY5MSA1LjY5MiAyLjgxNy0yLjgyMS01LjY5My01LjY4OHptLTEyLjMxOCAxOC43MThsMTEuMzEzLTExLjMxNi0uNzA1LS43MDctMTEuMzEzIDExLjMxNC43MDUuNzA5eiIvPjwvc3ZnPg==">
+                Modifier
+              </a>
+              <?php } ?>
               <? if (! empty($matches["notes"])) { ?>
                 <div class="poeme-notes hidden">
                   <?= $matches["notes"]; ?>
