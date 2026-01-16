@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   document.addEventListener("keydown", function (e) {
-    if (document.activeElement.matches('input, textarea')) return;
+    if (document.activeElement.matches("input, textarea")) return;
     if (e.key === "d") {
       toggleTheme();
     }
