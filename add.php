@@ -214,6 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="editor-right">
           <div id="rhymes-panel">
+            <button type="button" id="rhyme-scheme-btn" onclick="toggleRhymeScheme()" style="font-size: 0.8em; padding: 2px 8px; margin-bottom: 0.5em; cursor: pointer;">Schéma: AABB</button>
             <div id="current-word"></div>
             <ul id="rhymes-list"></ul>
           </div>
@@ -291,6 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Suggestions de rimes
     const rhymesCache = {};
     let lastRhymeWord = '';
+    let rhymeScheme = 'AABB'; // AABB ou ABAB
 
     async function fetchRhymes(word) {
       if (!word || word.length < 2) return [];
@@ -315,6 +317,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
+    function getLastWordOfLine(line) {
+      const match = line.trim().match(/(\S+)\s*$/);
+      if (match) {
+        return match[1].replace(/[.,;:!?'"()«»—–-]+/g, '').toLowerCase();
+      }
+      return null;
+    }
+
+    function getCompletedLines(textarea) {
+      const text = textarea.value;
+      const cursorPos = textarea.selectionStart;
+      const textBeforeCursor = text.substring(0, cursorPos);
+
+      // Séparer par lignes et filtrer les lignes vides
+      const lines = textBeforeCursor.split('\n').filter(l => l.trim());
+      return lines;
+    }
+
     function getLastWordBeforePunctuation(textarea) {
       const text = textarea.value;
       const cursorPos = textarea.selectionStart;
@@ -331,12 +351,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       return null;
     }
 
-    function displayRhymes(word, rhymes, loading = false) {
+    function getRhymeSuggestionInfo(textarea) {
+      const lines = getCompletedLines(textarea);
+      const nextLineNumber = lines.length + 1; // Prochaine ligne à écrire (1-indexed)
+
+      if (rhymeScheme === 'AABB') {
+        // AABB: ligne 2 rime avec 1, ligne 4 rime avec 3, etc.
+        if (nextLineNumber % 2 === 0) {
+          // Lignes paires (2, 4, 6...) -> suggestions basées sur ligne précédente
+          const targetLine = nextLineNumber - 1;
+          const targetWord = lines.length >= 1 ? getLastWordOfLine(lines[targetLine - 1]) : null;
+          return { show: true, targetWord, message: `Ligne ${nextLineNumber} rime avec ligne ${targetLine}` };
+        } else {
+          // Lignes impaires (1, 3, 5...) -> suggestions libres
+          return { show: false, targetWord: null, message: '' };
+        }
+      } else {
+        // ABAB: ligne 3 rime avec 1, ligne 4 rime avec 2, etc.
+        const posInQuatrain = ((nextLineNumber - 1) % 4) + 1;
+
+        if (posInQuatrain === 3) {
+          // Lignes 3, 7, 11... -> riment avec lignes 1, 5, 9...
+          const targetLine = nextLineNumber - 2;
+          const targetWord = lines.length >= 2 ? getLastWordOfLine(lines[targetLine - 1]) : null;
+          return { show: true, targetWord, message: `Ligne ${nextLineNumber} rime avec ligne ${targetLine}` };
+        } else if (posInQuatrain === 4) {
+          // Lignes 4, 8, 12... -> riment avec lignes 2, 6, 10...
+          const targetLine = nextLineNumber - 2;
+          const targetWord = lines.length >= 2 ? getLastWordOfLine(lines[targetLine - 1]) : null;
+          return { show: true, targetWord, message: `Ligne ${nextLineNumber} rime avec ligne ${targetLine}` };
+        } else {
+          // Lignes 1, 2, 5, 6... -> suggestions libres
+          return { show: false, targetWord: null, message: '' };
+        }
+      }
+    }
+
+    function displayRhymes(word, rhymes, loading = false, schemeInfo = '') {
       const currentWordEl = document.getElementById('current-word');
       const rhymesList = document.getElementById('rhymes-list');
 
       if (loading) {
-        currentWordEl.textContent = `Recherche de rimes pour "${word}"…`;
+        currentWordEl.innerHTML = `Recherche de rimes pour "<strong>${word}</strong>"…${schemeInfo}`;
         rhymesList.innerHTML = '<li style="color: var(--font-color-muted)">Chargement…</li>';
         return;
       }
@@ -347,7 +403,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
       }
 
-      currentWordEl.textContent = `Rimes pour "${word}"`;
+      currentWordEl.innerHTML = `Rimes pour "<strong>${word}</strong>"${schemeInfo}`;
 
       if (rhymes.length === 0) {
         rhymesList.innerHTML = '<li style="color: var(--font-color-muted)">Aucune rime trouvée</li>';
@@ -360,19 +416,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     async function updateRhymes(textarea, forceUpdate = false) {
-      const lastWord = getLastWordBeforePunctuation(textarea);
+      const currentWord = getLastWordBeforePunctuation(textarea);
+      if (!currentWord) return;
 
-      if (!lastWord) return;
-      if (lastWord === lastRhymeWord && !forceUpdate) return;
-      lastRhymeWord = lastWord;
+      const info = getRhymeSuggestionInfo(textarea);
 
-      displayRhymes(lastWord, [], true);
-      const rhymes = await fetchRhymes(lastWord);
-      displayRhymes(lastWord, rhymes);
+      // Si pas besoin de suggestions (AABB sur ligne paire)
+      if (!info.show) {
+        const currentWordEl = document.getElementById('current-word');
+        const rhymesList = document.getElementById('rhymes-list');
+        currentWordEl.innerHTML = `<span style="color: var(--font-color-muted)">${info.message}</span>`;
+        rhymesList.innerHTML = '';
+        lastRhymeWord = '';
+        return;
+      }
+
+      // Mot pour lequel chercher des rimes
+      const wordToRhyme = info.targetWord || currentWord;
+      const schemeInfo = info.message
+        ? `<br><span style="font-size: 0.8em; color: var(--font-color-muted)">${info.message}</span>`
+        : '';
+
+      if (wordToRhyme === lastRhymeWord && !forceUpdate) return;
+      lastRhymeWord = wordToRhyme;
+
+      displayRhymes(wordToRhyme, [], true, schemeInfo);
+      const rhymes = await fetchRhymes(wordToRhyme);
+      displayRhymes(wordToRhyme, rhymes, false, schemeInfo);
     }
 
     function shouldTriggerRhymes(e) {
       return [',', '.', ';', ':', '!', '?'].includes(e.key);
+    }
+
+    function toggleRhymeScheme() {
+      rhymeScheme = rhymeScheme === 'AABB' ? 'ABAB' : 'AABB';
+      document.getElementById('rhyme-scheme-btn').textContent = `Schéma: ${rhymeScheme}`;
     }
 
     document.addEventListener('DOMContentLoaded', function() {
