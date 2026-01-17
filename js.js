@@ -1037,8 +1037,6 @@ async function saveFavoritesToAPI(favorites) {
   } catch {
     // Ignore les erreurs réseau
   }
-  // Toujours sauvegarder en local aussi
-  saveFavoritesToLocalStorage(favorites);
 }
 
 function getFavorites() {
@@ -1046,6 +1044,7 @@ function getFavorites() {
 }
 
 function saveFavorites(favorites) {
+  saveFavoritesToLocalStorage(favorites);
   saveFavoritesToAPI(favorites);
 }
 
@@ -1236,6 +1235,7 @@ function animateRemoveFromFavorites(button) {
 
       updateFavoritesCounter();
       updateDaysForFavorites();
+      updateShowFavoritesButton();
     },
     { once: true },
   );
@@ -1295,6 +1295,8 @@ document.addEventListener("DOMContentLoaded", async function () {
       updateShowFavoritesButton();
       updateFavoriteDays();
       updateFavoriteTitles();
+      updateFavoritesCounter();
+      updateDaysForFavorites();
 
       // Si on retire un favori en mode favoris, l'animer puis le cacher
       if (!newIsFav && showingFavoritesOnly) {
