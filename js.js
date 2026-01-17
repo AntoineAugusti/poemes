@@ -1295,7 +1295,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       updateShowFavoritesButton();
       updateFavoriteDays();
       updateFavoriteTitles();
-      updateFavoritesCounter();
       updateDaysForFavorites();
 
       // Si on retire un favori en mode favoris, l'animer puis le cacher
