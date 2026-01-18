@@ -608,7 +608,7 @@ function createImagePreviewModal() {
       <span class="close-btn" id="close-image-preview">&times;</span>
       <div id="image-preview-container" style="text-align: center; margin: 1em 0;"></div>
       <div style="text-align: center; margin-top: 1em;">
-        <button id="regenerate-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; margin-right: 0.5em; color: #fff">
+        <button id="regenerate-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; margin-right: 0.5em; color: var(--font-color)">
           Régénérer
         </button>
         <button id="download-image" class="action-button" style="font-size: 1em; padding: 0.5em 1em; cursor: pointer; background: var(--accent-color); color: var(--font-color-on-accent);">
