@@ -838,6 +838,7 @@ const FavoritesManager = {
     });
 
     const favoritesPerDay = {};
+    const maskedPerDay = {};
     const totalPerDay = {};
 
     document.querySelectorAll(".poeme").forEach((poeme) => {
@@ -845,25 +846,49 @@ const FavoritesManager = {
       if (poemeDate) {
         const date = poemeDate.textContent.trim();
         const poemeId = poeme.getAttribute("data-id");
+        const isMasked = poeme
+          .closest(".poeme-container")
+          ?.classList.contains("poeme-masque");
 
         totalPerDay[date] = (totalPerDay[date] || 0) + 1;
-        if (favorites.includes(poemeId)) {
+
+        if (isMasked && !this.showingFavoritesOnly) {
+          maskedPerDay[date] = (maskedPerDay[date] || 0) + 1;
+        } else if (favorites.includes(poemeId)) {
           favoritesPerDay[date] = (favoritesPerDay[date] || 0) + 1;
         }
       }
     });
 
-    Object.keys(favoritesPerDay).forEach((date) => {
+    const allDates = new Set([
+      ...Object.keys(favoritesPerDay),
+      ...Object.keys(maskedPerDay),
+    ]);
+
+    allDates.forEach((date) => {
       const day = document.querySelector(`.day[data-day="${date}"]`);
       if (day) {
-        const favoriteCount = favoritesPerDay[date];
-        const totalCount = totalPerDay[date];
-        const percentage = (favoriteCount / totalCount) * 100;
+        const totalCount = totalPerDay[date] || 0;
+        const maskedCount = maskedPerDay[date] || 0;
+        const favoriteCount = favoritesPerDay[date] || 0;
 
-        if (this.showingFavoritesOnly || percentage === 100) {
-          day.style.background = "var(--favorite-color)";
-        } else {
-          day.style.background = `linear-gradient(to top, var(--favorite-color) ${percentage}%, var(--day-color) ${percentage}%)`;
+        const maskedPct = (maskedCount / totalCount) * 100;
+        const favoritePct = (favoriteCount / totalCount) * 100;
+
+        if (maskedCount > 0 && favoriteCount > 0) {
+          day.style.background = `linear-gradient(to top, var(--masked-color) ${maskedPct}%, var(--favorite-color) ${maskedPct}%, var(--favorite-color) ${maskedPct + favoritePct}%, var(--day-color) ${maskedPct + favoritePct}%)`;
+        } else if (maskedCount > 0) {
+          if (maskedPct === 100) {
+            day.style.background = "var(--masked-color)";
+          } else {
+            day.style.background = `linear-gradient(to top, var(--masked-color) ${maskedPct}%, var(--day-color) ${maskedPct}%)`;
+          }
+        } else if (favoriteCount > 0) {
+          if (this.showingFavoritesOnly || favoritePct === 100) {
+            day.style.background = "var(--favorite-color)";
+          } else {
+            day.style.background = `linear-gradient(to top, var(--favorite-color) ${favoritePct}%, var(--day-color) ${favoritePct}%)`;
+          }
         }
       }
     });

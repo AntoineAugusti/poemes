@@ -8,6 +8,7 @@
   --panel-color-alt: #344f8d;
   --border-color: #2d3a5a;
   --day-color: #6b7aa1;
+  --masked-color: #9b59b6;
   --favorite-color: #f0c040;
   --accent-color: #ff7b54;
   --accent-color-light: rgba(255, 123, 84, 0.3);
@@ -51,6 +52,7 @@ body.is-offline {
   --panel-color-alt: #e9ecef;
   --border-color: #dee2e6;
   --day-color: #adb5bd;
+  --masked-color: #8e44ad;
   --favorite-color: #f1c40f;
   --accent-color: #e17055;
   --accent-color-light: rgba(225, 112, 85, 0.2);
