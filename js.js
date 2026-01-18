@@ -141,7 +141,9 @@ const SearchManager = {
 
     if (!searchTerm.trim()) return;
 
-    const context = document.querySelectorAll(".poemes-container .poeme.visible");
+    const context = document.querySelectorAll(
+      ".poemes-container .poeme.visible",
+    );
 
     if (searchTerm.startsWith("rime:")) {
       const parts = searchTerm.split(":");
@@ -176,7 +178,9 @@ const SearchManager = {
   },
 
   removeHighlight() {
-    const context = document.querySelectorAll(".poemes-container .poeme.visible");
+    const context = document.querySelectorAll(
+      ".poemes-container .poeme.visible",
+    );
     new Mark(context).unmark();
   },
 
@@ -189,7 +193,10 @@ const SearchManager = {
       const nbPoemes = document.querySelectorAll(
         ".poemes-container .poeme.visible",
       ).length;
-      const label = FavoritesManager.showingFavoritesOnly && !hasSearch ? "favori" : "poème";
+      const label =
+        FavoritesManager.showingFavoritesOnly && !hasSearch
+          ? "favori"
+          : "poème";
       const text = nbPoemes == 1 ? label : label + "s";
       nbResults.textContent = `${nbPoemes} ${text}`;
       hasSearch ? Utils.show(reset) : Utils.hide(reset);
@@ -209,7 +216,11 @@ const SearchManager = {
     if (searchTerm.startsWith("rime:")) {
       const parts = searchTerm.split(":");
       if (parts.length === 3) {
-        return RhymeUtils.searchPair(poemeDiv, parts[1].trim(), parts[2].trim());
+        return RhymeUtils.searchPair(
+          poemeDiv,
+          parts[1].trim(),
+          parts[2].trim(),
+        );
       }
       return false;
     }
@@ -223,7 +234,10 @@ const SearchManager = {
       return parseInt(id) >= matchedId;
     }
 
-    if (searchTerm.match(/^(\d+)-(\d+)$/) && !/^\d{4}-\d{2}$/.test(searchTerm)) {
+    if (
+      searchTerm.match(/^(\d+)-(\d+)$/) &&
+      !/^\d{4}-\d{2}$/.test(searchTerm)
+    ) {
       const matches = searchTerm.match(/^(\d+)-(\d+)$/);
       const start = parseInt(matches[1]);
       const end = parseInt(matches[2]);
@@ -251,36 +265,45 @@ const SearchManager = {
   },
 
   filterPoemes(searchTerm) {
-    document.querySelectorAll(".poeme-titles .poeme-title.visible").forEach(Utils.hide);
+    document
+      .querySelectorAll(".poeme-titles .poeme-title.visible")
+      .forEach(Utils.hide);
     document.querySelectorAll(".day.visible").forEach(Utils.hide);
 
     const favorites = FavoritesManager.getFavorites();
     const isFavoritesMode = FavoritesManager.showingFavoritesOnly;
 
-    document.querySelectorAll(".poemes-container .poeme").forEach((poemeDiv) => {
-      const poemeDate = poemeDiv.querySelector(".poeme-date");
-      const date = poemeDate ? poemeDate.textContent.trim() : null;
-      const id = poemeDiv.getAttribute("data-id");
+    document
+      .querySelectorAll(".poemes-container .poeme")
+      .forEach((poemeDiv) => {
+        const poemeDate = poemeDiv.querySelector(".poeme-date");
+        const date = poemeDate ? poemeDate.textContent.trim() : null;
+        const id = poemeDiv.getAttribute("data-id");
 
-      let matches = this.matchesSearchCriteria(poemeDiv, searchTerm, date, id);
+        let matches = this.matchesSearchCriteria(
+          poemeDiv,
+          searchTerm,
+          date,
+          id,
+        );
 
-      if (isFavoritesMode && !favorites.includes(id)) {
-        matches = false;
-      }
-
-      if (matches) {
-        Utils.show(poemeDiv);
-        const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
-        if ((searchTerm != "" || isFavoritesMode) && title) {
-          Utils.show(title);
+        if (isFavoritesMode && !favorites.includes(id)) {
+          matches = false;
         }
-        if (date) {
-          Utils.show(document.querySelector(`.day[data-day="${date}"]`));
+
+        if (matches) {
+          Utils.show(poemeDiv);
+          const title = document.querySelector(`.poeme-title[data-id="${id}"]`);
+          if ((searchTerm != "" || isFavoritesMode) && title) {
+            Utils.show(title);
+          }
+          if (date) {
+            Utils.show(document.querySelector(`.day[data-day="${date}"]`));
+          }
+        } else {
+          Utils.hide(poemeDiv);
         }
-      } else {
-        Utils.hide(poemeDiv);
-      }
-    });
+      });
 
     this.refreshNbResults(searchTerm);
     this.highlightText(searchTerm);
@@ -358,14 +381,35 @@ const ImageGenerator = {
   currentCanvas: null,
 
   colors: [
-    [102, 126, 234], [118, 75, 162], [240, 147, 251], [255, 123, 84],
-    [100, 200, 255], [240, 192, 64], [64, 224, 208], [255, 107, 107],
-    [78, 205, 196], [199, 128, 232],
-    [250, 211, 144], [248, 194, 145], [246, 185, 59], [235, 47, 6],
-    [250, 152, 58], [229, 142, 38], [183, 21, 64], [12, 36, 97],
-    [30, 55, 153], [74, 105, 189], [106, 137, 204], [130, 204, 221],
-    [96, 163, 188], [60, 99, 130], [10, 61, 98], [184, 233, 148],
-    [120, 224, 143], [56, 173, 169], [7, 153, 146],
+    [102, 126, 234],
+    [118, 75, 162],
+    [240, 147, 251],
+    [255, 123, 84],
+    [100, 200, 255],
+    [240, 192, 64],
+    [64, 224, 208],
+    [255, 107, 107],
+    [78, 205, 196],
+    [199, 128, 232],
+    [250, 211, 144],
+    [248, 194, 145],
+    [246, 185, 59],
+    [235, 47, 6],
+    [250, 152, 58],
+    [229, 142, 38],
+    [183, 21, 64],
+    [12, 36, 97],
+    [30, 55, 153],
+    [74, 105, 189],
+    [106, 137, 204],
+    [130, 204, 221],
+    [96, 163, 188],
+    [60, 99, 130],
+    [10, 61, 98],
+    [184, 233, 148],
+    [120, 224, 143],
+    [56, 173, 169],
+    [7, 153, 146],
   ],
 
   baseColors: [
@@ -381,7 +425,8 @@ const ImageGenerator = {
   },
 
   drawRandomGradients(ctx, width, height) {
-    const baseColor = this.baseColors[Math.floor(Math.random() * this.baseColors.length)];
+    const baseColor =
+      this.baseColors[Math.floor(Math.random() * this.baseColors.length)];
     const baseGradient = ctx.createLinearGradient(0, 0, width, height);
     baseGradient.addColorStop(0, baseColor[0]);
     baseGradient.addColorStop(1, baseColor[1]);
@@ -417,8 +462,14 @@ const ImageGenerator = {
 
       const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
       gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(0.3, this.randomColor(Utils.randomBetween(0.2, 0.5)));
-      gradient.addColorStop(0.7, this.randomColor(Utils.randomBetween(0.2, 0.5)));
+      gradient.addColorStop(
+        0.3,
+        this.randomColor(Utils.randomBetween(0.2, 0.5)),
+      );
+      gradient.addColorStop(
+        0.7,
+        this.randomColor(Utils.randomBetween(0.2, 0.5)),
+      );
       gradient.addColorStop(1, "transparent");
 
       ctx.strokeStyle = gradient;
@@ -480,7 +531,11 @@ const ImageGenerator = {
     const dateHeight = date ? dateSize + highlightPaddingY + 20 : 0;
     const textHeight = lines.length * (lineHeight + highlightPaddingY * 0.25);
     const canvasHeight =
-      panelPadding * 2 + titleHeight + dateHeight + textHeight + highlightPaddingY;
+      panelPadding * 2 +
+      titleHeight +
+      dateHeight +
+      textHeight +
+      highlightPaddingY;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasWidth * scale;
@@ -662,9 +717,10 @@ const ImageGenerator = {
 const FavoritesManager = {
   FAVORITES_KEY: "poemes-favorites",
   showingFavoritesOnly: false,
-  API_URL: window.location.hostname === "localhost"
-    ? "http://localhost:3000"
-    : "https://poemes.antoine-augusti.fr/api",
+  API_URL:
+    window.location.hostname === "localhost"
+      ? "http://localhost:3000"
+      : "https://poemes.antoine-augusti.fr/api",
 
   getFavoritesFromLocalStorage() {
     const favorites = localStorage.getItem(this.FAVORITES_KEY);
@@ -836,7 +892,9 @@ const FavoritesManager = {
       favorites.includes(titleId) ? Utils.show(title) : Utils.hide(title);
     });
 
-    const dateCounts = this.countPoemesByDate(".poemes-container .poeme.visible");
+    const dateCounts = this.countPoemesByDate(
+      ".poemes-container .poeme.visible",
+    );
     DayHeights.updateFromCounts(dateCounts);
   },
 
@@ -866,7 +924,9 @@ const FavoritesManager = {
   },
 
   updateDaysForFavorites() {
-    const dateCounts = this.countPoemesByDate(".poemes-container .poeme.visible");
+    const dateCounts = this.countPoemesByDate(
+      ".poemes-container .poeme.visible",
+    );
     DayHeights.updateFromCounts(dateCounts);
   },
 
@@ -881,7 +941,10 @@ const FavoritesManager = {
       "animationend",
       () => {
         Utils.hide(poemeContainer.querySelector(".poeme"));
-        poemeContainer.classList.remove("animate__animated", "animate__fadeOut");
+        poemeContainer.classList.remove(
+          "animate__animated",
+          "animate__fadeOut",
+        );
 
         const poemeTitle = document.querySelector(
           `.poeme-title[data-id="${poemeId}"]`,
@@ -964,7 +1027,9 @@ const FavoritesManager = {
 
     const showFavButton = document.getElementById("show-favorites");
     showFavButton.addEventListener("click", () => {
-      this.showingFavoritesOnly ? this.displayAllPoemes() : this.displayOnlyFavorites();
+      this.showingFavoritesOnly
+        ? this.displayAllPoemes()
+        : this.displayOnlyFavorites();
     });
   },
 };
@@ -988,12 +1053,15 @@ const KeyboardNavigation = {
         "animate__animated",
         "animate__fadeIn",
       );
-      this.poemeDivs[this.currentPoemeIndex].addEventListener("animationend", () => {
-        this.poemeDivs[this.currentPoemeIndex].classList.remove(
-          "animate__animated",
-          "animate__fadeIn",
-        );
-      });
+      this.poemeDivs[this.currentPoemeIndex].addEventListener(
+        "animationend",
+        () => {
+          this.poemeDivs[this.currentPoemeIndex].classList.remove(
+            "animate__animated",
+            "animate__fadeIn",
+          );
+        },
+      );
     }
   },
 
@@ -1010,7 +1078,10 @@ const KeyboardNavigation = {
 
     document
       .querySelector(".up-down")
-      .addEventListener("click", () => (this.poemeDivs = this.poemeDivs.reverse()));
+      .addEventListener(
+        "click",
+        () => (this.poemeDivs = this.poemeDivs.reverse()),
+      );
 
     document.addEventListener("keydown", (event) => {
       const searchInput = document.getElementById("search");
@@ -1025,15 +1096,20 @@ const KeyboardNavigation = {
           document.querySelector(".up-down").click();
           break;
         case "j":
-          this.focusPoemeDiv((this.currentPoemeIndex + 1) % this.poemeDivs.length);
+          this.focusPoemeDiv(
+            (this.currentPoemeIndex + 1) % this.poemeDivs.length,
+          );
           break;
         case "k":
           const nextIndex = this.currentPoemeIndex - 1;
-          this.focusPoemeDiv(nextIndex < 0 ? this.poemeDivs.length - 1 : nextIndex);
+          this.focusPoemeDiv(
+            nextIndex < 0 ? this.poemeDivs.length - 1 : nextIndex,
+          );
           break;
         case "s":
           if (this.poemeDivs[this.currentPoemeIndex]) {
-            const poemeId = this.poemeDivs[this.currentPoemeIndex].getAttribute("data-id");
+            const poemeId =
+              this.poemeDivs[this.currentPoemeIndex].getAttribute("data-id");
             const button = document.querySelector(
               `.js-favorite-button[data-poeme-id="${poemeId}"]`,
             );
@@ -1083,7 +1159,9 @@ const UIManager = {
     document.querySelectorAll(".js-notes-auteur").forEach((div) => {
       div.addEventListener("click", () => {
         const target = document.querySelector(".poeme-notes");
-        target.classList.contains("visible") ? Utils.hide(target) : Utils.show(target);
+        target.classList.contains("visible")
+          ? Utils.hide(target)
+          : Utils.show(target);
       });
     });
   },
