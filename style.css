@@ -360,6 +360,13 @@ details .poeme {
 .poeme-titles .poeme-title.favorite.active {
   background: var(--accent-color);
 }
+.poeme-titles .poeme-title.masked {
+  background: var(--masked-color);
+  color: var(--font-color-on-accent);
+}
+.poeme-titles .poeme-title.masked.active {
+  background: var(--accent-color);
+}
 .poeme-titles .poeme-title.visible {
   display: block;
 }

@@ -1321,6 +1321,24 @@ const UIManager = {
     });
   },
 
+  initMaskedTitles() {
+    document
+      .querySelectorAll(".poeme-container.poeme-masque")
+      .forEach((container) => {
+        const poemeId = container
+          .querySelector(".poeme")
+          ?.getAttribute("data-id");
+        if (poemeId) {
+          const title = document.querySelector(
+            `.poeme-titles .poeme-title[data-id="${poemeId}"]`,
+          );
+          if (title) {
+            title.classList.add("masked");
+          }
+        }
+      });
+  },
+
   init() {
     this.initCopyButtons();
     this.initNotesAuteur();
@@ -1330,6 +1348,7 @@ const UIManager = {
     this.initHelpModal();
     this.initScrollToTop();
     this.initThemeLinks();
+    this.initMaskedTitles();
   },
 };
 
