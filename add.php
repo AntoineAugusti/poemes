@@ -32,161 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@400&family=Vollkorn:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="style.css">
-  <style>
-    body, html {
-      font-size: 18px;
-      height: auto;
-    }
-    h1 {
-      font-weight: bold;
-      font-size: 1.5em;
-      margin-bottom: 2em;
-      text-shadow: 2px 2px 3px rgba(128, 128, 128, 0.5);
-      background-clip: text;
-      background-color: #000;
-    }
-    .container {
-      background-color: var(--panel-color);
-      padding: 20px;
-      max-width: 800px;
-      margin: 2em auto;
-    }
-    textarea {
-      width: 100%;
-      padding: 10px;
-      box-sizing: border-box;
-      font-size: 1em;
-    }
-    .editor-container {
-      display: flex;
-      gap: 1em;
-    }
-    .editor-left {
-      flex: 1;
-    }
-    .editor-right {
-      width: 250px;
-      flex-shrink: 0;
-    }
-    #rhymes-panel {
-      background: var(--panel-color-alt);
-      border: 1px solid var(--border-color);
-      padding: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    #rhymes-panel h3 {
-      margin: 0 0 0.5em 0;
-      font-size: 0.9em;
-      color: var(--font-color-muted);
-    }
-    #current-word {
-      font-weight: bold;
-      color: var(--accent-color);
-      margin-bottom: 0.5em;
-    }
-    #rhymes-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    #rhymes-list li {
-      padding: 3px 6px;
-      cursor: pointer;
-      font-size: 0.9em;
-      border-radius: 3px;
-    }
-    #rhymes-list li:hover {
-      background: var(--hover-bg);
-    }
-    @media (max-width: 768px) {
-      .editor-container {
-        flex-direction: column;
-      }
-      .editor-right {
-        width: 100%;
-      }
-    }
-    button[type="button"] {
-      margin-bottom: 1em;
-    }
-    ul {
-      list-style-type: disc;
-      margin-left: 1em;
-    }
-    #suggested-titles li {
-      cursor: pointer;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 1em;
-      box-sizing: border-box;
-    }
-    input[type="date"] {
-      padding: 10px;
-      margin-bottom: 1em;
-
-    }
-    input[type="submit"] {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      cursor: pointer;
-    }
-    input[type="submit"]:hover {
-      background-color: #45a049;
-    }
-    .message {
-      margin-top: 15px;
-      padding: 10px;
-      margin-bottom: 2em;
-    }
-    .success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-    .theme_suggestion {
-      padding: 2px 5px;
-      margin: 0 .2em .5em 0;
-      background: #888;
-      color: white;
-      display: inline-block;
-      cursor: pointer;
-    }
-    .theme_suggestion.active {
-      background: #333;
-      cursor: default;
-    }
-    .label {
-      padding: 2px 5px;
-      margin: 0 .5em .5em 0;
-      background: #aaa;
-      color: white;
-      display: inline-block;
-      cursor: pointer;
-      font-size: 0.8em;
-    }
-    #themes-counts {
-      margin-bottom: 1em;
-    }
-    #themes-suggestions {
-      margin-bottom: 2em;
-    }
-    a.back {
-      width: 100%;
-      font-size: .8em;
-      color: #ccc;
-      text-decoration: none;
-    }
-  </style>
+  <link rel="stylesheet" href="editor.css">
 </head>
 <body>
   <div class="container">
@@ -237,19 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
   </div>
   <script type="text/javascript" src="theme.js"></script>
+  <script type="text/javascript" src="editor.js"></script>
   <script>
     const themes = <?= json_encode(allThemes($THEMES_FILENAME)); ?>;
     const GEMINI_API_KEY = <?= json_encode(getenv("GEMINI_API_KEY")); ?>;
     const commonThemes = <?= json_encode(commonThemes($THEMES_FILENAME)); ?>;
     const countThemes = <?= json_encode(countThemes($THEMES_FILENAME)); ?>;
-
-    function uniqueArray(a) {
-      return [...new Set(a)].sort((a, b) => a.localeCompare(b, 'fr'));
-    }
-
-    function unaccent(str) {
-      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
 
     function geminiCall(prompt) {
       const url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
@@ -545,69 +384,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
       });
 
-      const themesInput = document.getElementById('themes');
-      const themesSuggestions = document.getElementById('themes-suggestions');
-      const themesCounts = document.getElementById('themes-counts');
-      themesInput.addEventListener('input', function() {
-        themesInput.value = themesInput.value.toLowerCase();
-        const lastWord = themesInput.value.split(',').slice(-1)[0];
-        const previousInput = themesInput.value.split(',').slice(0, -1);
-        let suggestions = uniqueArray(themes);
-        themesCounts.textContent = '';
-
-        themesInput.value.split(',')
-        .filter(x => x in countThemes)
-        .forEach((tag) => {
-          const span = document.createElement('span');
-          span.textContent = `${tag} (${countThemes[tag]})`;
-          span.setAttribute('class', 'label');
-          themesCounts.appendChild(span);
-        })
-
-        if (previousInput.length > 0) {
-          suggestions = uniqueArray(
-            previousInput
-            .filter(x => x in commonThemes)
-            .map(x => commonThemes[x])
-            .flat()
-            .concat(previousInput)
-            );
-        }
-
-        themesSuggestions.innerHTML = "";
-        themesSuggestions.append(...
-          suggestions
-          .filter(x => unaccent(x).startsWith(unaccent(lastWord)))
-          .map(x => {
-            const span = document.createElement('span');
-            span.classList.add("theme_suggestion");
-            span.innerHTML = x;
-            if (!previousInput.includes(x)) {
-              span.tabIndex = 0;
-              span.addEventListener("click", function (event) {
-                themesInput.value = previousInput.concat([event.srcElement.innerText]).join(",");
-                themesInput.focus();
-                themesInput.dispatchEvent(new Event('input', {
-                  bubbles: true,
-                  cancelable: true
-                }));
-              });
-              span.addEventListener('keydown', event => {
-                if (!document.activeElement === span) {
-                  return;
-                }
-                if (['Enter', 'Space'].includes(event.code)) {
-                  event.preventDefault();
-                  span.click();
-                }
-              });
-            } else {
-              span.classList.add("active");
-            }
-            return span;
-          }));
-
-      });
+      initThemesSuggestions(themes, commonThemes, countThemes);
     });
   </script>
 </body>
