@@ -1239,6 +1239,10 @@ const UIManager = {
           Utils.hide(poemeTitlesReset);
         }
         document.dispatchEvent(new Event("poemes-changed", { bubbles: true }));
+
+        document
+          .querySelector(".poemes-container")
+          .scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
   },
