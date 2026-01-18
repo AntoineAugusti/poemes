@@ -1,4 +1,5 @@
-body, html {
+body,
+html {
   font-size: 18px;
   height: auto;
 }
@@ -93,7 +94,7 @@ input[type="date"] {
   margin-bottom: 1em;
 }
 input[type="submit"] {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -119,7 +120,7 @@ input[type="submit"]:hover {
 }
 .theme_suggestion {
   padding: 2px 5px;
-  margin: 0 .2em .5em 0;
+  margin: 0 0.2em 0.5em 0;
   background: #888;
   color: white;
   display: inline-block;
@@ -131,7 +132,7 @@ input[type="submit"]:hover {
 }
 .label {
   padding: 2px 5px;
-  margin: 0 .5em .5em 0;
+  margin: 0 0.5em 0.5em 0;
   background: #aaa;
   color: white;
   display: inline-block;
@@ -146,7 +147,7 @@ input[type="submit"]:hover {
 }
 a.back {
   width: 100%;
-  font-size: .8em;
+  font-size: 0.8em;
   color: #ccc;
   text-decoration: none;
 }
