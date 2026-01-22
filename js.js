@@ -324,6 +324,14 @@ const SearchManager = {
       if (targetDiv) {
         document.querySelectorAll(".visible").forEach((div) => Utils.hide(div));
         Utils.show(targetDiv);
+        const poemeDate = targetDiv.querySelector(".poeme-date");
+        if (poemeDate) {
+          const date = poemeDate.textContent.trim();
+          const dayEl = document.querySelector(`.day[data-day="${date}"]`);
+          if (dayEl) {
+            Utils.show(dayEl);
+          }
+        }
         this.refreshNbResults(searchTerm);
         this.highlightText(searchTerm);
       } else {
