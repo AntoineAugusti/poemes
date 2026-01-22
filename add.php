@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $texte = str_replace("\r\n", PHP_EOL, $_POST['texte']);
     $nouveauTexte = PHP_EOL."===".PHP_EOL.$_POST['date'].PHP_EOL."## ".$_POST['titre'].PHP_EOL.$texte;
 
-    $themes = str_replace(",", ";", $_POST['themes']);
+    $themes = implode(";", array_map('trim', explode(",", $_POST['themes'])));
 
     file_put_contents($THEMES_FILENAME, $themes.PHP_EOL, FILE_APPEND | LOCK_EX);
 
