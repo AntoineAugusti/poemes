@@ -24,7 +24,7 @@ let RP_ID = "localhost";
 let CLIENT_URL = `http://localhost:8080`;
 
 if (process.env.NODE_ENV == "production") {
-  RP_ID = "poemes.antoine-augusti.fr";
+  RP_ID = process.env.DOMAIN_NAME;
   CLIENT_URL = `https://${RP_ID}`;
 }
 
