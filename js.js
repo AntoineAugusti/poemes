@@ -1123,12 +1123,13 @@ const KeyboardNavigation = {
             (this.currentPoemeIndex + 1) % this.poemeDivs.length,
           );
           break;
-        case "k":
+        case "k": {
           const nextIndex = this.currentPoemeIndex - 1;
           this.focusPoemeDiv(
             nextIndex < 0 ? this.poemeDivs.length - 1 : nextIndex,
           );
           break;
+        }
         case "s":
           if (this.poemeDivs[this.currentPoemeIndex]) {
             const poemeId =
