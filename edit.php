@@ -3,7 +3,7 @@
 require "functions.php";
 
 $host = $_SERVER['HTTP_HOST'];
-$isAdmin = $_COOKIE["email"] == "antoine.augusti@gmail.com" || $host != "poemes.antoine-augusti.fr";
+$isAdmin = $_COOKIE["email"] == getenv("ADMIN_EMAIL");
 
 if (!$isAdmin) {
   header("Location: /", true, 302);
