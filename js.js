@@ -718,9 +718,7 @@ const FavoritesManager = {
   FAVORITES_KEY: "poemes-favorites",
   showingFavoritesOnly: false,
   API_URL:
-    window.location.hostname === "localhost"
-      ? "http://localhost:3000"
-      : "/api",
+    window.location.hostname === "localhost" ? "http://localhost:3000" : "/api",
 
   getFavoritesFromLocalStorage() {
     const favorites = localStorage.getItem(this.FAVORITES_KEY);
