@@ -12,7 +12,7 @@ $themes = explode("\n", file_get_contents($THEMES_FILENAME));
 $themes = array_map(function ($x) { $array = explode(';', $x); sort($array); return $array;}, $themes);
 $poemes = array_reverse(explode("===", file_get_contents($TEXTES_FILENAME)), true);
 
-if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature) && $host != "poemes.andrea.antoine-augusti.fr") {
+if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature($poemes, $signature) && $host != "poemes.andrea-cornelissen.fr") {
   header("Location: login.php?action=login", true, 302);
   exit();
 }
