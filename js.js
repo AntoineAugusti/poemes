@@ -720,7 +720,7 @@ const FavoritesManager = {
   API_URL:
     window.location.hostname === "localhost"
       ? "http://localhost:3000"
-      : "https://poemes.antoine-augusti.fr/api",
+      : "/api",
 
   getFavoritesFromLocalStorage() {
     const favorites = localStorage.getItem(this.FAVORITES_KEY);

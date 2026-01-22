@@ -1,5 +1,5 @@
 /*global SimpleWebAuthnBrowser*/
-let AUTH_SERVER_URL = "https://poemes.antoine-augusti.fr/api";
+let AUTH_SERVER_URL = "/api";
 if (document.location.origin == "http://localhost:8080") {
   AUTH_SERVER_URL = "http://localhost:3000";
 }
