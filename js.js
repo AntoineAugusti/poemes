@@ -451,8 +451,14 @@ const ImageGenerator = {
       const radius = Utils.randomBetween(width * 0.5, width * 1.2);
 
       const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, this.randomColor(Utils.randomBetween(0.08, 0.15)));
-      gradient.addColorStop(0.5, this.randomColor(Utils.randomBetween(0.03, 0.08)));
+      gradient.addColorStop(
+        0,
+        this.randomColor(Utils.randomBetween(0.08, 0.15)),
+      );
+      gradient.addColorStop(
+        0.5,
+        this.randomColor(Utils.randomBetween(0.03, 0.08)),
+      );
       gradient.addColorStop(1, "transparent");
 
       ctx.fillStyle = gradient;
@@ -492,9 +498,18 @@ const ImageGenerator = {
 
       const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
       gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(0.2, this.randomColor(Utils.randomBetween(0.3, 0.5)));
-      gradient.addColorStop(0.5, this.randomColor(Utils.randomBetween(0.4, 0.6)));
-      gradient.addColorStop(0.8, this.randomColor(Utils.randomBetween(0.3, 0.5)));
+      gradient.addColorStop(
+        0.2,
+        this.randomColor(Utils.randomBetween(0.3, 0.5)),
+      );
+      gradient.addColorStop(
+        0.5,
+        this.randomColor(Utils.randomBetween(0.4, 0.6)),
+      );
+      gradient.addColorStop(
+        0.8,
+        this.randomColor(Utils.randomBetween(0.3, 0.5)),
+      );
       gradient.addColorStop(1, "transparent");
 
       ctx.strokeStyle = gradient;
@@ -516,7 +531,10 @@ const ImageGenerator = {
 
       const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
       gradient.addColorStop(0, this.randomColor(Utils.randomBetween(0.2, 0.4)));
-      gradient.addColorStop(0.5, this.randomColor(Utils.randomBetween(0.05, 0.15)));
+      gradient.addColorStop(
+        0.5,
+        this.randomColor(Utils.randomBetween(0.05, 0.15)),
+      );
       gradient.addColorStop(1, "transparent");
 
       ctx.fillStyle = gradient;
