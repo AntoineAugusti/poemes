@@ -303,6 +303,7 @@ a.theme {
   margin-right: 0.5em;
   text-decoration: none;
   padding: 0.25em;
+  white-space: nowrap;
 }
 a.theme:hover {
   background: var(--hover-bg);
