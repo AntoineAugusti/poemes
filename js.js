@@ -437,29 +437,51 @@ const ImageGenerator = {
       this.baseColors[Math.floor(Math.random() * this.baseColors.length)];
     const baseGradient = ctx.createLinearGradient(0, 0, width, height);
     baseGradient.addColorStop(0, baseColor[0]);
-    baseGradient.addColorStop(1, baseColor[1]);
+    baseGradient.addColorStop(0.5, baseColor[1]);
+    baseGradient.addColorStop(1, baseColor[0]);
     ctx.fillStyle = baseGradient;
     ctx.fillRect(0, 0, width, height);
 
-    const numCircles = Math.floor(Utils.randomBetween(3, 6));
-    for (let i = 0; i < numCircles; i++) {
+    // Couche de brume avec mode de fusion
+    ctx.globalCompositeOperation = "screen";
+    const numBlurs = Math.floor(Utils.randomBetween(2, 4));
+    for (let i = 0; i < numBlurs; i++) {
       const x = Utils.randomBetween(0, width);
       const y = Utils.randomBetween(0, height);
-      const radius = Utils.randomBetween(width * 0.3, width * 0.9);
+      const radius = Utils.randomBetween(width * 0.5, width * 1.2);
 
       const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, this.randomColor(Utils.randomBetween(0.3, 0.6)));
-      gradient.addColorStop(
-        Utils.randomBetween(0.4, 0.7),
-        this.randomColor(Utils.randomBetween(0.1, 0.3)),
-      );
+      gradient.addColorStop(0, this.randomColor(Utils.randomBetween(0.08, 0.15)));
+      gradient.addColorStop(0.5, this.randomColor(Utils.randomBetween(0.03, 0.08)));
       gradient.addColorStop(1, "transparent");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
     }
 
-    const numLines = Math.floor(Utils.randomBetween(2, 5));
+    // Cercles colorés avec transitions plus douces
+    ctx.globalCompositeOperation = "soft-light";
+    const numCircles = Math.floor(Utils.randomBetween(4, 7));
+    for (let i = 0; i < numCircles; i++) {
+      const x = Utils.randomBetween(0, width);
+      const y = Utils.randomBetween(0, height);
+      const radius = Utils.randomBetween(width * 0.2, width * 0.8);
+
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      const color1 = this.randomColor(Utils.randomBetween(0.4, 0.7));
+      const color2 = this.randomColor(Utils.randomBetween(0.2, 0.4));
+      gradient.addColorStop(0, color1);
+      gradient.addColorStop(0.3, color1);
+      gradient.addColorStop(0.6, color2);
+      gradient.addColorStop(1, "transparent");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    // Lignes colorées
+    ctx.globalCompositeOperation = "overlay";
+    const numLines = Math.floor(Utils.randomBetween(2, 4));
     for (let i = 0; i < numLines; i++) {
       const x1 = Utils.randomBetween(-width * 0.2, width * 1.2);
       const y1 = Utils.randomBetween(-height * 0.2, height * 1.2);
@@ -470,24 +492,38 @@ const ImageGenerator = {
 
       const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
       gradient.addColorStop(0, "transparent");
-      gradient.addColorStop(
-        0.3,
-        this.randomColor(Utils.randomBetween(0.2, 0.5)),
-      );
-      gradient.addColorStop(
-        0.7,
-        this.randomColor(Utils.randomBetween(0.2, 0.5)),
-      );
+      gradient.addColorStop(0.2, this.randomColor(Utils.randomBetween(0.3, 0.5)));
+      gradient.addColorStop(0.5, this.randomColor(Utils.randomBetween(0.4, 0.6)));
+      gradient.addColorStop(0.8, this.randomColor(Utils.randomBetween(0.3, 0.5)));
       gradient.addColorStop(1, "transparent");
 
       ctx.strokeStyle = gradient;
-      ctx.lineWidth = Utils.randomBetween(20, 80);
+      ctx.lineWidth = Utils.randomBetween(30, 100);
       ctx.lineCap = "round";
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
     }
+
+    // Points lumineux subtils
+    ctx.globalCompositeOperation = "screen";
+    const numGlows = Math.floor(Utils.randomBetween(3, 6));
+    for (let i = 0; i < numGlows; i++) {
+      const x = Utils.randomBetween(0, width);
+      const y = Utils.randomBetween(0, height);
+      const radius = Utils.randomBetween(width * 0.05, width * 0.15);
+
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, this.randomColor(Utils.randomBetween(0.2, 0.4)));
+      gradient.addColorStop(0.5, this.randomColor(Utils.randomBetween(0.05, 0.15)));
+      gradient.addColorStop(1, "transparent");
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    ctx.globalCompositeOperation = "source-over";
   },
 
   generatePoemeImage(container) {
@@ -511,7 +547,7 @@ const ImageGenerator = {
     const lines = text.split("\n");
 
     const lineHeight = 15;
-    const titleSize = 28;
+    const titleSize = 30;
     const textSize = 22;
     const dateSize = 16;
 
