@@ -852,6 +852,11 @@ const FavoritesManager = {
   updateFavoriteButton(button, isFav) {
     button.classList.toggle("is-favorite", isFav);
 
+    const container = button.closest(".poeme-container");
+    if (container) {
+      container.classList.toggle("is-favorite", isFav);
+    }
+
     if (isFav) {
       button.classList.add("animate__animated", "animate__heartBeat");
       button.addEventListener(

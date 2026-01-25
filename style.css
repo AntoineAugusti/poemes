@@ -164,8 +164,12 @@ body * {
   box-shadow: var(--shadow-color) 0px 8px 24px;
 }
 .poeme-masque .poeme {
-  border: 3px dashed #424242;
-  box-shadow: rgba(66, 66, 66, 0.3) 0px 8px 24px;
+  border: 3px solid var(--masked-color);
+  box-shadow: rgba(155, 89, 182, 0.3) 0px 8px 24px;
+}
+.poeme-container.is-favorite .poeme {
+  border: 3px solid var(--favorite-color);
+  box-shadow: rgba(240, 192, 64, 0.3) 0px 8px 24px;
 }
 .poeme-content .poeme-title {
   font-weight: 700;
