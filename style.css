@@ -312,6 +312,10 @@ a.theme {
 a.theme:hover {
   background: var(--hover-bg);
 }
+a.theme.theme-masque,
+a.theme.theme-masque .hashtag {
+  color: var(--masked-color);
+}
 .hashtag {
   color: var(--font-color-secondary);
 }

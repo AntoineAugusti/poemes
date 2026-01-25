@@ -157,7 +157,7 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
                 </div>
                 <div class="themes">
                   <? foreach ($themes[$i-1] as $theme) { ?>
-                    <a class="theme" href="##<?= $theme ?>">
+                    <a class="theme<? if ($theme === 'masqué') { ?> theme-masque<? } ?>" href="##<?= $theme ?>">
                       <span class="hashtag">#</span><?= $theme ?>
                     </a>
                   <? } ?>
