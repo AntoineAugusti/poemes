@@ -363,15 +363,15 @@ details .poeme {
   background: var(--border-color);
 }
 .poeme-titles .poeme-title.favorite {
-  background: var(--favorite-color);
-  color: var(--font-color-on-accent);
+  border: 2px solid var(--favorite-color);
+  box-shadow: rgba(240, 192, 64, 0.3) 0px 4px 12px;
 }
 .poeme-titles .poeme-title.favorite.active {
   background: var(--accent-color);
 }
 .poeme-titles .poeme-title.masked {
-  background: var(--masked-color);
-  color: var(--font-color-on-accent);
+  border: 2px solid var(--masked-color);
+  box-shadow: rgba(155, 89, 182, 0.3) 0px 4px 12px;
 }
 .poeme-titles .poeme-title.masked.active {
   background: var(--accent-color);
