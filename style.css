@@ -237,6 +237,9 @@ body * {
   align-items: center;
   justify-content: center;
   gap: 0.5em;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 1em;
 }
 #search {
   background: var(--search-bg);
@@ -244,9 +247,11 @@ body * {
   font-size: 25px;
   padding: 0.5em 1em;
   font-family: "Vollkorn", serif;
-  width: 75%;
+  flex: 1;
+  min-width: 0;
   max-width: 350px;
   color: var(--font-color);
+  box-sizing: border-box;
 }
 #search::placeholder {
   color: var(--font-color-muted);
@@ -279,6 +284,8 @@ body * {
 .search_wrapper {
   margin: 0 1em 1.5em 1em;
   text-align: center;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .action-button {
   background: var(--panel-color-alt);
@@ -406,9 +413,10 @@ details .poeme {
 .days {
   margin: 1em 0;
   overflow-x: auto;
+  max-width: 100%;
 }
 .days-grid {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   gap: 3px;
 }
@@ -416,6 +424,7 @@ details .poeme {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  flex-shrink: 0;
 }
 .day {
   display: block;
