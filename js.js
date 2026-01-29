@@ -79,7 +79,7 @@ const DayHeights = {
   restore() {
     document.querySelectorAll(".day").forEach((day) => {
       const originalLevel = parseInt(
-        day.getAttribute("data-original-level") || "0"
+        day.getAttribute("data-original-level") || "0",
       );
       this.setLevel(day, originalLevel);
       Utils.show(day);
