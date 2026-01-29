@@ -8,6 +8,11 @@
   --panel-color-alt: #344f8d;
   --border-color: #2d3a5a;
   --day-color: #6b7aa1;
+  --day-level-0: #3d4a6a;
+  --day-level-1: #2ea043;
+  --day-level-2: #40c463;
+  --day-level-3: #6fdc8c;
+  --day-level-4: #a7f3d0;
   --masked-color: #9b59b6;
   --favorite-color: #f0c040;
   --accent-color: #ff7b54;
@@ -52,6 +57,11 @@ body.is-offline {
   --panel-color-alt: #e9ecef;
   --border-color: #dee2e6;
   --day-color: #adb5bd;
+  --day-level-0: #dfe1e4;
+  --day-level-1: #9be9a8;
+  --day-level-2: #5dd879;
+  --day-level-3: #36b556;
+  --day-level-4: #1a8a3e;
   --masked-color: #8e44ad;
   --favorite-color: #f1c40f;
   --accent-color: #e17055;
@@ -128,9 +138,7 @@ body * {
   filter: invert(1);
 }
 .toggle {
-  display: inline;
-  font-size: 0.75em;
-  margin-left: 0.5em;
+  font-size: 0.85em;
 }
 .toggle a {
   text-decoration: none;
@@ -142,7 +150,7 @@ body * {
   justify-content: center;
   line-height: 2;
   flex-direction: column;
-  margin: 2em auto 2em auto;
+  margin: 1em auto;
 }
 .poemes-container {
   display: flex;
@@ -223,6 +231,12 @@ body * {
 }
 .visible {
   display: block;
+}
+.search-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
 }
 #search {
   background: var(--search-bg);
@@ -391,17 +405,42 @@ details .poeme {
 }
 .days {
   margin: 1em 0;
+  overflow-x: auto;
+}
+.days-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}
+.days-week {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 .day {
-  display: inline-block;
-  width: 5px;
-  background: var(--day-color);
-  height: 1px;
-  margin-top: 10px;
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--day-level-0);
+}
+.day.level-0 {
+  background: var(--day-level-0);
+}
+.day.level-1 {
+  background: var(--day-level-1);
+}
+.day.level-2 {
+  background: var(--day-level-2);
+}
+.day.level-3 {
+  background: var(--day-level-3);
+}
+.day.level-4 {
+  background: var(--day-level-4);
 }
 .day.hidden {
-  height: 1px !important;
-  background: var(--day-color) !important;
+  background: var(--day-level-0) !important;
 }
 .mobile-block {
   display: inline-block;
@@ -597,8 +636,7 @@ mark {
     flex-direction: row-reverse;
     justify-content: flex-end;
   }
-  .add,
-  .toggle {
+  .add {
     margin-left: 0.25em;
   }
   #nb-results {

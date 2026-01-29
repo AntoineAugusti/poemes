@@ -72,6 +72,7 @@ function frequencies($poemes) {
   $startDate = null;
   $endDate = null;
   $dates = [];
+  $maxCount = 1;
 
   foreach ($poemes as $poeme) {
     $matches = parsePoeme($poeme);
@@ -87,7 +88,22 @@ function frequencies($poemes) {
       } else {
         $dates[$date] = 1;
       }
+      if ($dates[$date] > $maxCount) {
+        $maxCount = $dates[$date];
+      }
     }
+  }
+
+  // Ajuster startDate pour commencer un lundi
+  $dayOfWeek = (int)$startDate->format('N'); // 1=lundi, 7=dimanche
+  if ($dayOfWeek > 1) {
+    $startDate->modify('-'.($dayOfWeek - 1).' days');
+  }
+
+  // Ajuster endDate pour finir un dimanche
+  $dayOfWeek = (int)$endDate->format('N');
+  if ($dayOfWeek < 7) {
+    $endDate->modify('+'.(7 - $dayOfWeek).' days');
   }
 
   $period = new DatePeriod(
@@ -96,14 +112,47 @@ function frequencies($poemes) {
     $endDate->modify('+1 day')
   );
 
+  // Organiser les jours par semaine
+  $weeks = [];
+  $currentWeek = [];
   foreach($period as $date) {
     $dateString = $date->format('Y-m-d H:i:s');
-    $month = $date->format('Y-m');
     $day = $date->format('Y-m-d');
-    if (isset($dates[$dateString])) {
-      echo "<a class='day visible' tabindex='-1' data-day='".$day."' title=".$day." href='#".$day."' style='height: ".(15*$dates[$dateString])."px'></a>";
-    } else {
-      echo "<a class='day' data-day='".$day."'></a>";
+    $dayOfWeek = (int)$date->format('N');
+    $count = isset($dates[$dateString]) ? $dates[$dateString] : 0;
+
+    // Calculer le niveau (0-4) basé sur le nombre de poèmes
+    $level = 0;
+    if ($count > 0) {
+      $level = min(4, ceil($count / max(1, $maxCount / 4)));
+    }
+
+    $currentWeek[] = [
+      'day' => $day,
+      'count' => $count,
+      'level' => $level
+    ];
+
+    if ($dayOfWeek === 7) {
+      $weeks[] = $currentWeek;
+      $currentWeek = [];
     }
   }
+
+  // Générer le HTML de la grille
+  echo "<div class='days-grid'>";
+  foreach ($weeks as $week) {
+    echo "<div class='days-week'>";
+    foreach ($week as $dayData) {
+      $classes = 'day level-'.$dayData['level'];
+      if ($dayData['count'] > 0) {
+        $classes .= ' visible';
+        echo "<a class='".$classes."' tabindex='-1' data-day='".$dayData['day']."' data-count='".$dayData['count']."' title='".$dayData['day']." (".$dayData['count'].")' href='#".$dayData['day']."'></a>";
+      } else {
+        echo "<span class='".$classes."' data-day='".$dayData['day']."'></span>";
+      }
+    }
+    echo "</div>";
+  }
+  echo "</div>";
 }

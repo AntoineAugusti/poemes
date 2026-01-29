@@ -40,29 +40,65 @@ const Utils = {
 // =============================================================================
 
 const DayHeights = {
+  maxCount: 1,
+
   save() {
+    // Calculer le max pour les niveaux
+    let max = 1;
     document.querySelectorAll(".day").forEach((day) => {
-      const originalHeight = day.style.height || "1px";
-      day.setAttribute("data-original-height", originalHeight);
+      const count = parseInt(day.getAttribute("data-count") || "0");
+      if (count > max) max = count;
     });
+    this.maxCount = max;
+
+    document.querySelectorAll(".day").forEach((day) => {
+      const originalLevel = this.getLevelFromClasses(day);
+      day.setAttribute("data-original-level", originalLevel);
+    });
+  },
+
+  getLevelFromClasses(day) {
+    for (let i = 4; i >= 0; i--) {
+      if (day.classList.contains("level-" + i)) return i;
+    }
+    return 0;
+  },
+
+  setLevel(day, level) {
+    for (let i = 0; i <= 4; i++) {
+      day.classList.remove("level-" + i);
+    }
+    day.classList.add("level-" + level);
+  },
+
+  calculateLevel(count, maxCount) {
+    if (count === 0) return 0;
+    return Math.min(4, Math.ceil(count / Math.max(1, maxCount / 4)));
   },
 
   restore() {
     document.querySelectorAll(".day").forEach((day) => {
-      const originalHeight = day.getAttribute("data-original-height");
-      if (originalHeight) {
-        day.style.height = originalHeight;
-      }
+      const originalLevel = parseInt(
+        day.getAttribute("data-original-level") || "0"
+      );
+      this.setLevel(day, originalLevel);
       Utils.show(day);
     });
   },
 
   updateFromCounts(dateCounts) {
+    // Calculer le max pour les niveaux filtrés
+    let maxFiltered = 1;
+    Object.values(dateCounts).forEach((count) => {
+      if (count > maxFiltered) maxFiltered = count;
+    });
+
     document.querySelectorAll(".day").forEach((day) => {
       const dayDate = day.getAttribute("data-day");
       if (dateCounts[dayDate]) {
         Utils.show(day);
-        day.style.height = 15 * dateCounts[dayDate] + "px";
+        const level = this.calculateLevel(dateCounts[dayDate], maxFiltered);
+        this.setLevel(day, level);
       } else {
         Utils.hide(day);
       }
@@ -900,6 +936,7 @@ const FavoritesManager = {
 
     document.querySelectorAll(".day").forEach((day) => {
       day.style.background = "";
+      day.classList.remove("day-favorite", "day-masked", "day-mixed");
     });
 
     const favoritesPerDay = {};
@@ -940,19 +977,26 @@ const FavoritesManager = {
         const maskedPct = (maskedCount / totalCount) * 100;
         const favoritePct = (favoriteCount / totalCount) * 100;
 
+        // Récupérer le niveau du jour pour la couleur de fond
+        const level = DayHeights.getLevelFromClasses(day);
+        const levelColor = `var(--day-level-${level})`;
+
         if (maskedCount > 0 && favoriteCount > 0) {
-          day.style.background = `linear-gradient(to top, var(--masked-color) ${maskedPct}%, var(--favorite-color) ${maskedPct}%, var(--favorite-color) ${maskedPct + favoritePct}%, var(--day-color) ${maskedPct + favoritePct}%)`;
+          day.classList.add("day-mixed");
+          day.style.background = `linear-gradient(135deg, var(--masked-color) 50%, var(--favorite-color) 50%)`;
         } else if (maskedCount > 0) {
+          day.classList.add("day-masked");
           if (maskedPct === 100) {
             day.style.background = "var(--masked-color)";
           } else {
-            day.style.background = `linear-gradient(to top, var(--masked-color) ${maskedPct}%, var(--day-color) ${maskedPct}%)`;
+            day.style.background = `linear-gradient(135deg, var(--masked-color) ${maskedPct}%, ${levelColor} ${maskedPct}%)`;
           }
         } else if (favoriteCount > 0) {
+          day.classList.add("day-favorite");
           if (this.showingFavoritesOnly || favoritePct === 100) {
             day.style.background = "var(--favorite-color)";
           } else {
-            day.style.background = `linear-gradient(to top, var(--favorite-color) ${favoritePct}%, var(--day-color) ${favoritePct}%)`;
+            day.style.background = `linear-gradient(135deg, var(--favorite-color) ${favoritePct}%, ${levelColor} ${favoritePct}%)`;
           }
         }
       }

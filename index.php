@@ -48,20 +48,22 @@ if (!isset($_COOKIE["auth"]) && getenv("NODE_ENV") != "test" && !validSignature(
           <label id="theme-switch" class="switch__label" for="checkbox_theme"></label>
         </div>
 
-        <input type="search" id="search" list="themes-list">
-        <?php if ($isAdmin || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
-          <div class="add">
-            <a href="add.php">
-              <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0xMS41IDBjNi4zNDcgMCAxMS41IDUuMTUzIDExLjUgMTEuNXMtNS4xNTMgMTEuNS0xMS41IDExLjUtMTEuNS01LjE1My0xMS41LTExLjUgNS4xNTMtMTEuNSAxMS41LTExLjV6bTAgMWM1Ljc5NSAwIDEwLjUgNC43MDUgMTAuNSAxMC41cy00LjcwNSAxMC41LTEwLjUgMTAuNS0xMC41LTQuNzA1LTEwLjUtMTAuNSA0LjcwNS0xMC41IDEwLjUtMTAuNXptLjUgMTBoNnYxaC02djZoLTF2LTZoLTZ2LTFoNnYtNmgxdjZ6Ii8+PC9zdmc+">
-            </a>
+        <div class="search-row">
+          <input type="search" id="search" list="themes-list">
+          <?php if ($isAdmin || $_SERVER['HTTP_HOST'] == 'localhost:8080') { ?>
+            <div class="add">
+              <a href="add.php">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0xMS41IDBjNi4zNDcgMCAxMS41IDUuMTUzIDExLjUgMTEuNXMtNS4xNTMgMTEuNS0xMS41IDExLjUtMTEuNS01LjE1My0xMS41LTExLjUgNS4xNTMtMTEuNSAxMS41LTExLjV6bTAgMWM1Ljc5NSAwIDEwLjUgNC43MDUgMTAuNSAxMC41cy00LjcwNSAxMC41LTEwLjUgMTAuNS0xMC41LTQuNzA1LTEwLjUtMTAuNSA0LjcwNS0xMC41IDEwLjUtMTAuNXptLjUgMTBoNnYxaC02djZoLTF2LTZoLTZ2LTFoNnYtNmgxdjZ6Ii8+PC9zdmc+">
+              </a>
+            </div>
+          <?php } ?>
+          <div class="toggle">
+            <? if ($TEXTES_FILENAME == 'poemes.txt'): ?>
+              <a href="?mode=textes">Textes</a>
+            <? else: ?>
+              <a href="?mode=poemes">Poèmes</a>
+            <? endif ?>
           </div>
-        <?php } ?>
-        <div class="toggle">
-          <? if ($TEXTES_FILENAME == 'poemes.txt'): ?>
-            <a href="?mode=textes">Textes</a>
-          <? else: ?>
-            <a href="?mode=poemes">Poèmes</a>
-          <? endif ?>
         </div>
         <div id="results">
           <div id="nb-results"></div>
