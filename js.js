@@ -463,9 +463,75 @@ const ImageGenerator = {
     ["#0d1b2a", "#1b263b"],
   ],
 
+  wallpapers: null,
+
+  async loadWallpapersList() {
+    if (this.wallpapers !== null) {
+      return this.wallpapers;
+    }
+    try {
+      const response = await fetch("images/wallpapers/index.json");
+      const filenames = await response.json();
+      this.wallpapers = filenames.map((f) => `images/wallpapers/${f}`);
+    } catch (e) {
+      console.warn("Failed to load wallpapers list", e);
+      this.wallpapers = [];
+    }
+    return this.wallpapers;
+  },
+
   randomColor(alpha = 1) {
     const color = this.colors[Math.floor(Math.random() * this.colors.length)];
     return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${alpha})`;
+  },
+
+  loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  },
+
+  drawWallpaper(ctx, img, width, height) {
+    const imgRatio = img.width / img.height;
+    const canvasRatio = width / height;
+
+    let drawWidth, drawHeight, offsetX, offsetY;
+
+    if (imgRatio > canvasRatio) {
+      drawHeight = height;
+      drawWidth = height * imgRatio;
+      offsetX = (width - drawWidth) / 2;
+      offsetY = 0;
+    } else {
+      drawWidth = width;
+      drawHeight = width / imgRatio;
+      offsetX = 0;
+      offsetY = (height - drawHeight) / 2;
+    }
+
+    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+  },
+
+  async drawBackground(ctx, width, height) {
+    const wallpapers = await this.loadWallpapersList();
+    const useWallpaper = wallpapers.length > 0 && Math.random() < 0.5;
+
+    if (useWallpaper) {
+      const wallpaperPath =
+        wallpapers[Math.floor(Math.random() * wallpapers.length)];
+      try {
+        const img = await this.loadImage(wallpaperPath);
+        this.drawWallpaper(ctx, img, width, height);
+        return;
+      } catch (e) {
+        console.warn("Failed to load wallpaper, falling back to gradient", e);
+      }
+    }
+
+    this.drawRandomGradients(ctx, width, height);
   },
 
   drawRandomGradients(ctx, width, height) {
@@ -580,7 +646,7 @@ const ImageGenerator = {
     ctx.globalCompositeOperation = "source-over";
   },
 
-  generatePoemeImage(container) {
+  async generatePoemeImage(container) {
     const poemeContent = container.querySelector(".poeme-content");
     const titleEl = poemeContent.querySelector(".poeme-title");
     const dateEl = poemeContent.querySelector(".poeme-date");
@@ -641,7 +707,7 @@ const ImageGenerator = {
     const ctx = canvas.getContext("2d");
     ctx.scale(scale, scale);
 
-    this.drawRandomGradients(ctx, canvasWidth, canvasHeight);
+    await this.drawBackground(ctx, canvasWidth, canvasHeight);
 
     let currentY = panelPadding;
     const highlightPaddingX = 8;
@@ -742,21 +808,23 @@ const ImageGenerator = {
     return modal;
   },
 
-  showPreview(container) {
+  async showPreview(container) {
     this.currentPoemeContainer = container;
     let modal = document.getElementById("image-preview-modal");
     if (!modal) {
       modal = this.createModal();
     }
 
-    this.regeneratePreview();
+    await this.regeneratePreview();
     modal.style.display = "block";
   },
 
-  regeneratePreview() {
+  async regeneratePreview() {
     if (!this.currentPoemeContainer) return;
 
-    this.currentCanvas = this.generatePoemeImage(this.currentPoemeContainer);
+    this.currentCanvas = await this.generatePoemeImage(
+      this.currentPoemeContainer,
+    );
     const previewContainer = document.getElementById("image-preview-container");
     previewContainer.innerHTML = "";
 
